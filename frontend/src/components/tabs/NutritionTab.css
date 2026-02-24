@@ -1,0 +1,170 @@
+.nutrition-tab {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 0 0 1rem 0;
+  background-color: #ffffff;
+}
+
+.nutrition-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.nutrition-header h2 {
+  color: #000000;
+  margin: 0;
+  background-color: #ffffff;
+}
+
+.plan-type-selector {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.plan-type-btn {
+  padding: 0.75rem 1.5rem;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  color: #000000;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.plan-type-btn:hover {
+  background-color: #f8f9fa;
+  border-color: #F6F3C2;
+  color: #000000;
+}
+
+.plan-type-btn.active {
+  background-color: #F6F3C2;
+  color: #000000;
+  border-color: #F6F3C2;
+}
+
+.no-data {
+  text-align: center;
+  padding: 3rem;
+  color: #000000;
+  font-size: 1.1rem;
+  background-color: #ffffff;
+}
+
+.nutrition-plans {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.nutrition-day {
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1.5rem;
+  min-height: 200px;
+}
+
+.nutrition-day * {
+  color: #000000 !important;
+}
+
+.day-header {
+  color: #000000;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e0e0e0;
+  font-size: 1.2rem;
+}
+
+.day-meals {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.meal-item {
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 1rem;
+}
+
+.meal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.meal-type {
+  font-weight: 600;
+  color: #000000;
+  font-size: 0.9rem;
+}
+
+.meal-food {
+  color: #000000;
+  font-weight: 500;
+}
+
+.meal-nutrition {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.nutrition-badge {
+  background-color: #f8f9fa;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  color: #000000;
+}
+
+.meal-notes {
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #e0e0e0;
+  color: #000000;
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+.no-meals {
+  text-align: center;
+  padding: 1rem;
+  color: #000000;
+  font-style: italic;
+}
+
+.loading {
+  text-align: center;
+  padding: 3rem;
+  color: #000000;
+  background-color: #ffffff;
+}
+
+@media (max-width: 768px) {
+  .nutrition-plans {
+    grid-template-columns: 1fr;
+  }
+  
+  .nutrition-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+
+

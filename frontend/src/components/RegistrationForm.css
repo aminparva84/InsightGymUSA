@@ -1,0 +1,538 @@
+.registration-form-container {
+  max-width: 100%;
+  margin: 0;
+  background-color: var(--surface-base) !important;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  color: var(--text-primary);
+}
+
+/* Ensure all text elements use theme colors */
+.registration-form-container,
+.registration-form-container p,
+.registration-form-container span,
+.registration-form-container div:not(.btn-primary):not(.progress-step.active),
+.registration-form-container h1,
+.registration-form-container h2,
+.registration-form-container h3,
+.registration-form-container h4,
+.registration-form-container h5,
+.registration-form-container h6,
+.registration-form-container label,
+.registration-form-container input,
+.registration-form-container select,
+.registration-form-container textarea,
+.registration-form-container button:not(.btn-primary) {
+  color: var(--text-primary);
+}
+
+/* Force white background on ALL form elements */
+.registration-form-container,
+.registration-form,
+.registration-step,
+.registration-step h3,
+.registration-step p,
+.step-description,
+.form-row,
+.form-group,
+.form-group label,
+.form-group input,
+.form-group select,
+.form-group textarea,
+.form-group select option,
+.checkbox-group,
+.checkbox-label,
+.checkbox-label span,
+.progress-steps,
+.progress-step:not(.active) {
+  background-color: var(--surface-base) !important;
+}
+
+/* Exception: buttons and checked checkboxes use theme colors */
+.btn-primary,
+.checkbox-label input[type="checkbox"]:checked {
+  background: var(--gradient-accent) !important;
+  color: var(--color-white) !important;
+}
+
+/* Exception: progress fill uses theme gradient */
+.progress-fill {
+  background: var(--gradient-primary) !important;
+}
+
+/* Exception: active progress step uses theme colors */
+.progress-step.active {
+  background: var(--gradient-primary) !important;
+  color: var(--color-white) !important;
+}
+
+.registration-progress {
+  margin-bottom: 1.5rem;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 4px;
+  background-color: var(--border-subtle);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--gradient-primary);
+  transition: width 0.3s;
+}
+
+.progress-steps {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.progress-step {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--surface-base);
+  border: 2px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+  font-weight: 600;
+  transition: all 0.3s;
+  user-select: none;
+}
+
+.progress-step.active {
+  background: var(--gradient-primary);
+  border-color: var(--color-secondary-500);
+  color: var(--color-white);
+}
+
+.progress-step.clickable {
+  cursor: pointer;
+}
+
+.progress-step.clickable:hover {
+  background-color: var(--surface-subtle) !important;
+  border-color: var(--color-secondary-500);
+  transform: scale(1.1);
+}
+
+.progress-step.clickable.active:hover {
+  background: var(--gradient-primary) !important;
+  transform: scale(1.05);
+}
+
+.registration-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  background: var(--surface-base);
+  color: var(--text-primary);
+}
+
+.registration-step {
+  background-color: var(--color-white) !important;
+}
+
+.registration-step h3 {
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
+  font-weight: 600;
+  background-color: var(--surface-base) !important;
+}
+
+.step-description {
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+  line-height: 1.5;
+  font-size: 0.9rem;
+  background-color: var(--surface-base) !important;
+}
+
+.injury-questions-section {
+  margin: 1.25rem 0;
+  padding: 1rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  background-color: var(--surface-subtle) !important;
+}
+
+.injury-question-block {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.injury-question-block:last-of-type {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.injury-question-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.75rem;
+  background-color: transparent !important;
+}
+
+.injury-question {
+  margin-bottom: 0.75rem;
+}
+
+.injury-question label {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-size: 0.9rem;
+}
+
+.injury-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+}
+
+.measurement-description {
+  color: var(--color-primary-600);
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+  margin-bottom: 0.5rem;
+  opacity: 0.8;
+  font-style: italic;
+  background-color: var(--color-white) !important;
+}
+
+.account-type-selection {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.account-type-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.2rem;
+  background-color: var(--color-white);
+  border: 2px solid var(--color-primary-200);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.account-type-option:hover {
+  border-color: var(--color-secondary-500);
+  background-color: var(--color-primary-50);
+}
+
+.account-type-option.selected {
+  border-color: var(--color-secondary-500);
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.08) 0%, rgba(249, 115, 22, 0.08) 100%);
+  border-width: 2px;
+}
+
+.account-type-option input[type="radio"] {
+  margin-top: 0.2rem;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: var(--color-secondary-500);
+  border: 2px solid var(--color-primary-200);
+}
+
+.account-type-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.account-type-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-primary-800);
+}
+
+.account-type-description {
+  font-size: 0.9rem;
+  color: var(--color-primary-600);
+  line-height: 1.4;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  background-color: var(--color-white) !important;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background-color: var(--color-white) !important;
+}
+
+.form-group label {
+  color: var(--color-primary-800);
+  font-weight: 500;
+  font-size: 0.9rem;
+  background-color: var(--color-white) !important;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="password"],
+.form-group input[type="number"],
+.form-group select {
+  padding: 0.6rem 0.9rem;
+  background-color: var(--color-white) !important;
+  border: 1px solid var(--color-primary-200);
+  border-radius: 6px;
+  color: var(--color-primary-800);
+  font-size: 0.95rem;
+  transition: all 0.3s;
+  height: auto;
+  line-height: 1.4;
+}
+
+.form-group select,
+.form-group select option {
+  background-color: var(--color-white) !important;
+  color: var(--color-primary-800) !important;
+}
+
+.form-group select:focus option,
+.form-group select:active option {
+  background-color: var(--color-white) !important;
+  color: var(--color-primary-800) !important;
+}
+
+/* Ensure select dropdown text uses theme colors */
+.form-group select {
+  color: var(--color-primary-800) !important;
+}
+
+.form-group select option {
+  color: var(--color-primary-800) !important;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: var(--color-primary-500);
+  opacity: 0.7;
+}
+
+.form-group textarea {
+  padding: 0.6rem 0.9rem;
+  background-color: var(--color-white) !important;
+  border: 1px solid var(--color-primary-200);
+  border-radius: 6px;
+  color: var(--color-primary-800);
+  font-size: 0.95rem;
+  transition: all 0.3s;
+  resize: vertical;
+  min-height: 60px;
+  line-height: 1.4;
+}
+
+.form-group input:focus,
+.form-group input:active,
+.form-group input:hover,
+.form-group select:focus,
+.form-group select:active,
+.form-group select:hover,
+.form-group textarea:focus,
+.form-group textarea:active,
+.form-group textarea:hover {
+  outline: none;
+  border-color: var(--color-secondary-500);
+  background-color: var(--color-white) !important;
+  box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.2);
+}
+
+.checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+  background: var(--color-white);
+}
+
+/* Custom scrollbar for checkbox groups */
+.checkbox-group::-webkit-scrollbar {
+  width: 6px;
+}
+
+.checkbox-group::-webkit-scrollbar-track {
+  background: var(--color-primary-50);
+  border-radius: 3px;
+}
+
+.checkbox-group::-webkit-scrollbar-thumb {
+  background: var(--color-secondary-500);
+  border-radius: 3px;
+}
+
+.checkbox-group::-webkit-scrollbar-thumb:hover {
+  background: var(--color-secondary-600);
+}
+
+/* Firefox scrollbar */
+.checkbox-group {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-secondary-500) var(--color-primary-50);
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  padding: 0.6rem 0.9rem;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-primary-200);
+  border-radius: 6px;
+  transition: all 0.3s;
+  font-size: 0.9rem;
+  color: var(--color-primary-800);
+}
+
+.checkbox-label:hover {
+  background-color: var(--color-primary-50) !important;
+  border-color: var(--color-secondary-500);
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: var(--color-secondary-500);
+  background-color: var(--color-white) !important;
+  border: 1px solid var(--color-primary-200);
+  border-radius: 4px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  position: relative;
+}
+
+.checkbox-label input[type="checkbox"]:checked {
+  background: var(--gradient-primary) !important;
+  border-color: var(--color-secondary-500);
+}
+
+.checkbox-label input[type="checkbox"]:checked::before {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--color-white);
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.checkbox-label input[type="checkbox"]:checked + span {
+  color: var(--color-primary-800);
+  font-weight: 600;
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.1) 0%, rgba(249, 115, 22, 0.1) 100%) !important;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+}
+
+.checkbox-label span {
+  background-color: var(--color-white) !important;
+  transition: background-color 0.3s ease;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid var(--color-secondary-500);
+}
+
+.btn-primary,
+.btn-secondary {
+  padding: 0.6rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-primary {
+  background: var(--gradient-accent);
+  color: var(--color-white);
+  box-shadow: var(--shadow-accent);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, var(--color-accent-600) 0%, var(--color-accent-500) 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(249, 115, 22, 0.4);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: var(--color-primary-300);
+  box-shadow: none;
+}
+
+.btn-secondary {
+  background-color: var(--color-white);
+  color: var(--color-primary-800);
+  border: 1px solid var(--color-primary-200);
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-primary-50) !important;
+  border-color: var(--color-primary-300);
+}
+
+.error-message {
+  padding: 0.75rem;
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid var(--color-error);
+  border-radius: 6px;
+  color: var(--color-error);
+  text-align: center;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .registration-form-container {
+    padding: 1rem;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .form-actions {
+    flex-direction: column-reverse;
+  }
+  
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+  }
+}
+
+
+

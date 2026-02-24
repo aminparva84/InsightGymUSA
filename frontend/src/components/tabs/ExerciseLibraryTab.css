@@ -1,0 +1,254 @@
+.exercise-library-tab {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 0 0 1rem 0;
+  background-color: var(--color-white);
+  min-height: calc(100vh - 200px);
+}
+
+.exercise-library-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--color-primary-200);
+}
+
+.exercise-library-info {
+  background: var(--color-primary-50);
+  border: 1px solid var(--color-primary-200);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.exercise-library-info h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.2rem;
+  color: var(--color-primary-800);
+}
+
+.exercise-library-info p {
+  margin: 0 0 1rem 0;
+  color: var(--color-primary-700);
+}
+
+.exercise-library-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem;
+}
+
+.exercise-library-info-card {
+  background: var(--color-white);
+  border: 1px solid var(--color-primary-100);
+  border-radius: 10px;
+  padding: 0.75rem 0.9rem;
+}
+
+.exercise-library-info-card h4 {
+  margin: 0 0 0.4rem 0;
+  font-size: 1rem;
+  color: var(--color-primary-800);
+}
+
+.exercise-library-info-card ul {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.exercise-library-info-card li {
+  margin: 0.25rem 0;
+  color: var(--color-primary-700);
+  font-size: 0.9rem;
+}
+
+.exercise-library-machine {
+  margin: 1.5rem 0;
+  padding: 1rem 1.25rem;
+  background: var(--color-white);
+  border: 1px solid var(--color-primary-200);
+  border-radius: 12px;
+}
+
+.exercise-library-machine h3 {
+  margin: 0 0 0.5rem 0;
+  color: var(--color-primary-800);
+}
+
+.exercise-library-machine-desc {
+  margin: 0 0 1rem 0;
+  color: var(--color-primary-600);
+  font-size: 0.9rem;
+}
+
+.exercise-library-machine-group {
+  margin-bottom: 1.5rem;
+}
+
+.exercise-library-machine-group h4 {
+  margin: 0 0 0.6rem 0;
+  font-size: 1rem;
+  color: var(--color-primary-800);
+}
+
+.exercise-library-machine-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--color-primary-100);
+  border-radius: 10px;
+}
+
+.exercise-library-machine-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.exercise-library-machine-table th,
+.exercise-library-machine-table td {
+  padding: 0.6rem 0.7rem;
+  border-bottom: 1px solid var(--color-primary-100);
+  text-align: left;
+  vertical-align: top;
+}
+
+.exercise-library-machine-table thead {
+  background: var(--color-primary-50);
+}
+
+.exercise-library-header h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+}
+
+.exercise-library-filters {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.exercise-library-filters select {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--color-primary-300);
+  border-radius: 6px;
+  font-size: 1rem;
+  min-width: 180px;
+}
+
+.exercise-library-table-wrapper {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  overflow-x: auto;
+  background: var(--color-white);
+  border-radius: 8px;
+  box-shadow: var(--shadow-md);
+}
+
+.exercise-library-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.exercise-library-table thead {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.1) 0%, rgba(249, 115, 22, 0.1) 100%);
+}
+
+.exercise-library-table th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: var(--color-primary-800);
+  border-bottom: 2px solid var(--color-secondary-500);
+}
+
+.exercise-library-table td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--color-primary-200);
+  color: var(--color-primary-800);
+}
+
+.exercise-library-table tbody tr:hover {
+  background: var(--color-primary-50);
+}
+
+.exercise-library-table .no-data {
+  text-align: center;
+  padding: 3rem;
+  color: var(--color-primary-600);
+}
+
+.exercise-library-table .btn-edit,
+.exercise-library-table .btn-delete {
+  margin-right: 0.5rem;
+  padding: 0.4rem 0.8rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.exercise-library-table .btn-edit {
+  background: var(--color-primary-500);
+  color: var(--color-white);
+}
+
+.exercise-library-table .btn-delete {
+  background: var(--color-secondary-500);
+  color: var(--color-white);
+}
+
+.exercise-library-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.exercise-library-pagination button {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--color-primary-400);
+  border-radius: 6px;
+  background: var(--color-white);
+  cursor: pointer;
+}
+
+.exercise-library-pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.exercise-form-overlay .exercise-form-container {
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.exercise-form-overlay .checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.exercise-form-overlay .checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.exercise-library-tab .loading {
+  text-align: center;
+  padding: 3rem;
+  color: var(--color-primary-600);
+}
