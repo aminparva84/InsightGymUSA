@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import { getApiBase } from '../services/apiBase';
@@ -24,22 +24,18 @@ import DashboardChatWidget from './DashboardChatWidget';
 import TrainingWithAgent from './TrainingWithAgent';
 import DashboardIcon from './DashboardIcon';
 import AskProgressCheck from './AskProgressCheck';
+import AppHeader from './AppHeader';
 import './Dashboard.css';
 
 const Dashboard = () => {
   const { t } = useTranslation();
   const API_BASE = getApiBase();
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
+  const { user } = useAuth();
   const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState('profile');
   const [userRole, setUserRole] = useState(null);
   const [profileComplete, setProfileComplete] = useState(true);
   const [progressCheckOpen, setProgressCheckOpen] = useState(false);
-  const [notifications, setNotifications] = useState([]);
-  const [notificationsOpen, setNotificationsOpen] = useState(false);
-  const [notificationsLoading, setNotificationsLoading] = useState(false);
-  const [notificationsError, setNotificationsError] = useState(null);
   const [trialStatus, setTrialStatus] = useState(null);
 
   const getAuthToken = useCallback(() => localStorage.getItem('token') || '', []);
@@ -47,29 +43,6 @@ const Dashboard = () => {
     const token = getAuthToken();
     return token ? { headers: { Authorization: `Bearer ${token}` } } : {};
   }, [getAuthToken]);
-
-  const loadNotifications = useCallback(async () => {
-    if (!user) return;
-    try {
-      setNotificationsLoading(true);
-      setNotificationsError(null);
-      const res = await axios.get(
-        `${API_BASE}/api/member/notifications?language=en`,
-        getAxiosConfig()
-      );
-      setNotifications(Array.isArray(res.data) ? res.data : []);
-    } catch (err) {
-      console.error('Error loading notifications:', err);
-      setNotifications([]);
-      setNotificationsError(err.response?.data?.error || err.message || 'Failed to load');
-    } finally {
-      setNotificationsLoading(false);
-    }
-  }, [API_BASE, user, getAxiosConfig]);
-
-  useEffect(() => {
-    if (user && userRole) loadNotifications();
-  }, [user, userRole, loadNotifications]);
 
   useEffect(() => {
     if (!user || userRole !== 'member') return;
@@ -83,63 +56,6 @@ const Dashboard = () => {
     };
     loadTrialStatus();
   }, [API_BASE, getAxiosConfig, user, userRole]);
-
-  // Refetch notifications when opening the dropdown so the list is fresh
-  useEffect(() => {
-    if (notificationsOpen && user) loadNotifications();
-  }, [notificationsOpen, user, loadNotifications]);
-
-  const unreadCount = notifications.filter((n) => !n.read_at).length;
-
-  const markNotificationRead = async (id) => {
-    try {
-      await axios.patch(
-        `${API_BASE}/api/member/notifications/${id}/read`,
-        {},
-        getAxiosConfig()
-      );
-      setNotifications((prev) =>
-        prev.map((n) => (n.id === id ? { ...n, read_at: new Date().toISOString() } : n))
-      );
-    } catch (err) {
-      console.error('Error marking notification read:', err);
-    }
-  };
-
-  const markAllNotificationsRead = async () => {
-    try {
-      await axios.patch(
-        `${API_BASE}/api/member/notifications/read-all`,
-        {},
-        getAxiosConfig()
-      );
-      setNotifications((prev) =>
-        prev.map((n) => ({ ...n, read_at: n.read_at || new Date().toISOString() }))
-      );
-    } catch (err) {
-      console.error('Error marking all read:', err);
-    }
-  };
-
-  const handleNotificationClick = (n) => {
-    if (!n.read_at) markNotificationRead(n.id);
-    if (n.link) setActiveTab(n.link.replace('?tab=', '').trim() || 'training-program');
-    setNotificationsOpen(false);
-  };
-
-  // Close dropdown when clicking outside. Use setTimeout so the click that opened it doesn't immediately close it.
-  useEffect(() => {
-    if (!notificationsOpen) return;
-    const onOutside = (e) => {
-      if (e.target.closest('.topbar-notifications-wrap')) return;
-      setNotificationsOpen(false);
-    };
-    const t = setTimeout(() => document.addEventListener('click', onOutside), 0);
-    return () => {
-      clearTimeout(t);
-      document.removeEventListener('click', onOutside);
-    };
-  }, [notificationsOpen]);
 
   useEffect(() => {
     const tabParam = searchParams.get('tab');
@@ -236,93 +152,7 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard">
-      <nav className="dashboard-topbar">
-        <div className="topbar-container">
-          {/* Right side - Title */}
-          <h1 className="topbar-title" onClick={() => {
-            // Navigate to landing page but keep user logged in
-            navigate('/');
-          }} style={{ cursor: 'pointer' }}>
-            {t('appName')}
-          </h1>
-          
-          {/* Left side - Language toggle and Logout */}
-          <div className="topbar-actions">
-            {(userRole === 'member' || userRole === 'admin' || userRole === 'coach') && (
-              <div className="topbar-notifications-wrap">
-                <button
-                  type="button"
-                  className="topbar-notifications-btn"
-                  onClick={(e) => { e.stopPropagation(); setNotificationsOpen((o) => !o); }}
-                  title="Notifications"
-                  aria-label="Notifications"
-                >
-                  <svg className="notification-bell-icon" viewBox="0 0 24 24" fill="currentColor" width="22" height="22">
-                    <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
-                  </svg>
-                  {unreadCount > 0 && (
-                    <span className="notification-badge" aria-hidden="true">{unreadCount > 99 ? '99+' : unreadCount}</span>
-                  )}
-                </button>
-                {notificationsOpen && (
-                  <div className="topbar-notifications-dropdown">
-                    <div className="notifications-dropdown-header">
-                      <span>Notifications</span>
-                      {unreadCount > 0 && (
-                        <button type="button" className="notifications-mark-all" onClick={markAllNotificationsRead}>
-                          Mark all read
-                        </button>
-                      )}
-                    </div>
-                    <div className="notifications-dropdown-list">
-                      {notificationsLoading ? (
-                        <div className="notifications-loading">Loading...</div>
-                      ) : notificationsError ? (
-                        <div className="notifications-error">
-                          Error loading notifications
-                          <button type="button" className="notifications-retry" onClick={() => loadNotifications()}>
-                            Retry
-                          </button>
-                        </div>
-                      ) : notifications.length === 0 ? (
-                        <div className="notifications-empty">No notifications</div>
-                      ) : (
-                        notifications.map((n) => (
-                          <button
-                            key={n.id}
-                            type="button"
-                            className={`notification-item ${!n.read_at ? 'unread' : ''}`}
-                            onClick={() => handleNotificationClick(n)}
-                          >
-                            {n.type && (
-                              <span className="notification-type-badge" data-type={n.type}>
-                                {n.type === 'trainer_note' ? 'Trainer note' :
-                                 n.type === 'message' ? 'Message' :
-                                 n.type === 'reminder' ? 'Reminder' :
-                                 n.type}
-                              </span>
-                            )}
-                            <strong>{n.title}</strong>
-                            {n.body && <span className="notification-body">{n.body}</span>}
-                            {n.voice_url && (
-                              <audio controls src={`${API_BASE}${n.voice_url}`} preload="metadata" className="notification-audio" />
-                            )}
-                            {n.created_at && <span className="notification-time">{new Date(n.created_at).toLocaleString('en-US', { dateStyle: 'short', timeStyle: 'short' })}</span>}
-                          </button>
-                        ))
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-            <span className="username">{user?.username}</span>
-            <button type="button" className="topbar-logout-btn" onClick={logout}>
-              {t('logout')}
-            </button>
-          </div>
-        </div>
-      </nav>
+      <AppHeader showNotifications userRole={userRole} />
 
       <div className="dashboard-content">
         {userRole === 'member' && trialStatus && (

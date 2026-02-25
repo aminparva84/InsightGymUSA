@@ -1,0 +1,304 @@
+/* Shared App Header - same across all pages */
+.app-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  padding: 1rem 2rem;
+  background: rgba(10, 14, 26, 0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  transition: background var(--transition), box-shadow var(--transition);
+}
+
+.app-header.scrolled {
+  background: rgba(10, 14, 26, 0.96);
+  box-shadow: var(--shadow);
+}
+
+.app-header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.app-header-logo {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  cursor: pointer;
+  margin: 0;
+  transition: color var(--transition);
+}
+
+.app-header-logo:hover {
+  color: var(--accent);
+}
+
+.app-header-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.app-header-nav-btn {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.app-header-nav-btn:hover {
+  color: var(--text-primary);
+  background: var(--bg-elevated);
+}
+
+.app-header-nav-btn-primary {
+  background: var(--accent);
+  color: var(--text-primary) !important;
+}
+
+.app-header-nav-btn-primary:hover {
+  background: var(--accent-hover);
+}
+
+.app-header-username {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0 0.5rem;
+}
+
+/* Notifications */
+.app-header-notifications-wrap {
+  position: relative;
+}
+
+.app-header-notifications-btn {
+  position: relative;
+  padding: 0.5rem;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition);
+}
+
+.app-header-notifications-btn:hover {
+  background: var(--bg-elevated);
+  color: var(--accent);
+}
+
+.app-header-notification-icon {
+  display: block;
+}
+
+.app-header-notification-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+  background: var(--accent);
+  color: white;
+  border-radius: 10px;
+}
+
+.app-header-notifications-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: min(360px, 90vw);
+  min-height: 120px;
+  max-height: 400px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  z-index: 1100;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.app-header-notifications-dropdown-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border);
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+}
+
+.app-header-notifications-mark-all {
+  font-size: 0.8rem;
+  color: var(--accent);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  font-weight: 500;
+}
+
+.app-header-notifications-mark-all:hover {
+  text-decoration: underline;
+}
+
+.app-header-notifications-list {
+  overflow-y: auto;
+  max-height: 320px;
+}
+
+.app-header-notifications-loading,
+.app-header-notifications-empty,
+.app-header-notifications-error {
+  padding: 1.5rem 1rem;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  min-height: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.app-header-notifications-error {
+  color: var(--error);
+}
+
+.app-header-notifications-retry {
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.app-header-notifications-retry:hover {
+  background: var(--bg-muted);
+  border-color: var(--border-strong);
+}
+
+.app-header-notification-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-card);
+  cursor: pointer;
+  transition: background var(--transition);
+  color: var(--text-primary);
+}
+
+.app-header-notification-item:last-child {
+  border-bottom: none;
+}
+
+.app-header-notification-item:hover {
+  background: var(--bg-elevated);
+}
+
+.app-header-notification-item.unread {
+  background: var(--accent-muted);
+}
+
+.app-header-notification-type-badge {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  margin-bottom: 0.35rem;
+  background: var(--bg-muted);
+  color: var(--text-primary);
+}
+
+.app-header-notification-type-badge[data-type="message"] {
+  background: var(--accent-muted);
+  color: var(--accent);
+}
+
+.app-header-notification-type-badge[data-type="reminder"] {
+  background: var(--warning-muted);
+  color: var(--warning);
+}
+
+.app-header-notification-type-badge[data-type="trainer_note"] {
+  background: var(--success-muted);
+  color: var(--success);
+}
+
+.app-header-notification-item strong {
+  display: block;
+  font-size: 0.9rem;
+  margin-bottom: 0.2rem;
+}
+
+.app-header-notification-body {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.2rem;
+}
+
+.app-header-notification-time {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .app-header {
+    padding: 0.75rem 1rem;
+  }
+
+  .app-header-logo {
+    font-size: 1.2rem;
+  }
+
+  .app-header-username {
+    display: none;
+  }
+
+  .app-header-nav {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .app-header-nav-btn {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.85rem;
+  }
+}

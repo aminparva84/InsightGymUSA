@@ -1,43 +1,7 @@
 .pricing-page {
   min-height: 100vh;
   background: var(--bg-dark);
-}
-
-.pp-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1rem 2rem;
-  background: rgba(10, 14, 26, 0.95);
-  border-bottom: 1px solid var(--border);
-}
-
-.pp-logo {
-  font-size: 1.5rem;
-  font-weight: 800;
-  color: var(--text-primary);
-  cursor: pointer;
-}
-
-.pp-nav {
-  display: flex;
-  gap: 0.75rem;
-}
-
-.pp-nav-btn {
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-  background: transparent;
-  border: none;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: all var(--transition);
-}
-
-.pp-nav-btn:hover {
-  color: var(--text-primary);
-  background: var(--bg-elevated);
+  padding-top: 64px;
 }
 
 .pp-main {
@@ -69,15 +33,19 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1.5rem;
+  align-items: stretch;
 }
 
 .pp-card {
   position: relative;
+  display: flex;
+  flex-direction: column;
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: 2rem;
   transition: all var(--transition);
+  min-height: 320px;
 }
 
 .pp-card.popular {
@@ -124,6 +92,7 @@
   list-style: none;
   padding: 0;
   margin: 0 0 1.5rem 0;
+  flex: 1;
 }
 
 .pp-features li {
@@ -138,6 +107,7 @@
 }
 
 .pp-cta {
+  margin-top: auto;
   width: 100%;
   padding: 0.875rem 1.5rem;
   font-size: 1rem;
@@ -156,10 +126,8 @@
 
 /* Responsive */
 @media (max-width: 768px) {
-  .pp-header {
-    padding: 0.75rem 1rem;
-    flex-wrap: wrap;
-    gap: 0.5rem;
+  .pricing-page {
+    padding-top: 56px;
   }
 
   .pp-main {

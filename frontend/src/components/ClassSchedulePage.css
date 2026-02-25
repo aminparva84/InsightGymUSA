@@ -1,43 +1,7 @@
 .class-schedule-page {
   min-height: 100vh;
   background: var(--bg-dark);
-}
-
-.csp-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1rem 2rem;
-  background: rgba(10, 14, 26, 0.95);
-  border-bottom: 1px solid var(--border);
-}
-
-.csp-logo {
-  font-size: 1.5rem;
-  font-weight: 800;
-  color: var(--text-primary);
-  cursor: pointer;
-}
-
-.csp-nav {
-  display: flex;
-  gap: 0.75rem;
-}
-
-.csp-nav-btn {
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-  background: transparent;
-  border: none;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: all var(--transition);
-}
-
-.csp-nav-btn:hover {
-  color: var(--text-primary);
-  background: var(--bg-elevated);
+  padding-top: 64px;
 }
 
 .csp-main {

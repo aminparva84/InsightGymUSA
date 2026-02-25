@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import AppHeader from './AppHeader';
 import axios from 'axios';
 import { getApiBase } from '../services/apiBase';
 import './PricingPage.css';
@@ -8,7 +8,6 @@ import './PricingPage.css';
 const PricingPage = () => {
   const API_BASE = getApiBase();
   const navigate = useNavigate();
-  const { user } = useAuth();
   const [tiers, setTiers] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -44,21 +43,13 @@ const PricingPage = () => {
     ];
   }
 
-  const handleSignUp = () => {
-    if (user) navigate('/dashboard');
-    else navigate('/');
+  const handleSelectPlan = (tier) => {
+    navigate('/purchase', { state: { tier } });
   };
 
   return (
     <div className="pricing-page">
-      <header className="pp-header">
-        <h1 className="pp-logo" onClick={() => navigate('/')}>Insight GYM USA</h1>
-        <nav className="pp-nav">
-          <button className="pp-nav-btn" onClick={() => navigate('/')}>Home</button>
-          <button className="pp-nav-btn" onClick={() => navigate('/schedule')}>Class Schedule</button>
-          <button className="pp-nav-btn" onClick={() => navigate('/trainers')}>Our Team</button>
-        </nav>
-      </header>
+      <AppHeader />
 
       <main className="pp-main">
         <h2 className="pp-title">Membership Plans</h2>
@@ -81,8 +72,8 @@ const PricingPage = () => {
                     <li key={j}>{f}</li>
                   ))}
                 </ul>
-                <button className="pp-cta" onClick={handleSignUp}>
-                  {user ? 'Go to Dashboard' : 'Start Free Trial'}
+                <button className="pp-cta" onClick={() => handleSelectPlan(tier)}>
+                  Get This Plan
                 </button>
               </div>
             ))}

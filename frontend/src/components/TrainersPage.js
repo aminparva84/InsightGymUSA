@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import AppHeader from './AppHeader';
 import axios from 'axios';
 import { getApiBase } from '../services/apiBase';
 import './TrainersPage.css';
 
 const TrainersPage = () => {
   const API_BASE = getApiBase();
-  const navigate = useNavigate();
   const [coaches, setCoaches] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -26,14 +25,7 @@ const TrainersPage = () => {
 
   return (
     <div className="trainers-page">
-      <header className="tp-header">
-        <h1 className="tp-logo" onClick={() => navigate('/')}>Insight GYM USA</h1>
-        <nav className="tp-nav">
-          <button className="tp-nav-btn" onClick={() => navigate('/')}>Home</button>
-          <button className="tp-nav-btn" onClick={() => navigate('/schedule')}>Class Schedule</button>
-          <button className="tp-nav-btn" onClick={() => navigate('/pricing')}>Pricing</button>
-        </nav>
-      </header>
+      <AppHeader />
 
       <main className="tp-main">
         <h2 className="tp-title">Our Trainers</h2>

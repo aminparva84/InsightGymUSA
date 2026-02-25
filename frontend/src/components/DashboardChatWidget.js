@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import ChatBox from './ChatBox';
+import DashboardIcon from './DashboardIcon';
 import './DashboardChatWidget.css';
 
 const DashboardChatWidget = () => {
@@ -14,16 +15,17 @@ const DashboardChatWidget = () => {
       <div
         className={`dashboard-chat-container ${isExpanded ? 'dashboard-chat-expanded' : 'dashboard-chat-collapsed'}`}
       >
-        {/* Collapsed: "ask me anything" only */}
+        {/* Collapsed: AI icon in circle - click opens chat in same place */}
         {!isExpanded && (
           <button
             type="button"
             className="dashboard-chat-collapsed-trigger"
             onClick={handleCollapsedClick}
-            aria-label="Ask me anything"
+            aria-label="Chat with AI"
           >
-            <span className="dashboard-chat-ask-text">ask me anything</span>
-            <span className="dashboard-chat-ask-cursor">|</span>
+            <span className="dashboard-chat-ai-circle">
+              <DashboardIcon name="smart_toy" />
+            </span>
           </button>
         )}
 

@@ -74,7 +74,7 @@ function AppRoutes() {
       <Route path="/pricing" element={<PricingPage />} />
       <Route path="/dashboard" element={user ? <Dashboard /> : <Navigate to="/" replace />} />
       <Route path="/admin" element={<Navigate to="/dashboard" replace />} />
-      <Route path="/purchase" element={user ? <PurchasePage /> : <Navigate to="/" replace />} />
+      <Route path="/purchase" element={<PurchasePage />} />
     </Routes>
   );
 }

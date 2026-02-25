@@ -92,7 +92,7 @@ class WorkoutPlanService {
   /**
    * Generate complete 6-month workout plan
    */
-  async generate6MonthPlan(language: 'fa' | 'en' = 'fa'): Promise<{
+  async generate6MonthPlan(language: 'fa' | 'en' = 'en'): Promise<{
     plan: WorkoutPlan;
     weekly_table: { [key: string]: WeeklyTable };
   }> {
@@ -120,7 +120,7 @@ class WorkoutPlanService {
    */
   async generateMonthPlan(
     month: number,
-    language: 'fa' | 'en' = 'fa'
+    language: 'fa' | 'en' = 'en'
   ): Promise<MonthPlan> {
     if (month < 1 || month > 6) {
       throw new Error('Month must be between 1 and 6');

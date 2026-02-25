@@ -153,6 +153,7 @@ def _build_prompt(message: str, language: str, role: str, user_profile_summary: 
     system = (
         "You are an action planner for a fitness platform. "
         "Return ONLY valid JSON with keys: assistant_response (string) and actions (array). "
+        "CRITICAL: The assistant_response MUST be written in English only. "
         "Each action must be an object with keys: action (string), params (object). "
         "Allowed actions: "
         "search_exercises, create_workout_plan, suggest_training_plans, update_user_profile, "
@@ -286,7 +287,7 @@ def plan_actions(message: str, user: User, language: str) -> Dict[str, Any]:
 
 
 def _format_dashboard_progress_response(results: List[Dict[str, Any]], language: str) -> Optional[str]:
-    """Build user-facing response when get_dashboard_progress succeeded. Include data and ask if they want to add new weight."""
+    """Build user-facing response when get_dashboard_progress succeeded. English only."""
     for r in results:
         if r.get('action') != 'get_dashboard_progress' or r.get('status') != 'ok':
             continue
@@ -294,94 +295,65 @@ def _format_dashboard_progress_response(results: List[Dict[str, Any]], language:
         weight = data.get('weight_kg')
         height = data.get('height_cm')
         bmi = data.get('bmi')
-        entries = data.get('progress_entries') or []
-        fa = language == 'fa'
         lines = []
         if bmi is not None:
-            if fa:
-                lines.append(f"BMI فعلی شما: **{bmi}** است.")
-                if weight is not None:
-                    lines.append(f"وزن: {weight} کیلوگرم.")
-                if height is not None:
-                    lines.append(f"قد: {height} سانتی‌متر.")
-            else:
-                lines.append(f"Your current BMI is **{bmi}**.")
-                if weight is not None:
-                    lines.append(f"Weight: {weight} kg.")
-                if height is not None:
-                    lines.append(f"Height: {height} cm.")
+            lines.append(f"Your current BMI is **{bmi}**.")
+            if weight is not None:
+                lines.append(f"Weight: {weight} kg.")
+            if height is not None:
+                lines.append(f"Height: {height} cm.")
         elif weight is not None:
-            if fa:
-                lines.append(f"وزن فعلی شما: **{weight}** کیلوگرم است.")
-            else:
-                lines.append(f"Your current weight is **{weight}** kg.")
+            lines.append(f"Your current weight is **{weight}** kg.")
         else:
-            if fa:
-                lines.append("هنوز وزن یا قد در پروفایل ثبت نشده. لطفاً در بخش پروفایل آن‌ها را وارد کنید.")
-            else:
-                lines.append("Weight and height are not set in your profile yet. Please add them in the Profile section.")
-        if fa:
-            lines.append("\nآیا می‌خواهید وزن جدید را به روند تغییرات اضافه کنید؟")
-        else:
-            lines.append("\nWould you like to add new weight to your Progress Trend?")
+            lines.append("Weight and height are not set in your profile yet. Please add them in the Profile section.")
+        lines.append("\nWould you like to add new weight to your Progress Trend?")
         return "\n".join(lines)
     return None
 
 
 def _format_add_progress_response(results: List[Dict[str, Any]], language: str) -> Optional[str]:
-    """Build user-facing response when add_progress_entry succeeded."""
+    """Build user-facing response when add_progress_entry succeeded. English only."""
     for r in results:
         if r.get('action') != 'add_progress_entry' or r.get('status') != 'ok':
             continue
         data = r.get('data') or {}
-        return data.get('message_fa') if language == 'fa' else data.get('message_en')
+        return data.get('message_en') or data.get('message_fa')
     return None
 
 
 def _format_todays_training_response(results: List[Dict[str, Any]], language: str) -> Optional[str]:
-    """Build user-facing response when get_todays_training succeeded."""
+    """Build user-facing response when get_todays_training succeeded. English only."""
     for r in results:
         if r.get('action') != 'get_todays_training' or r.get('status') != 'ok':
             continue
         data = r.get('data') or {}
         if data.get('all_done'):
-            return data.get('message_fa') if language == 'fa' else data.get('message_en')
+            return data.get('message_en') or data.get('message_fa')
         if not data.get('has_program'):
-            return data.get('message_fa') if language == 'fa' else data.get('message_en')
-        fa = language == 'fa'
-        lines = []
-        if fa:
-            lines.append(f"**{data.get('session_name', '')}** از برنامه {data.get('program_name', '')}:\n\n")
-        else:
-            lines.append(f"**{data.get('session_name', '')}** from {data.get('program_name', '')}:\n\n")
+            return data.get('message_en') or data.get('message_fa')
+        lines = [f"**{data.get('session_name', '')}** from {data.get('program_name', '')}:\n\n"]
         for i, ex in enumerate((data.get('exercises') or []), 1):
             name = ex.get('name', '')
             sets = ex.get('sets', '')
             reps = ex.get('reps', '')
-            if fa:
-                lines.append(f"{i}. {name} – {sets} ست × {reps} تکرار\n")
-            else:
-                lines.append(f"{i}. {name} – {sets} sets × {reps} reps\n")
-        if fa:
-            lines.append("\nبرای شروع به داشبورد > برنامه تمرینی بروید.")
-        else:
-            lines.append("\nGo to Dashboard > Training Program to start.")
+            lines.append(f"{i}. {name} – {sets} sets × {reps} reps\n")
+        lines.append("\nGo to Dashboard > Training Program to start.")
         return "".join(lines)
     return None
 
 
 def _format_dashboard_tab_info_response(results: List[Dict[str, Any]], language: str) -> Optional[str]:
-    """Build user-facing response when get_dashboard_tab_info succeeded."""
+    """Build user-facing response when get_dashboard_tab_info succeeded. English only."""
     for r in results:
         if r.get('action') != 'get_dashboard_tab_info' or r.get('status') != 'ok':
             continue
         data = r.get('data') or {}
-        return data.get('description_fa') if language == 'fa' else data.get('description_en')
+        return data.get('description_en') or data.get('description_fa')
     return None
 
 
 def _format_member_progress_response(results: List[Dict[str, Any]], language: str) -> Optional[str]:
-    """Build user-facing response when get_member_progress succeeded."""
+    """Build user-facing response when get_member_progress succeeded. English only."""
     for r in results:
         if r.get('action') != 'get_member_progress' or r.get('status') != 'ok':
             continue
@@ -391,41 +363,20 @@ def _format_member_progress_response(results: List[Dict[str, Any]], language: st
         height = data.get('height_cm')
         bmi = data.get('bmi')
         entries = data.get('progress_entries') or []
-        fa = language == 'fa'
-        lines = []
-        if fa:
-            lines.append(f"**وضعیت عضو {member_name}:**\n\n")
-        else:
-            lines.append(f"**{member_name}'s progress:**\n\n")
+        lines = [f"**{member_name}'s progress:**\n\n"]
         if bmi is not None:
-            if fa:
-                lines.append(f"BMI: **{bmi}**")
-                if weight is not None:
-                    lines.append(f" | وزن: {weight} کیلوگرم")
-                if height is not None:
-                    lines.append(f" | قد: {height} سانتی‌متر")
-            else:
-                lines.append(f"BMI: **{bmi}**")
-                if weight is not None:
-                    lines.append(f" | Weight: {weight} kg")
-                if height is not None:
-                    lines.append(f" | Height: {height} cm")
+            lines.append(f"BMI: **{bmi}**")
+            if weight is not None:
+                lines.append(f" | Weight: {weight} kg")
+            if height is not None:
+                lines.append(f" | Height: {height} cm")
             lines.append("\n")
         elif weight is not None:
-            if fa:
-                lines.append(f"وزن فعلی: **{weight}** کیلوگرم\n")
-            else:
-                lines.append(f"Current weight: **{weight}** kg\n")
+            lines.append(f"Current weight: **{weight}** kg\n")
         else:
-            if fa:
-                lines.append("هنوز وزن یا قد در پروفایل ثبت نشده.\n")
-            else:
-                lines.append("Weight and height are not set in profile yet.\n")
+            lines.append("Weight and height are not set in profile yet.\n")
         if entries:
-            if fa:
-                lines.append(f"آخرین {len(entries)} رکورد روند تغییرات:\n")
-            else:
-                lines.append(f"Last {len(entries)} progress entries:\n")
+            lines.append(f"Last {len(entries)} progress entries:\n")
             for e in entries[:5]:
                 rec = e.get('recorded_at') or ''
                 if rec:
@@ -436,71 +387,50 @@ def _format_member_progress_response(results: List[Dict[str, Any]], language: st
                         pass
                 w = e.get('weight_kg')
                 if w is not None:
-                    if fa:
-                        lines.append(f"  • {rec}: {w} کیلوگرم\n")
-                    else:
-                        lines.append(f"  • {rec}: {w} kg\n")
+                    lines.append(f"  • {rec}: {w} kg\n")
         return "".join(lines)
     return None
 
 
 def _format_trainers_info_response(results: List[Dict[str, Any]], language: str) -> Optional[str]:
-    """Build user-facing response when get_trainers_info succeeded."""
+    """Build user-facing response when get_trainers_info succeeded. English only."""
     for r in results:
         if r.get('action') != 'get_trainers_info' or r.get('status') != 'ok':
             continue
         data = r.get('data') or {}
         trainers = data.get('trainers') or []
         if not trainers:
-            return 'لیست مربیان خالی است.' if language == 'fa' else 'No trainers found.'
-        fa = language == 'fa'
-        lines = []
-        if fa:
-            lines.append(f"**{len(trainers)} مربی/دستیار:**\n\n")
-        else:
-            lines.append(f"**{len(trainers)} trainer(s):**\n\n")
+            return 'No trainers found.'
+        lines = [f"**{len(trainers)} trainer(s):**\n\n"]
         for i, t in enumerate(trainers, 1):
             name = t.get('username', '') or t.get('email', '')
             count = t.get('assigned_members_count', 0)
-            if fa:
-                lines.append(f"{i}. {name} – {count} عضو تخصیص یافته\n")
-            else:
-                lines.append(f"{i}. {name} – {count} assigned member(s)\n")
+            lines.append(f"{i}. {name} – {count} assigned member(s)\n")
         return "".join(lines)
     return None
 
 
 def _format_suggest_plans_response(results: List[Dict[str, Any]], language: str) -> Optional[str]:
-    """Build user-facing response when suggest_training_plans succeeded or asks for purpose."""
+    """Build user-facing response when suggest_training_plans succeeded or asks for purpose. English only."""
     for r in results:
         if r.get('action') == 'suggest_training_plans':
             if r.get('status') == 'ask_purpose':
                 data = r.get('data') or {}
-                return data.get('message_fa') if language == 'fa' else data.get('message_en')
+                return data.get('message_en') or data.get('message_fa')
             if r.get('status') != 'ok':
                 continue
             data = r.get('data') or {}
             plans = data.get('plans') or []
             if not plans:
-                return data.get('message_fa') if language == 'fa' else data.get('message_en')
-            lines = []
-            if language == 'fa':
-                lines.append(f"بر اساس پروفایل شما، {len(plans)} برنامه تمرینی پیشنهاد می‌کنم:\n\n")
-            else:
-                lines.append(f"Based on your profile, I suggest {len(plans)} training plan(s):\n\n")
+                return data.get('message_en') or data.get('message_fa')
+            lines = [f"Based on your profile, I suggest {len(plans)} training plan(s):\n\n"]
             for i, p in enumerate(plans, 1):
-                name = p.get('name_fa') or p.get('name_en') or p.get('name', '')
-                desc = p.get('description_fa') or p.get('description_en') or p.get('description', '')
+                name = p.get('name_en') or p.get('name_fa') or p.get('name', '')
+                desc = p.get('description_en') or p.get('description_fa') or p.get('description', '')
                 level = p.get('training_level', '')
                 weeks = p.get('duration_weeks', 4)
-                if language == 'fa':
-                    lines.append(f"{i}. **{name}** (سطح: {level}, {weeks} هفته)\n   {desc}\n\n")
-                else:
-                    lines.append(f"{i}. **{name}** (Level: {level}, {weeks} weeks)\n   {desc}\n\n")
-            if language == 'fa':
-                lines.append("برای خرید، روی «خرید برنامه» کلیک کنید.")
-            else:
-                lines.append("To buy, click 'Buy program'.")
+                lines.append(f"{i}. **{name}** (Level: {level}, {weeks} weeks)\n   {desc}\n\n")
+            lines.append("To buy, click 'Buy program'.")
             return "".join(lines)
     return None
 
@@ -695,11 +625,7 @@ def plan_and_execute(message: str, user: User, language: str) -> Dict[str, Any]:
 
 
 def _fallback_response(language: str) -> str:
-    return (
-        'متأسفانه الان نمی‌توانم اقدام خودکار انجام دهم. لطفاً دوباره تلاش کنید.'
-        if language == 'fa'
-        else 'I cannot perform automated actions right now. Please try again.'
-    )
+    return 'I cannot perform automated actions right now. Please try again.'
 
 
 def _resolve_relative_date(value: str) -> Optional[str]:
@@ -913,7 +839,6 @@ def _exec_suggest_training_plans(params: Dict[str, Any], user: User, language: s
             'action': 'suggest_training_plans',
             'status': 'ask_purpose',
             'data': {
-                'message_fa': 'برای پیشنهاد برنامه مناسب، لطفاً هدف خود را بگویید: کاهش وزن، افزایش عضله، قدرت، استقامت، یا انعطاف‌پذیری.',
                 'message_en': 'To suggest a suitable plan, please tell me your goal: weight loss, muscle gain, strength, endurance, or flexibility.',
             },
         }

@@ -42,12 +42,12 @@
 }
 
 .chatbox-header-btn {
-  padding: 0.35rem 0.65rem;
+  padding: 0.55rem 1rem;
   border: 1px solid var(--border-subtle);
   border-radius: 8px;
   background: var(--surface-base);
   color: var(--text-primary);
-  font-size: 0.8rem;
+  font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
   transition: background 0.2s, border-color 0.2s;
@@ -168,16 +168,19 @@
 
 .chatbox-history-rename-btn {
   flex-shrink: 0;
-  width: 28px;
-  height: 28px;
+  width: 44px;
+  height: 44px;
   padding: 0;
   border: 1px solid var(--border-subtle);
   border-radius: 8px;
   background: var(--surface-raised);
   color: var(--text-primary);
-  font-size: 0.85rem;
+  font-size: 1.35rem;
   cursor: pointer;
   transition: background 0.2s, border-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .chatbox-history-rename-btn:hover {

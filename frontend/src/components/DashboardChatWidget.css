@@ -20,11 +20,12 @@
               max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Collapsed: compact "ask me anything" */
+/* Collapsed: AI icon in circle */
 .dashboard-chat-collapsed {
-  width: 200px;
-  height: 52px;
-  max-height: 52px;
+  width: 64px;
+  height: 64px;
+  max-height: 64px;
+  border-radius: 50%;
 }
 
 .dashboard-chat-collapsed-trigger {
@@ -33,41 +34,39 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.25rem;
   background: transparent;
   border: none;
   cursor: pointer;
-  padding: 0 1rem;
-  transition: background 0.2s;
+  padding: 0;
+  transition: background 0.2s, transform 0.2s;
 }
 
 .dashboard-chat-collapsed-trigger:hover {
   background: var(--bg-elevated);
+  transform: scale(1.05);
 }
 
-.dashboard-chat-ask-text {
-  color: var(--text-secondary);
-  font-size: 0.95rem;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-}
-
-.dashboard-chat-ask-cursor {
+.dashboard-chat-ai-circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--accent-muted);
   color: var(--accent);
-  font-weight: 300;
-  animation: dashboard-chat-blink 1s step-end infinite;
 }
 
-@keyframes dashboard-chat-blink {
-  0%, 80% { opacity: 1; }
-  81%, 100% { opacity: 0; }
+.dashboard-chat-ai-circle svg {
+  width: 28px;
+  height: 28px;
 }
 
 /* Expanded: full chat panel */
 .dashboard-chat-expanded {
-  width: min(380px, calc(100vw - 2rem));
-  height: min(420px, 70vh);
-  max-height: min(420px, 70vh);
+  width: min(480px, calc(100vw - 2rem));
+  height: min(560px, 80vh);
+  max-height: min(560px, 80vh);
   display: flex;
   flex-direction: column;
   animation: dashboard-chat-expand-in 0.3s ease-out;
@@ -148,8 +147,18 @@
   }
 
   .dashboard-chat-collapsed {
-    width: 180px;
-    height: 48px;
+    width: 56px;
+    height: 56px;
+  }
+
+  .dashboard-chat-ai-circle {
+    width: 38px;
+    height: 38px;
+  }
+
+  .dashboard-chat-ai-circle svg {
+    width: 24px;
+    height: 24px;
   }
 
   .dashboard-chat-expanded {

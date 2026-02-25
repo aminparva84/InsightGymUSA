@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import AppHeader from './AppHeader';
 import AuthModal from './AuthModal';
 import TrainingProgramsModal from './TrainingProgramsModal';
 import LandingChatWidget from './LandingChatWidget';
@@ -45,20 +46,13 @@ function getDefaultHours() {
 
 const LandingPage = () => {
   const API_BASE = getApiBase();
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showTrainingProgramsModal, setShowTrainingProgramsModal] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
   const [hasTrainingProgram, setHasTrainingProgram] = useState(false);
   const [checkingProgram, setCheckingProgram] = useState(false);
   const [siteSettings, setSiteSettings] = useState(null);
-
-  useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 50);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   useEffect(() => {
     const fetchSiteSettings = async () => {
@@ -99,30 +93,7 @@ const LandingPage = () => {
 
   return (
     <div className="lp">
-      <header className={`lp-header ${isScrolled ? 'scrolled' : ''}`}>
-        <div className="lp-header-inner">
-          <h1 className="lp-logo" onClick={() => navigate('/')}>Insight GYM USA</h1>
-          <nav className="lp-nav">
-            <button className="lp-nav-btn" onClick={() => navigate('/schedule')}>Schedule</button>
-            <button className="lp-nav-btn" onClick={() => navigate('/trainers')}>Our Team</button>
-            <button className="lp-nav-btn" onClick={() => navigate('/pricing')}>Pricing</button>
-            {user && (
-              <button className="lp-nav-btn" onClick={() => navigate('/dashboard')}>
-                Dashboard
-              </button>
-            )}
-            {user ? (
-              <button className="lp-nav-btn lp-nav-btn-primary" onClick={() => { logout(); navigate('/'); }}>
-                Logout
-              </button>
-            ) : (
-              <button className="lp-nav-btn lp-nav-btn-primary" onClick={handleAuth}>
-                Get Started
-              </button>
-            )}
-          </nav>
-        </div>
-      </header>
+      <AppHeader />
 
       <main className="lp-main">
         <section className="lp-hero">
@@ -219,7 +190,7 @@ const LandingPage = () => {
           {user ? (
             <button
               className="lp-cta-btn"
-              onClick={() => hasTrainingProgram ? navigate('/dashboard?tab=training-program') : setShowTrainingProgramsModal(true)}
+              onClick={() => hasTrainingProgram ? navigate('/dashboard?tab=training-program') : navigate('/pricing')}
               disabled={checkingProgram}
             >
               {checkingProgram ? 'Checking...' : hasTrainingProgram ? 'View Training Program' : 'Get Membership'}

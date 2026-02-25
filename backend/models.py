@@ -439,6 +439,20 @@ class PurchaseOrder(db.Model):
             'paid_at': self.paid_at.isoformat() if self.paid_at else None,
         }
 
+class MembershipOrder(db.Model):
+    """Membership tier purchase (Basic, Premium, Elite)."""
+    __tablename__ = 'membership_orders'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    tier_name = db.Column(db.String(80), nullable=False)
+    price = db.Column(db.Float, nullable=False)
+    period = db.Column(db.String(20), default='month')  # month, year
+    status = db.Column(db.String(30), default='pending_payment')  # pending_payment, paid
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    paid_at = db.Column(db.DateTime)
+
+
 class MemberWeeklyGoal(db.Model):
     """Weekly mini-goals for members on a training plan (e.g. 1 month = 4 weekly goals)"""
     __tablename__ = 'member_weekly_goals'

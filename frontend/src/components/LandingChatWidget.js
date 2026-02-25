@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import axios from 'axios';
 import { getApiBase } from '../services/apiBase';
 import { useAuth } from '../context/AuthContext';
+import DashboardIcon from './DashboardIcon';
 import './LandingChatWidget.css';
 
 const API_BASE = getApiBase();
@@ -140,16 +141,17 @@ const LandingChatWidget = ({ onOpenAuth }) => {
       <div
         className={`lp-chat-container ${isExpanded ? 'lp-chat-expanded' : 'lp-chat-collapsed'}`}
       >
-        {/* Collapsed: "ask me anything" only */}
+        {/* Collapsed: AI icon in circle - click opens chat in same place */}
         {!isExpanded && (
           <button
             type="button"
             className="lp-chat-collapsed-trigger"
             onClick={handleCollapsedClick}
-            aria-label="Ask me anything"
+            aria-label="Chat with AI"
           >
-            <span className="lp-chat-ask-text">ask me anything</span>
-            <span className="lp-chat-ask-cursor">|</span>
+            <span className="lp-chat-ai-circle">
+              <DashboardIcon name="smart_toy" />
+            </span>
           </button>
         )}
 

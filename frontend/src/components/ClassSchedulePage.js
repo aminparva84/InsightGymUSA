@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import AppHeader from './AppHeader';
 import axios from 'axios';
 import { getApiBase } from '../services/apiBase';
 import './ClassSchedulePage.css';
 
 const ClassSchedulePage = () => {
   const API_BASE = getApiBase();
-  const navigate = useNavigate();
   const [schedule, setSchedule] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -70,14 +69,7 @@ const ClassSchedulePage = () => {
 
   return (
     <div className="class-schedule-page">
-      <header className="csp-header">
-        <h1 className="csp-logo" onClick={() => navigate('/')}>Insight GYM USA</h1>
-        <nav className="csp-nav">
-          <button className="csp-nav-btn" onClick={() => navigate('/')}>Home</button>
-          <button className="csp-nav-btn" onClick={() => navigate('/trainers')}>Our Team</button>
-          <button className="csp-nav-btn" onClick={() => navigate('/pricing')}>Pricing</button>
-        </nav>
-      </header>
+      <AppHeader />
 
       <main className="csp-main">
         <h2 className="csp-title">Class Schedule</h2>

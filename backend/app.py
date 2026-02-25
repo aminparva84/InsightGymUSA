@@ -185,7 +185,7 @@ def ensure_default_admin():
             email=email,
             password_hash=generate_password_hash(password),
             role='admin',
-            language='fa',
+            language='en',
             created_at=datetime.utcnow()
         )
 
@@ -285,7 +285,7 @@ def register():
     username = data.get('username')
     email = data.get('email')
     password = data.get('password')
-    language = data.get('language', 'fa')
+    language = data.get('language', 'en')
     
     # Profile data (optional during registration, can be completed later)
     profile_data = data.get('profile', {})
@@ -952,7 +952,8 @@ def chat():
         user = db.session.get(User, user_id)
         if not user:
             return jsonify({'error': 'User not found'}), 404
-        user_language = user.language if user else 'fa'
+        # English only - Persian removed
+        response_language = 'en'
 
         if not message or not isinstance(message, str):
             return jsonify({'error': 'Message is required'}), 400
@@ -970,7 +971,7 @@ def chat():
         if use_action_planner:
             try:
                 from services.action_planner import plan_and_execute
-                result = plan_and_execute(message, user, user_language)
+                result = plan_and_execute(message, user, response_language)
                 assistant_response = result.get('assistant_response') or ''
                 actions = result.get('actions', [])
                 results = result.get('results', [])
@@ -981,7 +982,7 @@ def chat():
                 use_action_planner = False
 
         if not use_action_planner or not assistant_response:
-            assistant_response = generate_ai_response(message, user_id, user_language, local_time)
+            assistant_response = generate_ai_response(message, user_id, response_language, local_time)
 
         chat_entry = ChatHistory(
             user_id=user_id,
@@ -1035,22 +1036,7 @@ def chat():
             return jsonify({'error': 'Authentication failed'}), 401
         
         # Return a simple error response that the frontend can handle
-        user = None
-        user_language = 'fa'
-        try:
-            # get_jwt_identity() returns a string, convert to int for database query
-            user_id_str = get_jwt_identity()
-            if user_id_str:
-                user_id = int(user_id_str)
-                user = db.session.get(User, user_id)
-                if user:
-                    user_language = user.language
-        except:
-            pass
-        
-        error_message_fa = "متأسفانه خطایی رخ داد. لطفاً دوباره تلاش کنید."
-        error_message_en = "Sorry, an error occurred. Please try again."
-        err_msg = error_message_fa if user_language == 'fa' else error_message_en
+        err_msg = "Sorry, an error occurred. Please try again."
 
         try:
             from services.ai_debug_logger import append_log
@@ -1241,52 +1227,42 @@ def nutrition_plans():
 
 @app.route('/api/tips', methods=['GET'])
 def tips():
-    language = request.args.get('language', 'fa')
     tips = Tip.query.all()
-    
     return jsonify([{
         'id': tip.id,
-        'title': tip.title_fa if language == 'fa' else tip.title_en,
-        'content': tip.content_fa if language == 'fa' else tip.content_en,
+        'title': tip.title_en or tip.title_fa or '',
+        'content': tip.content_en or tip.content_fa or '',
         'category': tip.category,
         'created_at': tip.created_at.isoformat() if tip.created_at else None
     } for tip in tips]), 200
 
 @app.route('/api/injuries', methods=['GET'])
 def injuries():
-    language = request.args.get('language', 'fa')
     injuries = Injury.query.all()
-    
     return jsonify([{
         'id': injury.id,
-        'title': injury.title_fa if language == 'fa' else injury.title_en,
-        'description': injury.description_fa if language == 'fa' else injury.description_en,
-        'prevention': injury.prevention_fa if language == 'fa' else injury.prevention_en,
-        'treatment': injury.treatment_fa if language == 'fa' else injury.treatment_en,
+        'title': injury.title_en or injury.title_fa or '',
+        'description': injury.description_en or injury.description_fa or '',
+        'prevention': injury.prevention_en or injury.prevention_fa or '',
+        'treatment': injury.treatment_en or injury.treatment_fa or '',
         'created_at': injury.created_at.isoformat() if injury.created_at else None
     } for injury in injuries]), 200
 
 def generate_ai_response(message, user_id, language, local_time=None):
-    """Generate AI response based on user message and context"""
-    # Initialize defaults
-    user_name = 'کاربر'
+    """Generate AI response based on user message and context. English only."""
+    user_name = 'User'
     recommended_exercises = []
     user_injuries = []
     user_profile = None
     missing_profile_fields = []
     
-    # Safety check for message
     if not message or not isinstance(message, str):
         print(f"WARNING: Invalid message received: {message}")
-        if language == 'fa':
-            return "لطفاً پیام خود را دوباره ارسال کنید."
-        else:
-            return "Please send your message again."
+        return "Please send your message again."
     
     try:
-        # Get user info
         user = db.session.get(User, user_id)
-        user_name = user.username if user else 'کاربر'
+        user_name = user.username if user else 'User'
     except Exception as e:
         print(f"Error getting user: {e}")
     
@@ -1400,24 +1376,14 @@ def generate_ai_response(message, user_id, language, local_time=None):
                 local_dt = datetime.fromtimestamp(local_time / 1000) if local_time > 1000000000000 else datetime.fromtimestamp(local_time)
             
             hour = local_dt.hour
-            if language == 'fa':
-                if 5 <= hour < 12:
-                    time_greeting = "صبح بخیر"
-                elif 12 <= hour < 17:
-                    time_greeting = "ظهر بخیر"
-                elif 17 <= hour < 20:
-                    time_greeting = "عصر بخیر"
-                else:
-                    time_greeting = "شب بخیر"
+            if 5 <= hour < 12:
+                time_greeting = "Good morning"
+            elif 12 <= hour < 17:
+                time_greeting = "Good afternoon"
+            elif 17 <= hour < 20:
+                time_greeting = "Good evening"
             else:
-                if 5 <= hour < 12:
-                    time_greeting = "Good morning"
-                elif 12 <= hour < 17:
-                    time_greeting = "Good afternoon"
-                elif 17 <= hour < 20:
-                    time_greeting = "Good evening"
-                else:
-                    time_greeting = "Good night"
+                time_greeting = "Good night"
         except:
             pass
     
@@ -1432,7 +1398,7 @@ def generate_ai_response(message, user_id, language, local_time=None):
             from services.ai_provider import chat_completion
             system_parts = [
                 "You are a helpful fitness coach assistant for Insight GYM USA. You help with workout plans, nutrition, exercise form, and motivation.",
-                "Respond in the same language the user writes in. If the user writes in English, respond in English. If the user writes in Persian (Farsi), respond in Persian.",
+                "Always respond in English only.",
                 f"User's name: {user_name}.",
             ]
             if user_profile:
@@ -1448,9 +1414,7 @@ def generate_ai_response(message, user_id, language, local_time=None):
             if recommended_exercises:
                 names = []
                 for ex in recommended_exercises[:3]:
-                    if hasattr(ex, 'name_fa') and ex.name_fa and language == 'fa':
-                        names.append(ex.name_fa)
-                    elif hasattr(ex, 'name_en') and ex.name_en:
+                    if hasattr(ex, 'name_en') and ex.name_en:
                         names.append(ex.name_en)
                 if names:
                     system_parts.append(f"Some exercises you can suggest: {', '.join(names)}.")
@@ -1463,489 +1427,162 @@ def generate_ai_response(message, user_id, language, local_time=None):
             print(f"DEBUG: AI provider not used or failed: {ai_err}")
         # Fallback: keyword-based responses when AI is unavailable or fails
 
-        # ----- Admin/Assistant: add movement note (AI can add notes for admin) -----
+        # ----- Admin/Assistant: add movement note (English only) -----
         user_role = getattr(user, 'role', None) if user else None
         if user_role in ('admin', 'assistant'):
             import re
             from models import Exercise as ExerciseModel
-            exercise_name = None
-            note_text = None
-            # Persian: "یادداشت برای حرکت X اضافه کن: متن" or "یادداشت برای X: متن" or "یادداشت حرکت X: متن"
-            if language == 'fa':
-                m = re.search(r'یادداشت\s*(?:برای\s*)?(?:حرکت\s*)?(.+?)\s*(?:اضافه\s*کن\s*)?[:\s]+(.+)', message, re.DOTALL)
-                if m:
-                    exercise_name = m.group(1).strip()
-                    note_text = m.group(2).strip()
-                if not exercise_name and ('یادداشت' in message and 'حرکت' in message):
-                    # Fallback: split by : and take last part as note, before that find movement name
-                    parts = message.split(':', 1)
-                    if len(parts) == 2:
-                        note_text = parts[1].strip()
-                        left = parts[0].replace('یادداشت', '').replace('برای', '').replace('حرکت', '').replace('اضافه کن', '').strip()
-                        if left:
-                            exercise_name = left
-            else:
-                # English: "add note to movement X: text" or "add note to X: text"
-                m = re.search(r'add\s+note\s+to\s+(?:movement\s+)?(.+?)\s*[:\-]\s*(.+)', message_lower, re.DOTALL)
-                if m:
-                    exercise_name = m.group(1).strip()
-                    note_text = m.group(2).strip()
-            if exercise_name and note_text:
+            m = re.search(r'add\s+note\s+to\s+(?:movement\s+)?(.+?)\s*[:\-]\s*(.+)', message_lower, re.DOTALL)
+            if m:
+                exercise_name = m.group(1).strip()
+                note_text = m.group(2).strip()
                 ex = db.session.query(ExerciseModel).filter(
                     (ExerciseModel.name_fa == exercise_name) | (ExerciseModel.name_en == exercise_name)
                 ).first()
                 if ex:
-                    if language == 'fa':
-                        ex.trainer_notes_fa = (ex.trainer_notes_fa or '') + '\n' + note_text if ex.trainer_notes_fa else note_text
-                    else:
-                        ex.trainer_notes_en = (ex.trainer_notes_en or '') + '\n' + note_text if ex.trainer_notes_en else note_text
+                    ex.trainer_notes_en = (ex.trainer_notes_en or '') + '\n' + note_text if ex.trainer_notes_en else note_text
                     db.session.commit()
-                    if language == 'fa':
-                        return f"یادداشت برای حرکت «{ex.name_fa or ex.name_en}» ذخیره شد. این یادداشت در برنامه تمرینی اعضا نمایش داده می‌شود. می‌توانید در تب «اطلاعات حرکات تمرینی» آن را ویرایش یا با دکمه «اضافه به برنامه‌های اعضا» به همه برنامه‌ها اعمال کنید."
-                    else:
-                        return f"Note for movement «{ex.name_en or ex.name_fa}» saved. It will be shown in members' training program. You can edit it in the «Training Movement Info» tab or use «Add to members' programs» to apply to all programs."
-                else:
-                    if language == 'fa':
-                        return f"حرکتی با نام «{exercise_name}» در کتابخانه تمرینات پیدا نشد. لطفاً نام دقیق حرکت را از تب کتابخانه تمرینات وارد کنید."
-                    else:
-                        return f"No movement named «{exercise_name}» found in the exercise library. Please use the exact name from the Exercise Library tab."
+                    return f"Note for movement «{ex.name_en or ex.name_fa}» saved. It will be shown in members' training program. You can edit it in the «Training Movement Info» tab or use «Add to members' programs» to apply to all programs."
+                return f"No movement named «{exercise_name}» found in the exercise library. Please use the exact name from the Exercise Library tab."
         
-        if language == 'fa':
-            # Greeting
-            if any(word in message for word in ['سلام', 'درود', 'صبح بخیر', 'عصر بخیر', 'شب بخیر']):
-                context_info = ""
-                
-                # User profile context
-                if user_profile:
-                    profile_info = []
-                    if user_profile.age:
-                        profile_info.append(f"{user_profile.age} ساله")
-                    if user_profile.gender:
-                        gender_text = "آقا" if user_profile.gender == 'male' else "خانم"
-                        profile_info.append(gender_text)
-                    if user_profile.training_level:
-                        level_text = {
-                            'beginner': 'مبتدی',
-                            'intermediate': 'متوسط',
-                            'advanced': 'پیشرفته'
-                        }.get(user_profile.training_level, user_profile.training_level)
-                        profile_info.append(f"سطح {level_text}")
-                    
-                    if profile_info:
-                        context_info = f"سلام {user_name} {time_greeting}! "
-                        context_info += f"می‌بینم که شما {' و '.join(profile_info)} هستید. "
-                    else:
-                        context_info = f"سلام {user_name} {time_greeting}! "
-                else:
-                    context_info = f"سلام {user_name} {time_greeting}! "
-                
-                # Exercise history
-                if exercises:
-                    context_info += f"شما {len(exercises)} تمرین ثبت کرده‌اید. "
-                if nutrition_plans:
-                    context_info += f"همچنین برنامه تغذیه‌ای دارید. "
-                
-                # User profile details
-                profile_details = ""
-                if user_profile:
-                    if user_profile.fitness_goals:
-                        goals = user_profile.get_fitness_goals()
-                        if goals:
-                            goals_fa = {
-                                'weight_loss': 'کاهش وزن',
-                                'muscle_gain': 'افزایش عضله',
-                                'strength': 'قدرت',
-                                'endurance': 'استقامت',
-                                'flexibility': 'انعطاف‌پذیری'
-                            }
-                            goals_text = [goals_fa.get(g, g) for g in goals]
-                            profile_details += f"اهداف شما: {', '.join(goals_text)}. "
-                    
-                    if user_profile.workout_days_per_week:
-                        profile_details += f"{user_profile.workout_days_per_week} روز در هفته تمرین می‌کنید. "
-                    
-                    if user_injuries:
-                        injuries_fa = {
-                            'knee': 'زانو',
-                            'shoulder': 'شانه',
-                            'lower_back': 'کمر',
-                            'ankle': 'مچ پا',
-                            'wrist': 'مچ دست'
-                        }
-                        injuries_text = [injuries_fa.get(i, i) for i in user_injuries]
-                        profile_details += f"توجه: شما مشکل {', '.join(injuries_text)} دارید، بنابراین تمرینات مناسب را پیشنهاد می‌دهم. "
-                
-                # Add profile completion suggestion if profile is incomplete
-                profile_suggestion = ""
-                if missing_profile_fields:
-                    important_fields = []
-                    if 'age' in missing_profile_fields:
-                        important_fields.append('سن')
-                    if 'gender' in missing_profile_fields:
-                        important_fields.append('جنسیت')
-                    if 'training_level' in missing_profile_fields:
-                        important_fields.append('سطح تمرین')
-                    if 'fitness_goals' in missing_profile_fields:
-                        important_fields.append('اهداف تناسب اندام')
-                    
-                    if important_fields:
-                        profile_suggestion = f"\n\n💡 نکته: برای دریافت برنامه‌های شخصی‌تر، لطفاً اطلاعات پروفایل خود را در تب 'پروفایل' تکمیل کنید. اطلاعات مهم: {', '.join(important_fields)}"
-                
-                return f"{context_info}من دستیار هوشمند آلفا فیت هستم. {profile_details}چگونه می‌توانم به شما کمک کنم؟ می‌توانم در مورد برنامه تمرینی، تغذیه، یا هر سوال دیگری کمک کنم.{profile_suggestion}"
-            
-            # Fitness plan request
-            elif any(word in message for word in ['برنامه', 'تمرین', 'ورزش', 'workout', 'plan']):
-                print(f"DEBUG: Matched fitness plan request for message: '{message}'")
-                exercise_suggestions = ""
-                if recommended_exercises:
-                    try:
-                        exercise_names = []
-                        for ex in recommended_exercises[:3]:
-                            if hasattr(ex, 'name_fa') and ex.name_fa:
-                                exercise_names.append(ex.name_fa)
-                            elif hasattr(ex, 'name') and ex.name:
-                                exercise_names.append(ex.name)
-                        if exercise_names:
-                            exercise_suggestions = f"\n\nتمرینات پیشنهادی برای شما:\n{chr(10).join(['- ' + name for name in exercise_names])}"
-                    except Exception as e:
-                        import traceback
-                        print(f"Error getting exercise names: {e}")
-                        print(traceback.format_exc())
-                        exercise_suggestions = ""
-                
-                # Use user profile info
-                profile_context = ""
-                try:
-                    if user_profile:
-                        if user_profile.workout_days_per_week:
-                            profile_context += f"با توجه به اینکه {user_profile.workout_days_per_week} روز در هفته تمرین می‌کنید، "
-                        if user_profile.preferred_workout_time:
-                            time_fa = {
-                                'morning': 'صبح',
-                                'afternoon': 'ظهر',
-                                'evening': 'عصر'
-                            }.get(user_profile.preferred_workout_time, user_profile.preferred_workout_time)
-                            profile_context += f"و ترجیح می‌دهید در {time_fa} تمرین کنید، "
-                        if user_profile.training_level:
-                            level_fa = {
-                                'beginner': 'مبتدی',
-                                'intermediate': 'متوسط',
-                                'advanced': 'پیشرفته'
-                            }.get(user_profile.training_level, user_profile.training_level)
-                            profile_context += f"با سطح {level_fa} شما، "
-                except Exception as e:
-                    print(f"Error building profile context: {e}")
-                    profile_context = ""
-                
-                try:
-                    response_text = f"بله {user_name}! می‌توانم یک برنامه تمرینی شخصی برای شما ایجاد کنم. {profile_context}لطفاً بگویید:\n- هدف شما چیست؟ (کاهش وزن، افزایش عضله، تناسب اندام عمومی)\n- چه نوع تمریناتی را ترجیح می‌دهید؟ (کاردیو، قدرتی، ترکیبی)\n\nبر اساس تاریخچه شما، می‌توانم برنامه‌ای متناسب با فعالیت‌های قبلی‌تان پیشنهاد دهم.{exercise_suggestions}"
-                    print(f"DEBUG: Returning fitness plan response (length: {len(response_text)})")
-                    return response_text
-                except Exception as e:
-                    import traceback
-                    print(f"Error formatting response: {e}")
-                    print(traceback.format_exc())
-                    fallback_response = f"بله {user_name}! می‌توانم یک برنامه تمرینی شخصی برای شما ایجاد کنم. لطفاً بگویید:\n- هدف شما چیست؟ (کاهش وزن، افزایش عضله، تناسب اندام عمومی)\n- چه نوع تمریناتی را ترجیح می‌دهید؟ (کاردیو، قدرتی، ترکیبی)"
-                    print(f"DEBUG: Returning fallback response")
-                    return fallback_response
-            
-            # Nutrition request
-            elif any(word in message for word in ['تغذیه', 'غذا', 'رژیم', 'nutrition', 'diet', 'meal']):
-                context_nutrition = ""
-                if nutrition_summary:
-                    context_nutrition = f"بر اساس برنامه فعلی شما که شامل {', '.join(nutrition_summary[:3])} است، "
-                return f"{context_nutrition}می‌توانم یک برنامه تغذیه‌ای ۲ یا ۴ هفته‌ای برای شما ایجاد کنم. لطفاً بگویید:\n- هدف شما چیست؟ (کاهش وزن، افزایش وزن، حفظ وزن)\n- آیا محدودیت غذایی خاصی دارید؟\n- ترجیح می‌دهید برنامه ۲ هفته‌ای باشد یا ۴ هفته‌ای؟"
-            
-            # Exercise history
-            elif any(word in message for word in ['تاریخچه', 'تمرینات قبلی', 'history', 'past']):
-                if exercise_summary:
-                    return f"بر اساس تاریخچه شما، تمرینات اخیر شما شامل: {', '.join(exercise_summary)} است. می‌توانم بر اساس این اطلاعات، پیشنهادات بهتری برای ادامه مسیر شما ارائه دهم."
-                else:
-                    return "شما هنوز تمرینی ثبت نکرده‌اید. می‌توانم به شما کمک کنم تا برنامه تمرینی خود را شروع کنید!"
-            
-            # Injury/health
-            elif any(word in message for word in ['آسیب', 'درد', 'injury', 'pain', 'hurt']):
-                return "اگر دچار آسیب یا درد شده‌اید، مهم است که به پزشک یا فیزیوتراپیست مراجعه کنید. می‌توانم اطلاعات عمومی در مورد آسیب‌های رایج ورزشی و روش‌های پیشگیری را در بخش 'آسیب‌ها' به شما ارائه دهم."
-            
-            # Profile-related questions
-            elif any(word in message for word in ['پروفایل', 'اطلاعات من', 'پروفایلم', 'profile', 'my info', 'my profile']):
-                if missing_profile_fields:
-                    missing_fields_fa = {
-                        'age': 'سن',
-                        'weight': 'وزن',
-                        'height': 'قد',
-                        'gender': 'جنسیت',
-                        'training_level': 'سطح تمرین',
-                        'fitness_goals': 'اهداف تناسب اندام',
-                        'workout_days_per_week': 'روزهای تمرین در هفته',
-                        'preferred_workout_time': 'زمان ترجیحی تمرین',
-                        'injuries': 'آسیب‌ها'
-                    }
-                    missing_list = [missing_fields_fa.get(f, f) for f in missing_profile_fields if f in missing_fields_fa]
-                    
-                    return f"سلام {user_name}! می‌بینم که پروفایل شما کامل نیست. برای دریافت برنامه‌های شخصی‌تر و توصیه‌های دقیق‌تر، لطفاً به تب 'پروفایل' بروید و اطلاعات زیر را تکمیل کنید:\n\n" + \
-                           "\n".join([f"• {field}" for field in missing_list]) + \
-                           "\n\nپس از تکمیل پروفایل، می‌توانم برنامه‌های تمرینی و تغذیه‌ای دقیق‌تری برای شما ایجاد کنم!"
-                else:
-                    # Profile is complete
-                    profile_summary = f"پروفایل شما کامل است! "
-                    if user_profile:
-                        if user_profile.age and user_profile.weight and user_profile.height:
-                            bmi = user_profile.weight / ((user_profile.height / 100) ** 2)
-                            profile_summary += f"شاخص توده بدنی (BMI) شما: {bmi:.1f}. "
-                        if user_profile.training_level:
-                            profile_summary += f"سطح شما: {user_profile.training_level}. "
-                    return f"{profile_summary}اگر می‌خواهید اطلاعات پروفایل خود را تغییر دهید، به تب 'پروفایل' بروید و روی دکمه 'ویرایش' کلیک کنید."
-            
-            # Questions about specific profile fields
-            elif any(word in message for word in ['سن', 'age', 'چند سال', 'how old']):
-                if user_profile and user_profile.age:
-                    return f"سن شما در پروفایل: {user_profile.age} سال است. اگر می‌خواهید آن را تغییر دهید، به تب 'پروفایل' بروید."
-                else:
-                    return "شما هنوز سن خود را در پروفایل ثبت نکرده‌اید. لطفاً به تب 'پروفایل' بروید و سن خود را وارد کنید. این اطلاعات به من کمک می‌کند تا برنامه‌های مناسب‌تری برای شما ایجاد کنم."
-            
-            elif any(word in message for word in ['وزن', 'weight', 'چقدر وزن', 'how much do you weigh']):
-                if user_profile and user_profile.weight:
-                    return f"وزن شما در پروفایل: {user_profile.weight} کیلوگرم است. اگر می‌خواهید آن را تغییر دهید، به تب 'پروفایل' بروید."
-                else:
-                    return "شما هنوز وزن خود را در پروفایل ثبت نکرده‌اید. لطفاً به تب 'پروفایل' بروید و وزن خود را وارد کنید. این اطلاعات برای محاسبه کالری و ایجاد برنامه تغذیه‌ای ضروری است."
-            
-            elif any(word in message for word in ['قد', 'height', 'چقدر قد', 'how tall']):
-                if user_profile and user_profile.height:
-                    return f"قد شما در پروفایل: {user_profile.height} سانتی‌متر است. اگر می‌خواهید آن را تغییر دهید، به تب 'پروفایل' بروید."
-                else:
-                    return "شما هنوز قد خود را در پروفایل ثبت نکرده‌اید. لطفاً به تب 'پروفایل' بروید و قد خود را وارد کنید. این اطلاعات برای محاسبه BMI و ایجاد برنامه مناسب ضروری است."
-            
-            elif any(word in message for word in ['سطح', 'level', 'مبتدی', 'beginner', 'advanced', 'پیشرفته']):
-                if user_profile and user_profile.training_level:
-                    level_text = {
-                        'beginner': 'مبتدی',
-                        'intermediate': 'متوسط',
-                        'advanced': 'پیشرفته'
-                    }.get(user_profile.training_level, user_profile.training_level)
-                    return f"سطح تمرین شما در پروفایل: {level_text} است. اگر می‌خواهید آن را تغییر دهید، به تب 'پروفایل' بروید."
-                else:
-                    return "شما هنوز سطح تمرین خود را در پروفایل مشخص نکرده‌اید. لطفاً به تب 'پروفایل' بروید و سطح خود را انتخاب کنید (مبتدی، متوسط، یا پیشرفته). این به من کمک می‌کند تا تمرینات مناسب را پیشنهاد دهم."
-            
-            elif any(word in message for word in ['هدف', 'goals', 'اهداف', 'چه هدفی']):
-                if user_profile:
-                    goals = user_profile.get_fitness_goals()
-                    if goals:
-                        goals_fa = {
-                            'weight_loss': 'کاهش وزن',
-                            'muscle_gain': 'افزایش عضله',
-                            'strength': 'قدرت',
-                            'endurance': 'استقامت',
-                            'flexibility': 'انعطاف‌پذیری'
-                        }
-                        goals_text = [goals_fa.get(g, g) for g in goals]
-                        return f"اهداف تناسب اندام شما: {', '.join(goals_text)}. اگر می‌خواهید آنها را تغییر دهید، به تب 'پروفایل' بروید."
-                    else:
-                        return "شما هنوز اهداف تناسب اندام خود را در پروفایل مشخص نکرده‌اید. لطفاً به تب 'پروفایل' بروید و اهداف خود را انتخاب کنید (مثلاً کاهش وزن، افزایش عضله، قدرت، استقامت، یا انعطاف‌پذیری)."
-                else:
-                    return "لطفاً ابتدا پروفایل خود را در تب 'پروفایل' تکمیل کنید و اهداف تناسب اندام خود را مشخص کنید."
-            
-            # General help
-            else:
-                suggestions = []
-                if missing_profile_fields:
-                    suggestions.append("تکمیل پروفایل برای دریافت برنامه‌های شخصی‌تر")
-                if not exercises:
-                    suggestions.append("شروع یک برنامه تمرینی")
-                if not nutrition_plans:
-                    suggestions.append("ایجاد برنامه تغذیه‌ای")
-                suggestions.append("دریافت نکات و پیشنهادات")
-                
-                profile_note = ""
-                if missing_profile_fields:
-                    profile_note = "\n\n💡 پیشنهاد: برای دریافت برنامه‌های دقیق‌تر، ابتدا پروفایل خود را در تب 'پروفایل' تکمیل کنید."
-                
-                return f"متوجه شدم. من می‌توانم در موارد زیر به شما کمک کنم:\n- تکمیل پروفایل\n- ایجاد برنامه تمرینی شخصی\n- برنامه‌ریزی تغذیه‌ای\n- پاسخ به سوالات شما در مورد تناسب اندام\n- بررسی تاریخچه تمرینات شما\n\nلطفاً سوال خود را با جزئیات بیشتری مطرح کنید یا یکی از موارد بالا را انتخاب کنید.{profile_note}"
-        
-        else:  # English
-            # Greeting
-            if any(word in message_lower for word in ['hello', 'hi', 'hey', 'good morning', 'good afternoon', 'good evening', 'good night']):
-                context_info = ""
-                
-                # User profile context
-                if user_profile:
-                    profile_info = []
-                    if user_profile.age:
-                        profile_info.append(f"{user_profile.age} years old")
-                    if user_profile.gender:
-                        profile_info.append(user_profile.gender)
-                    if user_profile.training_level:
-                        profile_info.append(f"{user_profile.training_level} level")
-                    
-                    if profile_info:
-                        context_info = f"Hello {user_name}! {time_greeting}! "
-                        context_info += f"I see you're {' and '.join(profile_info)}. "
-                    else:
-                        context_info = f"Hello {user_name}! {time_greeting}! "
+        # English only - Persian removed
+        if any(word in message_lower for word in ['hello', 'hi', 'hey', 'good morning', 'good afternoon', 'good evening', 'good night']):
+            context_info = ""
+            if user_profile:
+                profile_info = []
+                if user_profile.age:
+                    profile_info.append(f"{user_profile.age} years old")
+                if user_profile.gender:
+                    profile_info.append(user_profile.gender)
+                if user_profile.training_level:
+                    profile_info.append(f"{user_profile.training_level} level")
+                if profile_info:
+                    context_info = f"Hello {user_name}! {time_greeting}! "
+                    context_info += f"I see you're {' and '.join(profile_info)}. "
                 else:
                     context_info = f"Hello {user_name}! {time_greeting}! "
-                
-                # Exercise history
-                if exercises:
-                    context_info += f"You have {len(exercises)} recorded exercises. "
-                if nutrition_plans:
-                    context_info += f"You also have a nutrition plan. "
-                
-                # User profile details
-                profile_details = ""
-                if user_profile:
-                    if user_profile.fitness_goals:
-                        goals = user_profile.get_fitness_goals()
-                        if goals:
-                            profile_details += f"Your goals: {', '.join(goals)}. "
-                    
-                    if user_profile.workout_days_per_week:
-                        profile_details += f"You work out {user_profile.workout_days_per_week} days per week. "
-                    
-                    if user_injuries:
-                        profile_details += f"Note: You have {', '.join(user_injuries)} concerns, so I'll suggest appropriate exercises. "
-                
-                # Add profile completion suggestion if profile is incomplete
-                profile_suggestion = ""
-                if missing_profile_fields:
-                    important_fields = []
-                    if 'age' in missing_profile_fields:
-                        important_fields.append('age')
-                    if 'gender' in missing_profile_fields:
-                        important_fields.append('gender')
-                    if 'training_level' in missing_profile_fields:
-                        important_fields.append('training level')
-                    if 'fitness_goals' in missing_profile_fields:
-                        important_fields.append('fitness goals')
-                    
-                    if important_fields:
-                        profile_suggestion = f"\n\n💡 Tip: For more personalized plans, please complete your profile information in the 'Profile' tab. Important fields: {', '.join(important_fields)}"
-                
-                return f"{context_info}I'm AlphaFit AI assistant. {profile_details}How can I help you today? I can assist with workout plans, nutrition, or answer any fitness-related questions.{profile_suggestion}"
-            
-            # Fitness plan request
-            elif any(word in message_lower for word in ['plan', 'workout', 'exercise', 'training']):
-                exercise_suggestions = ""
-                if recommended_exercises:
-                    try:
-                        exercise_names = [ex.name_en for ex in recommended_exercises[:3] if hasattr(ex, 'name_en')]
-                        if exercise_names:
-                            exercise_suggestions = f"\n\nRecommended exercises for you:\n{chr(10).join(['- ' + name for name in exercise_names])}"
-                    except Exception as e:
-                        print(f"Error getting exercise names: {e}")
-                        exercise_suggestions = ""
-                
-                # Use user profile info
-                profile_context = ""
-                if user_profile:
-                    if user_profile.workout_days_per_week:
-                        profile_context += f"Since you work out {user_profile.workout_days_per_week} days per week, "
-                    if user_profile.preferred_workout_time:
-                        profile_context += f"and prefer {user_profile.preferred_workout_time} workouts, "
-                    if user_profile.training_level:
-                        profile_context += f"with your {user_profile.training_level} level, "
-                
-                return f"Yes {user_name}! I can create a personalized workout plan for you. {profile_context}Please tell me:\n- What is your goal? (weight loss, muscle gain, general fitness)\n- What type of exercises do you prefer? (cardio, strength, combination)\n\nBased on your history, I can suggest a plan that aligns with your previous activities.{exercise_suggestions}"
-            
-            # Nutrition request
-            elif any(word in message_lower for word in ['nutrition', 'diet', 'meal', 'food']):
-                context_nutrition = ""
-                if nutrition_summary:
-                    context_nutrition = f"Based on your current plan which includes {', '.join(nutrition_summary[:3])}, "
-                return f"{context_nutrition}I can create a 2-week or 4-week nutrition plan for you. Please tell me:\n- What is your goal? (weight loss, weight gain, weight maintenance)\n- Do you have any dietary restrictions?\n- Would you prefer a 2-week or 4-week plan?"
-            
-            # Exercise history
-            elif any(word in message_lower for word in ['history', 'past', 'previous']):
-                if exercise_summary:
-                    return f"Based on your history, your recent exercises include: {', '.join(exercise_summary)}. I can provide better suggestions based on this information to continue your fitness journey."
-                else:
-                    return "You haven't recorded any exercises yet. I can help you get started with a workout plan!"
-            
-            # Injury/health
-            elif any(word in message_lower for word in ['injury', 'pain', 'hurt', 'ache']):
-                return "If you're experiencing an injury or pain, it's important to consult a doctor or physical therapist. I can provide general information about common sports injuries and prevention methods in the 'Injuries' section."
-            
-            # Profile-related questions
-            elif any(word in message_lower for word in ['profile', 'my info', 'my profile', 'my information']):
-                if missing_profile_fields:
-                    missing_fields_en = {
-                        'age': 'age',
-                        'weight': 'weight',
-                        'height': 'height',
-                        'gender': 'gender',
-                        'training_level': 'training level',
-                        'fitness_goals': 'fitness goals',
-                        'workout_days_per_week': 'workout days per week',
-                        'preferred_workout_time': 'preferred workout time',
-                        'injuries': 'injuries'
-                    }
-                    missing_list = [missing_fields_en.get(f, f) for f in missing_profile_fields if f in missing_fields_en]
-                    
-                    return f"Hello {user_name}! I see your profile is incomplete. For more personalized plans and accurate recommendations, please go to the 'Profile' tab and complete the following information:\n\n" + \
-                           "\n".join([f"• {field}" for field in missing_list]) + \
-                           "\n\nAfter completing your profile, I can create more accurate workout and nutrition plans for you!"
-                else:
-                    # Profile is complete
-                    profile_summary = f"Your profile is complete! "
-                    if user_profile:
-                        if user_profile.age and user_profile.weight and user_profile.height:
-                            bmi = user_profile.weight / ((user_profile.height / 100) ** 2)
-                            profile_summary += f"Your BMI: {bmi:.1f}. "
-                        if user_profile.training_level:
-                            profile_summary += f"Your level: {user_profile.training_level}. "
-                    return f"{profile_summary}If you want to update your profile information, go to the 'Profile' tab and click the 'Edit' button."
-            
-            # Questions about specific profile fields
-            elif any(word in message_lower for word in ['age', 'how old', 'my age']):
-                if user_profile and user_profile.age:
-                    return f"Your age in profile: {user_profile.age} years. If you want to change it, go to the 'Profile' tab."
-                else:
-                    return "You haven't entered your age in your profile yet. Please go to the 'Profile' tab and enter your age. This information helps me create more appropriate plans for you."
-            
-            elif any(word in message_lower for word in ['weight', 'my weight', 'how much do i weigh']):
-                if user_profile and user_profile.weight:
-                    return f"Your weight in profile: {user_profile.weight} kg. If you want to change it, go to the 'Profile' tab."
-                else:
-                    return "You haven't entered your weight in your profile yet. Please go to the 'Profile' tab and enter your weight. This information is essential for calorie calculations and creating a nutrition plan."
-            
-            elif any(word in message_lower for word in ['height', 'tall', 'how tall', 'my height']):
-                if user_profile and user_profile.height:
-                    return f"Your height in profile: {user_profile.height} cm. If you want to change it, go to the 'Profile' tab."
-                else:
-                    return "You haven't entered your height in your profile yet. Please go to the 'Profile' tab and enter your height. This information is essential for BMI calculation and creating an appropriate plan."
-            
-            elif any(word in message_lower for word in ['level', 'training level', 'beginner', 'advanced']):
-                if user_profile and user_profile.training_level:
-                    return f"Your training level in profile: {user_profile.training_level}. If you want to change it, go to the 'Profile' tab."
-                else:
-                    return "You haven't specified your training level in your profile yet. Please go to the 'Profile' tab and select your level (beginner, intermediate, or advanced). This helps me suggest appropriate exercises for you."
-            
-            elif any(word in message_lower for word in ['goals', 'fitness goals', 'my goals', 'what are my goals']):
-                if user_profile:
+            else:
+                context_info = f"Hello {user_name}! {time_greeting}! "
+            if exercises:
+                context_info += f"You have {len(exercises)} recorded exercises. "
+            if nutrition_plans:
+                context_info += f"You also have a nutrition plan. "
+            profile_details = ""
+            if user_profile:
+                if user_profile.fitness_goals:
                     goals = user_profile.get_fitness_goals()
                     if goals:
-                        return f"Your fitness goals: {', '.join(goals)}. If you want to change them, go to the 'Profile' tab."
-                    else:
-                        return "You haven't specified your fitness goals in your profile yet. Please go to the 'Profile' tab and select your goals (e.g., weight loss, muscle gain, strength, endurance, or flexibility)."
-                else:
-                    return "Please first complete your profile in the 'Profile' tab and specify your fitness goals."
-            
-            # General help
-            else:
-                suggestions = []
-                if missing_profile_fields:
-                    suggestions.append("completing your profile for more personalized plans")
-                if not exercises:
-                    suggestions.append("starting a workout plan")
-                if not nutrition_plans:
-                    suggestions.append("creating a nutrition plan")
-                suggestions.append("getting tips and suggestions")
+                        profile_details += f"Your goals: {', '.join(goals)}. "
+                if user_profile.workout_days_per_week:
+                    profile_details += f"You work out {user_profile.workout_days_per_week} days per week. "
+                if user_injuries:
+                    profile_details += f"Note: You have {', '.join(user_injuries)} concerns, so I'll suggest appropriate exercises. "
+            profile_suggestion = ""
+            if missing_profile_fields:
+                important_fields = []
+                if 'age' in missing_profile_fields:
+                    important_fields.append('age')
+                if 'gender' in missing_profile_fields:
+                    important_fields.append('gender')
+                if 'training_level' in missing_profile_fields:
+                    important_fields.append('training level')
+                if 'fitness_goals' in missing_profile_fields:
+                    important_fields.append('fitness goals')
+                if important_fields:
+                    profile_suggestion = f"\n\n💡 Tip: For more personalized plans, please complete your profile information in the 'Profile' tab. Important fields: {', '.join(important_fields)}"
                 
-                profile_note = ""
-                if missing_profile_fields:
-                    profile_note = "\n\n💡 Suggestion: For more accurate plans, first complete your profile in the 'Profile' tab."
-                
-                return f"I understand. I can help you with:\n- Completing your profile\n- Creating a personalized workout plan\n- Nutrition planning\n- Answering fitness-related questions\n- Reviewing your exercise history\n\nPlease provide more details about your question or choose one of the options above.{profile_note}"
+            return f"{context_info}I'm AlphaFit AI assistant. {profile_details}How can I help you today? I can assist with workout plans, nutrition, or answer any fitness-related questions.{profile_suggestion}"
+        elif any(word in message_lower for word in ['plan', 'workout', 'exercise', 'training']):
+            exercise_suggestions = ""
+            if recommended_exercises:
+                try:
+                    exercise_names = [ex.name_en for ex in recommended_exercises[:3] if hasattr(ex, 'name_en')]
+                    if exercise_names:
+                        exercise_suggestions = f"\n\nRecommended exercises for you:\n{chr(10).join(['- ' + name for name in exercise_names])}"
+                except Exception as e:
+                    print(f"Error getting exercise names: {e}")
+                    exercise_suggestions = ""
+            profile_context = ""
+            if user_profile:
+                if user_profile.workout_days_per_week:
+                    profile_context += f"Since you work out {user_profile.workout_days_per_week} days per week, "
+                if user_profile.preferred_workout_time:
+                    profile_context += f"and prefer {user_profile.preferred_workout_time} workouts, "
+                if user_profile.training_level:
+                    profile_context += f"with your {user_profile.training_level} level, "
+            return f"Yes {user_name}! I can create a personalized workout plan for you. {profile_context}Please tell me:\n- What is your goal? (weight loss, muscle gain, general fitness)\n- What type of exercises do you prefer? (cardio, strength, combination)\n\nBased on your history, I can suggest a plan that aligns with your previous activities.{exercise_suggestions}"
+        elif any(word in message_lower for word in ['nutrition', 'diet', 'meal', 'food']):
+            context_nutrition = ""
+            if nutrition_summary:
+                context_nutrition = f"Based on your current plan which includes {', '.join(nutrition_summary[:3])}, "
+            return f"{context_nutrition}I can create a 2-week or 4-week nutrition plan for you. Please tell me:\n- What is your goal? (weight loss, weight gain, weight maintenance)\n- Do you have any dietary restrictions?\n- Would you prefer a 2-week or 4-week plan?"
+        elif any(word in message_lower for word in ['history', 'past', 'previous']):
+            if exercise_summary:
+                return f"Based on your history, your recent exercises include: {', '.join(exercise_summary)}. I can provide better suggestions based on this information to continue your fitness journey."
+            return "You haven't recorded any exercises yet. I can help you get started with a workout plan!"
+        elif any(word in message_lower for word in ['injury', 'pain', 'hurt', 'ache']):
+            return "If you're experiencing an injury or pain, it's important to consult a doctor or physical therapist. I can provide general information about common sports injuries and prevention methods in the 'Injuries' section."
+        elif any(word in message_lower for word in ['profile', 'my info', 'my profile', 'my information']):
+            if missing_profile_fields:
+                missing_fields_en = {
+                    'age': 'age',
+                    'weight': 'weight',
+                    'height': 'height',
+                    'gender': 'gender',
+                    'training_level': 'training level',
+                    'fitness_goals': 'fitness goals',
+                    'workout_days_per_week': 'workout days per week',
+                    'preferred_workout_time': 'preferred workout time',
+                    'injuries': 'injuries'
+                }
+                missing_list = [missing_fields_en.get(f, f) for f in missing_profile_fields if f in missing_fields_en]
+                return f"Hello {user_name}! I see your profile is incomplete. For more personalized plans and accurate recommendations, please go to the 'Profile' tab and complete the following information:\n\n" + \
+                       "\n".join([f"• {field}" for field in missing_list]) + \
+                       "\n\nAfter completing your profile, I can create more accurate workout and nutrition plans for you!"
+            profile_summary = "Your profile is complete! "
+            if user_profile:
+                if user_profile.age and user_profile.weight and user_profile.height:
+                    bmi = user_profile.weight / ((user_profile.height / 100) ** 2)
+                    profile_summary += f"Your BMI: {bmi:.1f}. "
+                if user_profile.training_level:
+                    profile_summary += f"Your level: {user_profile.training_level}. "
+            return f"{profile_summary}If you want to update your profile information, go to the 'Profile' tab and click the 'Edit' button."
+        elif any(word in message_lower for word in ['age', 'how old', 'my age']):
+            if user_profile and user_profile.age:
+                return f"Your age in profile: {user_profile.age} years. If you want to change it, go to the 'Profile' tab."
+            return "You haven't entered your age in your profile yet. Please go to the 'Profile' tab and enter your age. This information helps me create more appropriate plans for you."
+        elif any(word in message_lower for word in ['weight', 'my weight', 'how much do i weigh']):
+            if user_profile and user_profile.weight:
+                return f"Your weight in profile: {user_profile.weight} kg. If you want to change it, go to the 'Profile' tab."
+            return "You haven't entered your weight in your profile yet. Please go to the 'Profile' tab and enter your weight. This information is essential for calorie calculations and creating a nutrition plan."
+        elif any(word in message_lower for word in ['height', 'tall', 'how tall', 'my height']):
+            if user_profile and user_profile.height:
+                return f"Your height in profile: {user_profile.height} cm. If you want to change it, go to the 'Profile' tab."
+            return "You haven't entered your height in your profile yet. Please go to the 'Profile' tab and enter your height. This information is essential for BMI calculation and creating an appropriate plan."
+        elif any(word in message_lower for word in ['level', 'training level', 'beginner', 'advanced']):
+            if user_profile and user_profile.training_level:
+                return f"Your training level in profile: {user_profile.training_level}. If you want to change it, go to the 'Profile' tab."
+            return "You haven't specified your training level in your profile yet. Please go to the 'Profile' tab and select your level (beginner, intermediate, or advanced). This helps me suggest appropriate exercises for you."
+        elif any(word in message_lower for word in ['goals', 'fitness goals', 'my goals', 'what are my goals']):
+            if user_profile:
+                goals = user_profile.get_fitness_goals()
+                if goals:
+                    return f"Your fitness goals: {', '.join(goals)}. If you want to change them, go to the 'Profile' tab."
+                return "You haven't specified your fitness goals in your profile yet. Please go to the 'Profile' tab and select your goals (e.g., weight loss, muscle gain, strength, endurance, or flexibility)."
+            return "Please first complete your profile in the 'Profile' tab and specify your fitness goals."
+        else:
+            suggestions = []
+            if missing_profile_fields:
+                suggestions.append("completing your profile for more personalized plans")
+            if not exercises:
+                suggestions.append("starting a workout plan")
+            if not nutrition_plans:
+                suggestions.append("creating a nutrition plan")
+            suggestions.append("getting tips and suggestions")
+            profile_note = ""
+            if missing_profile_fields:
+                profile_note = "\n\n💡 Suggestion: For more accurate plans, first complete your profile in the 'Profile' tab."
+            return f"I understand. I can help you with:\n- Completing your profile\n- Creating a personalized workout plan\n- Nutrition planning\n- Answering fitness-related questions\n- Reviewing your exercise history\n\nPlease provide more details about your question or choose one of the options above.{profile_note}"
     
     except Exception as e:
         import traceback
@@ -1954,13 +1591,9 @@ def generate_ai_response(message, user_id, language, local_time=None):
         print(error_trace)
         # Always return a response, even on error
         try:
-            if language == 'fa':
-                return f"سلام {user_name}! متأسفانه خطایی رخ داد. لطفاً دوباره تلاش کنید یا سوال خود را به شکل دیگری مطرح کنید."
-            else:
-                return f"Hello {user_name}! Sorry, an error occurred. Please try again or rephrase your question."
+            return f"Hello {user_name}! Sorry, an error occurred. Please try again or rephrase your question."
         except:
-            # Final fallback
-            return "متأسفانه خطایی رخ داد. لطفاً دوباره تلاش کنید." if language == 'fa' else "Sorry, an error occurred. Please try again."
+            return "Sorry, an error occurred. Please try again."
 
 @app.route('/api/health', methods=['GET'])
 def health():
@@ -2188,7 +1821,7 @@ def get_training_programs():
         user_id = int(user_id_str)
 
         user = db.session.query(User).filter_by(id=user_id).first()
-        language = user.language if user and user.language else 'fa'
+        language = 'en'
 
         user_programs = db.session.query(TrainingProgram).filter_by(user_id=user_id).all()
         general_programs = db.session.query(TrainingProgram).filter(TrainingProgram.user_id.is_(None)).all()

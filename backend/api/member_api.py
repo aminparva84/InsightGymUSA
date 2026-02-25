@@ -17,6 +17,7 @@ from models import (
     Exercise,
     ProgressCheckRequest,
     PurchaseOrder,
+    MembershipOrder,
 )
 
 member_bp = Blueprint('member', __name__, url_prefix='/api/member')
@@ -380,6 +381,53 @@ def purchase_training_program():
             'status': order.status,
             'total': order.total,
             'assigned_program_id': assigned_program_id,
+        }), 200
+    except Exception as e:
+        _get_db().session.rollback()
+        return jsonify({'error': str(e)}), 500
+
+
+# ---------- Purchase membership tier ----------
+@member_bp.route('/purchase-membership', methods=['POST'])
+@jwt_required()
+def purchase_membership():
+    """Record membership tier purchase (Basic, Premium, Elite)."""
+    try:
+        user_id = _get_user_id()
+        if not user_id:
+            return jsonify({'error': 'Invalid token'}), 401
+
+        data = request.get_json() or {}
+        tier_name = (data.get('tier_name') or '').strip()
+        price = float(data.get('price') or 0)
+        period = (data.get('period') or 'month').strip() or 'month'
+
+        if not tier_name:
+            return jsonify({'error': 'tier_name required'}), 400
+
+        db = _get_db()
+        try:
+            MembershipOrder.__table__.create(db.engine, checkfirst=True)
+        except Exception as create_err:
+            return jsonify({'error': f'Failed to ensure membership_orders table: {create_err}'}), 500
+
+        order = MembershipOrder(
+            user_id=user_id,
+            tier_name=tier_name,
+            price=price,
+            period=period,
+            status='paid',
+            paid_at=datetime.utcnow(),
+        )
+        db.session.add(order)
+        db.session.commit()
+
+        return jsonify({
+            'order_id': order.id,
+            'status': order.status,
+            'tier_name': order.tier_name,
+            'price': order.price,
+            'period': order.period,
         }), 200
     except Exception as e:
         _get_db().session.rollback()
