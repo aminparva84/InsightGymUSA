@@ -5,14 +5,14 @@
   min-width: 0;
   margin: 0;
   padding: 0 0 1rem 0;
-  background-color: var(--color-white);
+  background-color: var(--bg-card);
   min-height: calc(100vh - 200px);
 }
 
 .sessions-header {
   margin-bottom: 2rem;
   padding-bottom: 1rem;
-  border-bottom: 2px solid var(--color-primary-200);
+  border-bottom: 2px solid var(--border);
 }
 
 .sessions-header h2 {
@@ -28,13 +28,13 @@
 .no-sessions {
   text-align: center;
   padding: 4rem 2rem;
-  background: var(--color-primary-50);
+  background: var(--bg-elevated);
   border-radius: 8px;
-  border: 1px solid var(--color-primary-200);
+  border: 1px solid var(--border);
 }
 
 .no-sessions p {
-  color: var(--color-primary-600);
+  color: var(--text-secondary);
   font-size: 1.1rem;
   margin: 0;
 }
@@ -46,8 +46,8 @@
 }
 
 .session-card {
-  background: var(--color-white);
-  border: 1px solid var(--color-primary-200);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
   border-radius: 8px;
   padding: 1.5rem;
   display: flex;
@@ -57,25 +57,25 @@
 
 .session-date {
   font-weight: 600;
-  color: var(--color-secondary-600);
+  color: var(--accent-hover);
   min-width: 150px;
 }
 
 .session-details h3 {
   margin: 0 0 0.5rem 0;
-  color: var(--color-primary-800);
+  color: var(--text-primary);
   font-size: 1.1rem;
 }
 
 .session-details p {
   margin: 0;
-  color: var(--color-primary-600);
+  color: var(--text-secondary);
 }
 
 .loading {
   text-align: center;
   padding: 3rem;
-  color: var(--color-primary-800);
+  color: var(--text-primary);
   font-size: 1.1rem;
 }
 

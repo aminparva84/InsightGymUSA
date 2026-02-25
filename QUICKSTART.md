@@ -1,4 +1,4 @@
-# Quick Start Guide - Raha Fitness
+# Quick Start Guide - Insight GYM USA
 
 ## Prerequisites
 
@@ -28,15 +28,15 @@ pip install -r requirements.txt
 
 # Create .env file (copy from project root .env.example if available)
 # Or create manually with:
-# DATABASE_URL=postgresql://user:password@localhost:5432/raha_fitness
+# DATABASE_URL=postgresql://user:password@localhost:5432/insight_gym_usa
 # JWT_SECRET_KEY=your-secret-key-here
-# Create the PostgreSQL database first: createdb raha_fitness
+# Create the PostgreSQL database first: createdb insight_gym_usa
 
 # Run the Flask server
 python app.py
 ```
 
-The backend should now be running on `http://localhost:5000`
+The backend should now be running on `http://localhost:5001`
 
 ### 2. Seed Sample Data (Optional)
 
@@ -64,11 +64,11 @@ npm install
 npm start
 ```
 
-The frontend should now be running on `http://localhost:3000`
+The frontend should now be running on `http://localhost:3001`
 
 ### 4. Access the Application
 
-1. Open your browser and go to `http://localhost:3000`
+1. Open your browser and go to `http://localhost:3001`
 2. You'll see the landing page with login/register options
 3. Create a new account or login
 4. Once logged in, you'll see the dashboard with tabs for:
@@ -96,14 +96,14 @@ The frontend should now be running on `http://localhost:3000`
 
 ### Backend Issues
 
-- **Port 5000 already in use**: Change the port in `app.py` (last line) or stop the process using port 5000
-- **Database errors**: Ensure PostgreSQL is running and `DATABASE_URL` in `.env` is correct. Create the database (e.g. `createdb raha_fitness`). Run `python init_database.py` to create tables and a demo user. If migrating from SQLite, see [MIGRATION.md](MIGRATION.md).
+- **Port 5001 already in use**: Set PORT in backend `.env` or stop the process using port 5001
+- **Database errors**: Ensure PostgreSQL is running and `DATABASE_URL` in `.env` is correct. Create the database (e.g. `createdb insight_gym_usa`). Run `python init_database.py` to create tables and a demo user. If migrating from SQLite, see [MIGRATION.md](MIGRATION.md).
 - **Module not found**: Make sure you've activated the virtual environment and installed requirements
 
 ### Frontend Issues
 
 - **Port 3000 already in use**: React will automatically suggest using port 3001
-- **API connection errors**: Make sure the backend is running on port 5000
+- **API connection errors**: Make sure the backend is running on port 5001
 - **CORS errors**: Check that Flask-CORS is properly installed and configured
 
 ### MCP Server (Optional)
@@ -133,17 +133,17 @@ You can test the API endpoints using tools like Postman or curl:
 
 ```bash
 # Register a new user
-curl -X POST http://localhost:5000/api/register \
+curl -X POST http://localhost:5001/api/register \
   -H "Content-Type: application/json" \
   -d '{"username":"testuser","email":"test@example.com","password":"test123","language":"fa"}'
 
 # Login
-curl -X POST http://localhost:5000/api/login \
+curl -X POST http://localhost:5001/api/login \
   -H "Content-Type: application/json" \
   -d '{"username":"testuser","password":"test123"}'
 
 # Get exercises (replace TOKEN with actual token)
-curl -X GET http://localhost:5000/api/exercises \
+curl -X GET http://localhost:5001/api/exercises \
   -H "Authorization: Bearer TOKEN"
 ```
 

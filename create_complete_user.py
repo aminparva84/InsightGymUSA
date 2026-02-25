@@ -7,7 +7,7 @@ import json
 import random
 import string
 
-BASE_URL = "http://localhost:5000"
+BASE_URL = "http://localhost:5001"
 
 def generate_username():
     """Generate a unique username"""

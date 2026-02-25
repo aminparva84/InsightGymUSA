@@ -25,7 +25,7 @@ with app.app_context():
         print(f"Could not delete demo user: {e}")
 
 # Try to register via API (backend must be running)
-url = "http://localhost:5000/api/register"
+url = "http://localhost:5001/api/register"
 data = {
     "username": "demo",
     "email": "demo@raha-fitness.com",

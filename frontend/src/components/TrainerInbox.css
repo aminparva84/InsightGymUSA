@@ -90,7 +90,7 @@
 
 .progress-check-accept {
   background: #4caf50;
-  color: #fff;
+  color: var(--text-primary);
 }
 
 .progress-check-accept:hover:not(:disabled) {
@@ -99,7 +99,7 @@
 
 .progress-check-deny {
   background: #f44336;
-  color: #fff;
+  color: var(--text-primary);
 }
 
 .progress-check-deny:hover:not(:disabled) {
@@ -153,7 +153,7 @@
 }
 
 .trainer-inbox-thread-btn.active {
-  background: var(--color-accent-50);
+  background: var(--accent-muted);
   font-weight: 600;
   color: var(--accent);
 }
@@ -170,7 +170,7 @@
   height: 1.25rem;
   padding: 0 0.35rem;
   background: var(--accent);
-  color: var(--color-white);
+  color: var(--text-primary);
   border-radius: 10px;
   font-size: 0.75rem;
   display: flex;
@@ -206,10 +206,10 @@
 
 .trainer-inbox-chat-header {
   padding: 0.5rem 1rem;
-  border-bottom: 1px solid var(--color-primary-200);
+  border-bottom: 1px solid var(--border);
   font-weight: 600;
-  color: var(--color-primary-800);
-  background: var(--color-white);
+  color: var(--text-primary);
+  background: var(--bg-card);
 }
 
 .trainer-inbox-messages {
@@ -219,7 +219,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  background-color: var(--color-primary-50);
+  background-color: var(--bg-elevated);
 }
 
 .trainer-inbox-messages .trainer-msg {
@@ -243,25 +243,25 @@
 
 .trainer-inbox-messages .trainer-msg.mine .trainer-msg-content {
   background: var(--gradient-accent);
-  color: var(--color-white);
+  color: var(--text-primary);
   border-bottom-right-radius: 4px;
 }
 
 .trainer-inbox-messages .trainer-msg.theirs .trainer-msg-content {
-  background-color: var(--color-white);
-  border: 1px solid var(--color-primary-200);
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
   border-bottom-left-radius: 4px;
-  color: var(--color-primary-800);
+  color: var(--text-primary);
 }
 
 .trainer-inbox-messages .trainer-msg-time {
   font-size: 0.75rem;
-  color: var(--color-primary-500);
+  color: var(--accent);
   margin-top: 0.25rem;
 }
 
 .trainer-inbox-chat .trainer-chat-form {
   padding: 0.75rem 1rem;
-  background: var(--color-white);
-  border-top: 1px solid var(--color-primary-200);
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
 }

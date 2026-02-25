@@ -5,10 +5,9 @@ import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import { getApiBase } from '../services/apiBase';
 import ProfileTab from './tabs/ProfileTab';
-import CoachDashboard from './tabs/CoachDashboard';
+import AssistantDashboard from './tabs/AssistantDashboard';
 import MembersListTab from './tabs/MembersListTab';
 import InPersonSessionsTab from './tabs/InPersonSessionsTab';
-import BreakRequestsTab from './tabs/BreakRequestsTab';
 import MembersProgramsTab from './tabs/MembersProgramsTab';
 import TrainingInfoTab from './tabs/TrainingInfoTab';
 import TrainingPlansProductsTab from './tabs/TrainingPlansProductsTab';
@@ -20,16 +19,15 @@ import TrainingProgramTab from './tabs/TrainingProgramTab';
 import StepsTab from './tabs/StepsTab';
 import OnlineLab from './tabs/OnlineLab';
 import PsychologyTest from './tabs/PsychologyTest';
-import MembersAndCoachsManagementTab from './tabs/MembersAndCoachsManagementTab';
-import BreakRequestModal from './BreakRequestModal';
-import ChatWithTabs from './ChatWithTabs';
+import MembersAndAssistantsManagementTab from './tabs/MembersAndAssistantsManagementTab';
+import DashboardChatWidget from './DashboardChatWidget';
 import TrainingWithAgent from './TrainingWithAgent';
 import DashboardIcon from './DashboardIcon';
 import AskProgressCheck from './AskProgressCheck';
 import './Dashboard.css';
 
 const Dashboard = () => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const API_BASE = getApiBase();
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -37,10 +35,8 @@ const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('profile');
   const [userRole, setUserRole] = useState(null);
   const [profileComplete, setProfileComplete] = useState(true);
-  const [breakRequestModalOpen, setBreakRequestModalOpen] = useState(false);
   const [progressCheckOpen, setProgressCheckOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
-  const [chatOpen, setChatOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [notificationsLoading, setNotificationsLoading] = useState(false);
   const [notificationsError, setNotificationsError] = useState(null);
@@ -58,7 +54,7 @@ const Dashboard = () => {
       setNotificationsLoading(true);
       setNotificationsError(null);
       const res = await axios.get(
-        `${API_BASE}/api/member/notifications?language=${i18n.language || 'fa'}`,
+        `${API_BASE}/api/member/notifications?language=en`,
         getAxiosConfig()
       );
       setNotifications(Array.isArray(res.data) ? res.data : []);
@@ -69,7 +65,7 @@ const Dashboard = () => {
     } finally {
       setNotificationsLoading(false);
     }
-  }, [API_BASE, i18n.language, user, getAxiosConfig]);
+  }, [API_BASE, user, getAxiosConfig]);
 
   useEffect(() => {
     if (user && userRole) loadNotifications();
@@ -182,54 +178,44 @@ const Dashboard = () => {
     }
   }, [API_BASE, user]);
 
-  const changeLanguage = () => {
-    const newLang = i18n.language === 'fa' ? 'en' : 'fa';
-    i18n.changeLanguage(newLang);
-    document.documentElement.lang = newLang;
-    // Keep direction as LTR for consistent alignment
-    document.documentElement.dir = 'ltr';
-    document.body.dir = 'ltr';
-  };
-
   // Determine tabs based on user role
   const getTabs = () => {
     if (userRole === 'admin') {
-      // Admin tabs
+      // Admin tabs - gym flow: Members & Coaches, Pricing, Programs, Settings
       return [
-        { id: 'members-coachs-management', label: i18n.language === 'fa' ? 'مدیریت اعضا و دستیاران' : 'Members and Coachs Management', icon: 'people' },
-        { id: 'training-info', label: i18n.language === 'fa' ? 'اطلاعات تمرین' : 'Training Info', icon: 'menu_book' },
-        { id: 'training-plans-products', label: i18n.language === 'fa' ? 'برنامه‌ها و بسته‌های خرید' : 'Training Plans & Packages', icon: 'assignment' },
-        { id: 'ai-settings', label: i18n.language === 'fa' ? 'تنظیمات AI' : 'AI Settings', icon: 'smart_toy' },
-        { id: 'site-settings', label: i18n.language === 'fa' ? 'تنظیمات سایت' : 'Site Settings', icon: 'settings' },
-        { id: 'members-programs', label: i18n.language === 'fa' ? 'برنامه اعضا' : 'Members Programs', icon: 'assignment' }
+        { id: 'members-coachs-management', label: 'Members & Coaches', icon: 'people' },
+        { id: 'training-plans-products', label: 'Pricing & Plans', icon: 'assignment' },
+        { id: 'members-programs', label: 'Programs', icon: 'assignment' },
+        { id: 'ai-settings', label: 'AI Settings', icon: 'smart_toy' },
+        { id: 'site-settings', label: 'Site Settings', icon: 'settings' }
       ];
     } else if (userRole === 'coach') {
-      // Coach sees profile tab if incomplete, otherwise coach tabs
+      // Coach sees profile tab if incomplete, otherwise coach tabs (Training Info, Members, no Break Requests)
       if (!profileComplete) {
         return [
-          { id: 'profile', label: i18n.language === 'fa' ? 'پروفایل' : 'Profile', icon: 'person' }
+          { id: 'profile', label: 'Profile', icon: 'person' }
         ];
       } else {
         return [
-          { id: 'members-list', label: i18n.language === 'fa' ? 'لیست اعضا' : 'Members List', icon: 'people' },
-          { id: 'break-requests', label: i18n.language === 'fa' ? 'درخواست استراحت' : 'Break Requests', icon: 'pause' },
-          { id: 'in-person-sessions', label: i18n.language === 'fa' ? 'تاریخچه جلسات حضوری' : 'In-Person Sessions', icon: 'event' },
-          { id: 'members-programs', label: i18n.language === 'fa' ? 'برنامه اعضا' : 'Members Programs', icon: 'assignment' }
+          { id: 'members-list', label: 'My Members', icon: 'people' },
+          { id: 'training-info', label: 'Training Info', icon: 'menu_book' },
+          { id: 'in-person-sessions', label: 'In-Person Sessions', icon: 'event' },
+          { id: 'members-programs', label: 'Members Programs', icon: 'assignment' }
         ];
       }
     } else {
       // Regular members see profile tab, Training with Agent tab, and base tabs
       const baseTabs = [
-        { id: 'training-with-agent', label: i18n.language === 'fa' ? 'تمرین با دستیار' : 'Training with Agent', icon: 'smart_toy' },
+        { id: 'training-with-agent', label: 'Training with Agent', icon: 'smart_toy' },
         { id: 'history', label: t('history'), icon: 'bar_chart' },
-        { id: 'steps', label: i18n.language === 'fa' ? 'شمارش قدم' : 'Steps', icon: 'directions_walk' },
+        { id: 'steps', label: 'Steps', icon: 'directions_walk' },
         { id: 'nutrition', label: t('nutrition'), icon: 'restaurant' },
-        { id: 'training-program', label: i18n.language === 'fa' ? 'برنامه تمرینی' : 'Training Program', icon: 'fitness_center' },
-        { id: 'online-lab', label: i18n.language === 'fa' ? 'آزمایشگاه آنلاین' : 'Online Laboratory', icon: 'science' },
-        { id: 'psychology-test', label: i18n.language === 'fa' ? 'تست روانشناسی' : 'Psychology Test', icon: 'psychology' }
+        { id: 'training-program', label: 'Training Program', icon: 'fitness_center' },
+        { id: 'online-lab', label: 'Online Laboratory', icon: 'science' },
+        { id: 'psychology-test', label: 'Psychology Test', icon: 'psychology' }
       ];
       return [
-        { id: 'profile', label: i18n.language === 'fa' ? 'پروفایل' : 'Profile', icon: 'person' },
+        { id: 'profile', label: 'Profile', icon: 'person' },
         ...baseTabs
       ];
     }
@@ -268,7 +254,7 @@ const Dashboard = () => {
                   type="button"
                   className="topbar-notifications-btn"
                   onClick={(e) => { e.stopPropagation(); setNotificationsOpen((o) => !o); }}
-                  title={i18n.language === 'fa' ? 'اعلان‌ها' : 'Notifications'}
+                  title="Notifications"
                   aria-label="Notifications"
                 >
                   <svg className="notification-bell-icon" viewBox="0 0 24 24" fill="currentColor" width="22" height="22">
@@ -281,25 +267,25 @@ const Dashboard = () => {
                 {notificationsOpen && (
                   <div className="topbar-notifications-dropdown">
                     <div className="notifications-dropdown-header">
-                      <span>{i18n.language === 'fa' ? 'اعلان‌ها' : 'Notifications'}</span>
+                      <span>Notifications</span>
                       {unreadCount > 0 && (
                         <button type="button" className="notifications-mark-all" onClick={markAllNotificationsRead}>
-                          {i18n.language === 'fa' ? 'همه خوانده شد' : 'Mark all read'}
+                          Mark all read
                         </button>
                       )}
                     </div>
                     <div className="notifications-dropdown-list">
                       {notificationsLoading ? (
-                        <div className="notifications-loading">{i18n.language === 'fa' ? 'در حال بارگذاری...' : 'Loading...'}</div>
+                        <div className="notifications-loading">Loading...</div>
                       ) : notificationsError ? (
                         <div className="notifications-error">
-                          {i18n.language === 'fa' ? 'خطا در بارگذاری اعلان‌ها' : 'Error loading notifications'}
+                          Error loading notifications
                           <button type="button" className="notifications-retry" onClick={() => loadNotifications()}>
-                            {i18n.language === 'fa' ? 'تلاش مجدد' : 'Retry'}
+                            Retry
                           </button>
                         </div>
                       ) : notifications.length === 0 ? (
-                        <div className="notifications-empty">{i18n.language === 'fa' ? 'اعلانی نیست' : 'No notifications'}</div>
+                        <div className="notifications-empty">No notifications</div>
                       ) : (
                         notifications.map((n) => (
                           <button
@@ -310,9 +296,9 @@ const Dashboard = () => {
                           >
                             {n.type && (
                               <span className="notification-type-badge" data-type={n.type}>
-                                {n.type === 'trainer_note' ? (i18n.language === 'fa' ? 'یادداشت مربی' : 'Trainer note') :
-                                 n.type === 'message' ? (i18n.language === 'fa' ? 'پیام' : 'Message') :
-                                 n.type === 'reminder' ? (i18n.language === 'fa' ? 'یادآوری' : 'Reminder') :
+                                {n.type === 'trainer_note' ? 'Trainer note' :
+                                 n.type === 'message' ? 'Message' :
+                                 n.type === 'reminder' ? 'Reminder' :
                                  n.type}
                               </span>
                             )}
@@ -321,7 +307,7 @@ const Dashboard = () => {
                             {n.voice_url && (
                               <audio controls src={`${API_BASE}${n.voice_url}`} preload="metadata" className="notification-audio" />
                             )}
-                            {n.created_at && <span className="notification-time">{new Date(n.created_at).toLocaleString(i18n.language === 'fa' ? 'fa-IR' : 'en-US', { dateStyle: 'short', timeStyle: 'short' })}</span>}
+                            {n.created_at && <span className="notification-time">{new Date(n.created_at).toLocaleString('en-US', { dateStyle: 'short', timeStyle: 'short' })}</span>}
                           </button>
                         ))
                       )}
@@ -330,26 +316,6 @@ const Dashboard = () => {
                 )}
               </div>
             )}
-            {userRole === 'member' && (
-              <button
-                type="button"
-                className="topbar-break-request-btn"
-                onClick={() => setBreakRequestModalOpen(true)}
-                title={i18n.language === 'fa' ? 'درخواست استراحت' : 'Request a break'}
-              >
-                {i18n.language === 'fa' ? 'استراحت' : 'Break'}
-              </button>
-            )}
-            <button
-              type="button"
-              className={`lang-toggle ${i18n.language === 'fa' ? 'fa-active' : 'en-active'}`}
-              onClick={changeLanguage}
-              title={i18n.language === 'fa' ? 'Switch to English' : 'تبدیل به فارسی'}
-            >
-              <span className="lang-label-en">EN</span>
-              <span className="lang-label-fa">فا</span>
-              <span className="lang-toggle-slider"></span>
-            </button>
             <span className="username">{user?.username}</span>
             <button type="button" className="topbar-logout-btn" onClick={logout}>
               {t('logout')}
@@ -363,14 +329,10 @@ const Dashboard = () => {
           <div className={`trial-banner ${trialStatus.trial_ended ? 'trial-ended' : 'trial-active'}`}>
             {trialStatus.is_trial_active ? (
               <span>
-                {i18n.language === 'fa'
-                  ? `دوره آزمایشی رایگان: ${trialStatus.days_left === 0 ? 'امروز آخرین روز' : `${trialStatus.days_left} روز باقی‌مانده`}`
-                  : `Free trial: ${trialStatus.days_left === 0 ? 'Last day today' : `${trialStatus.days_left} days left`}`}
+                Free trial: {trialStatus.days_left === 0 ? 'Last day today' : `${trialStatus.days_left} days left`}
               </span>
             ) : trialStatus.trial_ended ? (
-              <span>
-                {i18n.language === 'fa' ? 'دوره آزمایشی ۷ روزه شما به پایان رسید. برای ادامه از تمام امکانات، اشتراک تهیه کنید.' : 'Your 7-day free trial has ended. Subscribe to continue using all features.'}
-              </span>
+              <span>Your 7-day free trial has ended. Subscribe to continue using all features.</span>
             ) : null}
           </div>
         )}
@@ -383,7 +345,7 @@ const Dashboard = () => {
                 onClick={() => setProgressCheckOpen(true)}
               >
                 <span className="member-action-icon"><DashboardIcon name="bar_chart" /></span>
-                {i18n.language === 'fa' ? 'درخواست بررسی پیشرفت' : 'Ask for progress check'}
+                Ask for progress check
               </button>
             </div>
           )}
@@ -410,8 +372,8 @@ const Dashboard = () => {
           <div className="tab-content">
             {activeTab === 'profile' && <ProfileTab />}
             {activeTab === 'training-with-agent' && <TrainingWithAgent />}
-            {activeTab === 'members-coachs-management' && <MembersAndCoachsManagementTab />}
-            {activeTab === 'coach-dashboard' && <CoachDashboard />}
+            {activeTab === 'members-coachs-management' && <MembersAndAssistantsManagementTab />}
+            {activeTab === 'coach-dashboard' && <AssistantDashboard />}
             {activeTab === 'members-list' && <MembersListTab />}
             {activeTab === 'in-person-sessions' && <InPersonSessionsTab />}
             {activeTab === 'members-programs' && <MembersProgramsTab />}
@@ -423,53 +385,25 @@ const Dashboard = () => {
             {activeTab === 'nutrition' && <NutritionTab />}
             {activeTab === 'training-program' && <TrainingProgramTab />}
             {activeTab === 'steps' && <StepsTab />}
-            {activeTab === 'break-requests' && <BreakRequestsTab />}
             {activeTab === 'online-lab' && <OnlineLab />}
             {activeTab === 'psychology-test' && <PsychologyTest />}
           </div>
         </div>
 
-        <button
-          type="button"
-          className="floating-chat-btn"
-          onClick={() => setChatOpen((prev) => !prev)}
-          aria-label={i18n.language === 'fa' ? 'باز کردن چت' : 'Open chat'}
-        >
-          <DashboardIcon name="chat" />
-        </button>
-        {chatOpen && (
-          <>
-            <div className="floating-chat-backdrop" onClick={() => setChatOpen(false)} />
-            <div className="floating-chat-panel floating-chat-panel-open" role="dialog" aria-modal="true">
-              <div className="floating-chat-header">
-                <span>{i18n.language === 'fa' ? 'چت' : 'Chat'}</span>
-                <button type="button" onClick={() => setChatOpen(false)} aria-label={i18n.language === 'fa' ? 'بستن' : 'Close'}>
-                  ×
-                </button>
-              </div>
-              <div className="floating-chat-content">
-                <ChatWithTabs userRole={userRole} />
-              </div>
-            </div>
-          </>
-        )}
+        <DashboardChatWidget />
 
         {progressCheckOpen && (
           <div className="progress-check-modal-overlay" onClick={() => setProgressCheckOpen(false)} role="dialog" aria-modal="true">
             <div className="progress-check-modal" onClick={(e) => e.stopPropagation()} dir="ltr">
               <div className="progress-check-modal-header">
-                <span>{i18n.language === 'fa' ? 'درخواست بررسی پیشرفت' : 'Ask for progress check'}</span>
-                <button type="button" onClick={() => setProgressCheckOpen(false)} aria-label={i18n.language === 'fa' ? 'بستن' : 'Close'}>×</button>
+                <span>Ask for progress check</span>
+                <button type="button" onClick={() => setProgressCheckOpen(false)} aria-label="Close">×</button>
               </div>
               <AskProgressCheck />
             </div>
           </div>
         )}
       </div>
-      <BreakRequestModal
-        isOpen={breakRequestModalOpen}
-        onClose={() => setBreakRequestModalOpen(false)}
-      />
     </div>
   );
 };

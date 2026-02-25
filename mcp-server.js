@@ -1,5 +1,5 @@
 /**
- * MCP Server for Raha Fitness AI Agent
+ * MCP Server for Insight GYM USA AI Agent
  * This server allows the AI agent to interact with the backend APIs
  */
 
@@ -11,7 +11,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const BACKEND_URL = 'http://localhost:5000/api';
+const BACKEND_URL = 'http://localhost:5001/api';
 
 /**
  * MCP Tool: Get User Exercise History

@@ -4,7 +4,7 @@ import ChatPanel from './ChatPanel';
 import './FloatingChatButton.css';
 
 const FloatingChatButton = () => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const [showChat, setShowChat] = useState(false);
 
   return (

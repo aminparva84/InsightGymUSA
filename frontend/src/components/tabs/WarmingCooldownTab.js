@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { getApiBase } from '../../services/apiBase';
 import './WarmingCooldownTab.css';
@@ -62,7 +61,6 @@ const getRecommendedTemplate = () => ({
 });
 
 const WarmingCooldownTab = () => {
-  const { i18n } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const autoSavedTemplate = useRef(false);
@@ -160,36 +158,33 @@ const WarmingCooldownTab = () => {
     try {
       setSaving(true);
       await saveSessionPhases(data);
-      alert(i18n.language === 'fa' ? 'ذخیره شد' : 'Saved');
+      alert('Saved');
     } catch (err) {
       console.error('Error saving:', err);
-      alert(i18n.language === 'fa' ? 'خطا در ذخیره' : 'Error saving');
+      alert('Error saving');
     } finally {
       setSaving(false);
     }
   };
 
   const renderPhase = (key, phase, setPhase) => {
-    const fa = i18n.language === 'fa';
-    const titleLabel = key === 'warming'
-      ? (fa ? 'گرم کردن' : 'Warming')
-      : (fa ? 'سرد کردن و تنفس' : 'Cooldown & Breathing');
+    const titleLabel = key === 'warming' ? 'Warming' : 'Cooldown & Breathing';
     const steps = phase.steps || [];
     return (
       <section key={key} className="warming-cooldown-phase">
         <h3>{titleLabel}</h3>
         <div className="phase-titles">
           <div className="form-group">
-            <label>{fa ? 'عنوان (فارسی)' : 'Title (FA)'}</label>
+            <label>Title (EN)</label>
             <input
               type="text"
               value={phase.title_fa}
               onChange={(e) => setPhase(p => ({ ...p, title_fa: e.target.value }))}
-              placeholder={fa ? 'گرم کردن' : 'Warming'}
+              placeholder="Warming"
             />
           </div>
           <div className="form-group">
-            <label>{fa ? 'عنوان (انگلیسی)' : 'Title (EN)'}</label>
+            <label>Title (EN)</label>
             <input
               type="text"
               value={phase.title_en}
@@ -199,7 +194,7 @@ const WarmingCooldownTab = () => {
           </div>
         </div>
         <div className="phase-steps">
-          <h4>{fa ? 'زیرمراحل' : 'Sub-steps'}</h4>
+          <h4>Sub-steps</h4>
           {steps.map((step, idx) => (
             <div key={idx} className="step-block">
               <div className="step-row">
@@ -208,14 +203,14 @@ const WarmingCooldownTab = () => {
                   className="step-title-fa"
                   value={step.title_fa}
                   onChange={(e) => updateStep(key, idx, 'title_fa', e.target.value)}
-                  placeholder={fa ? 'عنوان مرحله' : 'Step title (FA)'}
+                  placeholder="Step title"
                 />
                 <input
                   type="text"
                   className="step-title-en"
                   value={step.title_en}
                   onChange={(e) => updateStep(key, idx, 'title_en', e.target.value)}
-                  placeholder={fa ? 'Step title (EN)' : 'Step title (EN)'}
+                  placeholder="Step title"
                 />
                 <button type="button" className="step-remove" onClick={() => removeStep(key, idx)}>×</button>
               </div>
@@ -224,19 +219,19 @@ const WarmingCooldownTab = () => {
                   rows={2}
                   value={step.body_fa}
                   onChange={(e) => updateStep(key, idx, 'body_fa', e.target.value)}
-                  placeholder={fa ? 'توضیح (فارسی)' : 'Description (FA)'}
+                  placeholder="Description"
                 />
                 <textarea
                   rows={2}
                   value={step.body_en}
                   onChange={(e) => updateStep(key, idx, 'body_en', e.target.value)}
-                  placeholder={fa ? 'Description (EN)' : 'Description (EN)'}
+                  placeholder="Description"
                 />
               </div>
             </div>
           ))}
           <button type="button" className="btn-add-step" onClick={() => addStep(key)}>
-            {fa ? '+ افزودن زیرمرحله' : '+ Add sub-step'}
+            + Add sub-step
           </button>
         </div>
       </section>
@@ -244,16 +239,15 @@ const WarmingCooldownTab = () => {
   };
 
   if (loading) {
-    return <div className="warming-cooldown-loading">{i18n.language === 'fa' ? 'در حال بارگذاری...' : 'Loading...'}</div>;
+    return <div className="warming-cooldown-loading">Loading...</div>;
   }
 
-  const fa = i18n.language === 'fa';
   return (
     <div className="warming-cooldown-tab" dir="ltr">
       <div className="warming-cooldown-header">
-        <h2>{fa ? 'گرم کردن و سرد کردن (جلسه تمرین)' : 'Warming & Cooldown (Session Steps)'}</h2>
+        <h2>Warming & Cooldown (Session Steps)</h2>
         <p className="warming-cooldown-desc">
-          {fa ? 'محتوای گرم کردن و سرد کردن و تنفس را برای نمایش به اعضا در هر جلسه تمرین تنظیم کنید. زیرمراحل را اضافه کنید.' : 'Set warming and cooldown/breathing content shown to members in each training session. Add sub-steps as needed.'}
+          Set warming and cooldown/breathing content shown to members in each training session. Add sub-steps as needed.
         </p>
         <div className="warming-cooldown-actions">
           <button
@@ -261,10 +255,10 @@ const WarmingCooldownTab = () => {
             className="btn-secondary"
             onClick={() => setData(getRecommendedTemplate())}
           >
-            {fa ? 'بارگذاری قالب پیشنهادی' : 'Load recommended template'}
+            Load recommended template
           </button>
           <button type="button" className="btn-primary" onClick={handleSave} disabled={saving}>
-            {saving ? (fa ? 'در حال ذخیره...' : 'Saving...') : (fa ? 'ذخیره' : 'Save')}
+            {saving ? 'Saving...' : 'Save'}
           </button>
         </div>
       </div>
@@ -272,18 +266,18 @@ const WarmingCooldownTab = () => {
         {renderPhase('warming', data.warming, setWarming)}
         {renderPhase('cooldown', data.cooldown, setCooldown)}
         <section className="warming-cooldown-phase">
-          <h3>{fa ? 'پیام پایانی (تشویق عضو)' : 'Ending message (encourage member)'}</h3>
+          <h3>Ending message (encourage member)</h3>
           <div className="form-group">
-            <label>{fa ? 'متن (فارسی)' : 'Text (FA)'}</label>
+            <label>Text (EN)</label>
             <textarea
               rows={3}
               value={data.ending_message_fa}
               onChange={(e) => setData(prev => ({ ...prev, ending_message_fa: e.target.value }))}
-              placeholder={fa ? 'عالی بود! ادامه بده.' : 'Great job! Keep it up.'}
+              placeholder="Great job! Keep it up."
             />
           </div>
           <div className="form-group">
-            <label>{fa ? 'متن (انگلیسی)' : 'Text (EN)'}</label>
+            <label>Text (EN)</label>
             <textarea
               rows={3}
               value={data.ending_message_en}
@@ -294,7 +288,7 @@ const WarmingCooldownTab = () => {
         </section>
         <div className="form-actions">
           <button type="button" className="btn-primary" onClick={handleSave} disabled={saving}>
-            {saving ? (fa ? 'در حال ذخیره...' : 'Saving...') : (fa ? 'ذخیره' : 'Save')}
+            {saving ? 'Saving...' : 'Save'}
           </button>
         </div>
       </div>

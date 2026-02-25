@@ -140,17 +140,29 @@ class PersianFitnessCoachAI:
 
         return safe_exercises
 
+    def _get_config_source(self):
+        """Get training config source: coach's config if member has assigned coach, else site Configuration."""
+        db = _db()
+        coach_id = getattr(self.user, 'assigned_to', None) if self.user else None
+        if coach_id:
+            from models import CoachTrainingInfo
+            coach_info = db.session.query(CoachTrainingInfo).filter_by(coach_id=coach_id).first()
+            if coach_info and coach_info.injuries:
+                return json.loads(coach_info.injuries) if isinstance(coach_info.injuries, str) else coach_info.injuries
+        from models import Configuration
+        config = db.session.query(Configuration).first()
+        if not config or not config.injuries:
+            return None
+        return json.loads(config.injuries) if isinstance(config.injuries, str) else config.injuries
+
     def _get_forbidden_exercise_names(self, injuries: List[str]) -> List[str]:
-        """Load admin's forbidden_movements from Configuration.injuries for user's injury types."""
+        """Load forbidden_movements from coach's or site config for user's injury types."""
         if not injuries:
             return []
         try:
-            from models import Configuration
-            db = _db()
-            config = db.session.query(Configuration).first()
-            if not config or not config.injuries:
+            raw = self._get_config_source()
+            if not raw:
                 return []
-            raw = json.loads(config.injuries) if isinstance(config.injuries, str) else config.injuries
             names = []
             for inj in injuries:
                 inj_key = inj.replace(' ', '_').lower()
@@ -166,16 +178,13 @@ class PersianFitnessCoachAI:
             return []
 
     def _get_injury_important_notes(self, injuries: List[str], language: str = "fa") -> str:
-        """Get admin's important_notes for user's injuries from Configuration.injuries."""
+        """Get important_notes for user's injuries from coach's or site config."""
         if not injuries:
             return ""
         try:
-            from models import Configuration
-            db = _db()
-            config = db.session.query(Configuration).first()
-            if not config or not config.injuries:
+            raw = self._get_config_source()
+            if not raw:
                 return ""
-            raw = json.loads(config.injuries) if isinstance(config.injuries, str) else config.injuries
             parts = []
             field = 'important_notes_fa' if language == 'fa' else 'important_notes_en'
             seen_notes = set()
@@ -195,14 +204,22 @@ class PersianFitnessCoachAI:
             return ""
 
     def _get_training_levels_config(self, language: str = "fa") -> Optional[Dict]:
-        """Load admin's Training Levels Info (Training Info tab) for user's level and goal."""
+        """Load Training Levels Info from member's coach (if assigned) or site config."""
         try:
-            from models import Configuration
             db = _db()
-            config = db.session.query(Configuration).first()
-            if not config or not config.training_levels:
-                return None
-            raw = json.loads(config.training_levels) if isinstance(config.training_levels, str) else config.training_levels
+            coach_id = getattr(self.user, 'assigned_to', None) if self.user else None
+            raw = None
+            if coach_id:
+                from models import CoachTrainingInfo
+                coach_info = db.session.query(CoachTrainingInfo).filter_by(coach_id=coach_id).first()
+                if coach_info and coach_info.training_levels:
+                    raw = json.loads(coach_info.training_levels) if isinstance(coach_info.training_levels, str) else coach_info.training_levels
+            if not raw:
+                from models import Configuration
+                config = db.session.query(Configuration).first()
+                if not config or not config.training_levels:
+                    return None
+                raw = json.loads(config.training_levels) if isinstance(config.training_levels, str) else config.training_levels
             if not raw:
                 return None
             level = (self.user_profile.training_level or 'beginner').strip().lower()

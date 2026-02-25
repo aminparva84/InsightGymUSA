@@ -1,4 +1,4 @@
-# Database Schema Summary - Raha Fitness
+# Database Schema Summary - Insight GYM USA
 
 ## What Was Created
 
@@ -76,10 +76,10 @@ The app uses **PostgreSQL** in production. Prefer SQLAlchemy `db.create_all()` o
 
 ```bash
 # PostgreSQL (recommended; use database_schema_postgresql.sql)
-psql -d raha_fitness -f database_schema_postgresql.sql
+psql -d insight_gym_usa -f database_schema_postgresql.sql
 
 # SQLite (local dev only)
-sqlite3 raha_fitness.db < database_schema.sql
+sqlite3 insight_gym_usa.db < database_schema.sql
 ```
 
 ## Example Usage

@@ -1,32 +1,14 @@
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import './PsychologyTest.css';
 
 const PsychologyTest = () => {
-  const { i18n } = useTranslation();
   const [activeTest, setActiveTest] = useState(null);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState({});
   const [results, setResults] = useState({});
 
   // Exercise Personality Assessment Questions (15 questions)
-  const exercisePersonalityQuestions = i18n.language === 'fa' ? [
-    { id: 1, question: 'من ترجیح می‌دهم به تنهایی تمرین کنم تا در گروه', options: ['کاملاً موافقم', 'موافقم', 'بی‌طرف', 'مخالفم', 'کاملاً مخالفم'] },
-    { id: 2, question: 'من از چالش‌های فیزیکی لذت می‌برم', options: ['کاملاً موافقم', 'موافقم', 'بی‌طرف', 'مخالفم', 'کاملاً مخالفم'] },
-    { id: 3, question: 'من نیاز به برنامه منظم برای تمرینات دارم', options: ['کاملاً موافقم', 'موافقم', 'بی‌طرف', 'مخالفم', 'کاملاً مخالفم'] },
-    { id: 4, question: 'من از رقابت با دیگران انگیزه می‌گیرم', options: ['کاملاً موافقم', 'موافقم', 'بی‌طرف', 'مخالفم', 'کاملاً مخالفم'] },
-    { id: 5, question: 'من ترجیح می‌دهم تمرینات متنوع انجام دهم', options: ['کاملاً موافقم', 'موافقم', 'بی‌طرف', 'مخالفم', 'کاملاً مخالفم'] },
-    { id: 6, question: 'من از تمرینات شدید و چالش‌برانگیز لذت می‌برم', options: ['کاملاً موافقم', 'موافقم', 'بی‌طرف', 'مخالفم', 'کاملاً مخالفم'] },
-    { id: 7, question: 'من نیاز به بازخورد فوری از پیشرفت خود دارم', options: ['کاملاً موافقم', 'موافقم', 'بی‌طرف', 'مخالفم', 'کاملاً مخالفم'] },
-    { id: 8, question: 'من از تمرینات تکراری خسته می‌شوم', options: ['کاملاً موافقم', 'موافقم', 'بی‌طرف', 'مخالفم', 'کاملاً مخالفم'] },
-    { id: 9, question: 'من ترجیح می‌دهم در محیط آرام تمرین کنم', options: ['کاملاً موافقم', 'موافقم', 'بی‌طرف', 'مخالفم', 'کاملاً مخالفم'] },
-    { id: 10, question: 'من از هدف‌گذاری و دستیابی به اهداف لذت می‌برم', options: ['کاملاً موافقم', 'موافقم', 'بی‌طرف', 'مخالفم', 'کاملاً مخالفم'] },
-    { id: 11, question: 'من نیاز به انعطاف‌پذیری در برنامه تمرینی دارم', options: ['کاملاً موافقم', 'موافقم', 'بی‌طرف', 'مخالفم', 'کاملاً مخالفم'] },
-    { id: 12, question: 'من از یادگیری تکنیک‌های جدید هیجان‌زده می‌شوم', options: ['کاملاً موافقم', 'موافقم', 'بی‌طرف', 'مخالفم', 'کاملاً مخالفم'] },
-    { id: 13, question: 'من ترجیح می‌دهم تمرینات کوتاه و شدید انجام دهم', options: ['کاملاً موافقم', 'موافقم', 'بی‌طرف', 'مخالفم', 'کاملاً مخالفم'] },
-    { id: 14, question: 'من از تمرینات گروهی و اجتماعی لذت می‌برم', options: ['کاملاً موافقم', 'موافقم', 'بی‌طرف', 'مخالفم', 'کاملاً مخالفم'] },
-    { id: 15, question: 'من نیاز به ساختار و نظم در تمرینات دارم', options: ['کاملاً موافقم', 'موافقم', 'بی‌طرف', 'مخالفم', 'کاملاً مخالفم'] }
-  ] : [
+  const exercisePersonalityQuestions = [
     { id: 1, question: 'I prefer to exercise alone rather than in a group', options: ['Strongly Agree', 'Agree', 'Neutral', 'Disagree', 'Strongly Disagree'] },
     { id: 2, question: 'I enjoy physical challenges', options: ['Strongly Agree', 'Agree', 'Neutral', 'Disagree', 'Strongly Disagree'] },
     { id: 3, question: 'I need a regular schedule for workouts', options: ['Strongly Agree', 'Agree', 'Neutral', 'Disagree', 'Strongly Disagree'] },
@@ -45,20 +27,7 @@ const PsychologyTest = () => {
   ];
 
   // Emotional Intelligence (EQ) Test in Sports Questions (12 questions)
-  const eqTestQuestions = i18n.language === 'fa' ? [
-    { id: 1, question: 'من می‌توانم احساسات خود را در حین تمرین کنترل کنم', options: ['کاملاً موافقم', 'موافقم', 'بی‌طرف', 'مخالفم', 'کاملاً مخالفم'] },
-    { id: 2, question: 'من می‌توانم احساسات دیگران را در محیط ورزشی درک کنم', options: ['کاملاً موافقم', 'موافقم', 'بی‌طرف', 'مخالفم', 'کاملاً مخالفم'] },
-    { id: 3, question: 'من در مواجهه با شکست انگیزه خود را حفظ می‌کنم', options: ['کاملاً موافقم', 'موافقم', 'بی‌طرف', 'مخالفم', 'کاملاً مخالفم'] },
-    { id: 4, question: 'من می‌توانم استرس را در حین تمرین مدیریت کنم', options: ['کاملاً موافقم', 'موافقم', 'بی‌طرف', 'مخالفم', 'کاملاً مخالفم'] },
-    { id: 5, question: 'من از بازخورد سازنده استقبال می‌کنم', options: ['کاملاً موافقم', 'موافقم', 'بی‌طرف', 'مخالفم', 'کاملاً مخالفم'] },
-    { id: 6, question: 'من می‌توانم با تیم همکاری موثری داشته باشم', options: ['کاملاً موافقم', 'موافقم', 'بی‌طرف', 'مخالفم', 'کاملاً مخالفم'] },
-    { id: 7, question: 'من می‌توانم انگیزه خود را در طول زمان حفظ کنم', options: ['کاملاً موافقم', 'موافقم', 'بی‌طرف', 'مخالفم', 'کاملاً مخالفم'] },
-    { id: 8, question: 'من می‌توانم احساسات منفی را به انرژی مثبت تبدیل کنم', options: ['کاملاً موافقم', 'موافقم', 'بی‌طرف', 'مخالفم', 'کاملاً مخالفم'] },
-    { id: 9, question: 'من درک خوبی از نقاط قوت و ضعف خود دارم', options: ['کاملاً موافقم', 'موافقم', 'بی‌طرف', 'مخالفم', 'کاملاً مخالفم'] },
-    { id: 10, question: 'من می‌توانم در شرایط دشوار آرامش خود را حفظ کنم', options: ['کاملاً موافقم', 'موافقم', 'بی‌طرف', 'مخالفم', 'کاملاً مخالفم'] },
-    { id: 11, question: 'من می‌توانم با مربی و هم‌تیمی‌ها ارتباط موثری برقرار کنم', options: ['کاملاً موافقم', 'موافقم', 'بی‌طرف', 'مخالفم', 'کاملاً مخالفم'] },
-    { id: 12, question: 'من از اشتباهات خود درس می‌گیرم و پیشرفت می‌کنم', options: ['کاملاً موافقم', 'موافقم', 'بی‌طرف', 'مخالفم', 'کاملاً مخالفم'] }
-  ] : [
+  const eqTestQuestions = [
     { id: 1, question: 'I can control my emotions during exercise', options: ['Strongly Agree', 'Agree', 'Neutral', 'Disagree', 'Strongly Disagree'] },
     { id: 2, question: 'I can understand others\' emotions in a sports environment', options: ['Strongly Agree', 'Agree', 'Neutral', 'Disagree', 'Strongly Disagree'] },
     { id: 3, question: 'I maintain my motivation when facing failure', options: ['Strongly Agree', 'Agree', 'Neutral', 'Disagree', 'Strongly Disagree'] },
@@ -74,20 +43,7 @@ const PsychologyTest = () => {
   ];
 
   // Exercise Potential Assessment Questions (12 questions)
-  const exercisePotentialQuestions = i18n.language === 'fa' ? [
-    { id: 1, question: 'من به طور منظم و مستمر تمرین می‌کنم', options: ['کاملاً موافقم', 'موافقم', 'بی‌طرف', 'مخالفم', 'کاملاً مخالفم'] },
-    { id: 2, question: 'من از تمرینات سخت نمی‌ترسم', options: ['کاملاً موافقم', 'موافقم', 'بی‌طرف', 'مخالفم', 'کاملاً مخالفم'] },
-    { id: 3, question: 'من می‌توانم اهداف بلندمدت برای خود تعیین کنم', options: ['کاملاً موافقم', 'موافقم', 'بی‌طرف', 'مخالفم', 'کاملاً مخالفم'] },
-    { id: 4, question: 'من از درد و ناراحتی در تمرینات نمی‌هراسم', options: ['کاملاً موافقم', 'موافقم', 'بی‌طرف', 'مخالفم', 'کاملاً مخالفم'] },
-    { id: 5, question: 'من می‌توانم تمرینات را حتی در شرایط سخت ادامه دهم', options: ['کاملاً موافقم', 'موافقم', 'بی‌طرف', 'مخالفم', 'کاملاً مخالفم'] },
-    { id: 6, question: 'من از یادگیری و بهبود مستمر لذت می‌برم', options: ['کاملاً موافقم', 'موافقم', 'بی‌طرف', 'مخالفم', 'کاملاً مخالفم'] },
-    { id: 7, question: 'من می‌توانم تمرکز خود را در طول تمرین حفظ کنم', options: ['کاملاً موافقم', 'موافقم', 'بی‌طرف', 'مخالفم', 'کاملاً مخالفم'] },
-    { id: 8, question: 'من از رقابت و چالش لذت می‌برم', options: ['کاملاً موافقم', 'موافقم', 'بی‌طرف', 'مخالفم', 'کاملاً مخالفم'] },
-    { id: 9, question: 'من می‌توانم از اشتباهات خود درس بگیرم', options: ['کاملاً موافقم', 'موافقم', 'بی‌طرف', 'مخالفم', 'کاملاً مخالفم'] },
-    { id: 10, question: 'من انگیزه قوی برای پیشرفت دارم', options: ['کاملاً موافقم', 'موافقم', 'بی‌طرف', 'مخالفم', 'کاملاً مخالفم'] },
-    { id: 11, question: 'من می‌توانم با مربی و راهنما همکاری کنم', options: ['کاملاً موافقم', 'موافقم', 'بی‌طرف', 'مخالفم', 'کاملاً مخالفم'] },
-    { id: 12, question: 'من معتقد هستم که می‌توانم به اهداف ورزشی خود برسم', options: ['کاملاً موافقم', 'موافقم', 'بی‌طرف', 'مخالفم', 'کاملاً مخالفم'] }
-  ] : [
+  const exercisePotentialQuestions = [
     { id: 1, question: 'I exercise regularly and consistently', options: ['Strongly Agree', 'Agree', 'Neutral', 'Disagree', 'Strongly Disagree'] },
     { id: 2, question: 'I am not afraid of hard workouts', options: ['Strongly Agree', 'Agree', 'Neutral', 'Disagree', 'Strongly Disagree'] },
     { id: 3, question: 'I can set long-term goals for myself', options: ['Strongly Agree', 'Agree', 'Neutral', 'Disagree', 'Strongly Disagree'] },
@@ -154,33 +110,33 @@ const PsychologyTest = () => {
 
     let level, description;
     if (percentage >= 80) {
-      level = i18n.language === 'fa' ? 'عالی' : 'Excellent';
+      level = 'Excellent';
       description = activeTest === 'personality' 
-        ? (i18n.language === 'fa' ? 'شما شخصیت ورزشی قوی و منسجم دارید' : 'You have a strong and cohesive sports personality')
+        ? 'You have a strong and cohesive sports personality'
         : activeTest === 'eq'
-        ? (i18n.language === 'fa' ? 'هوش هیجانی شما در ورزش بسیار بالا است' : 'Your emotional intelligence in sports is very high')
-        : (i18n.language === 'fa' ? 'پتانسیل ورزشی شما بسیار بالا است' : 'Your exercise potential is very high');
+        ? 'Your emotional intelligence in sports is very high'
+        : 'Your exercise potential is very high';
     } else if (percentage >= 60) {
-      level = i18n.language === 'fa' ? 'خوب' : 'Good';
+      level = 'Good';
       description = activeTest === 'personality'
-        ? (i18n.language === 'fa' ? 'شما شخصیت ورزشی خوبی دارید' : 'You have a good sports personality')
+        ? 'You have a good sports personality'
         : activeTest === 'eq'
-        ? (i18n.language === 'fa' ? 'هوش هیجانی شما در ورزش خوب است' : 'Your emotional intelligence in sports is good')
-        : (i18n.language === 'fa' ? 'پتانسیل ورزشی شما خوب است' : 'Your exercise potential is good');
+        ? 'Your emotional intelligence in sports is good'
+        : 'Your exercise potential is good';
     } else if (percentage >= 40) {
-      level = i18n.language === 'fa' ? 'متوسط' : 'Average';
+      level = 'Average';
       description = activeTest === 'personality'
-        ? (i18n.language === 'fa' ? 'شخصیت ورزشی شما در سطح متوسط است' : 'Your sports personality is at an average level')
+        ? 'Your sports personality is at an average level'
         : activeTest === 'eq'
-        ? (i18n.language === 'fa' ? 'هوش هیجانی شما در ورزش متوسط است' : 'Your emotional intelligence in sports is average')
-        : (i18n.language === 'fa' ? 'پتانسیل ورزشی شما متوسط است' : 'Your exercise potential is average');
+        ? 'Your emotional intelligence in sports is average'
+        : 'Your exercise potential is average';
     } else {
-      level = i18n.language === 'fa' ? 'نیاز به بهبود' : 'Needs Improvement';
+      level = 'Needs Improvement';
       description = activeTest === 'personality'
-        ? (i18n.language === 'fa' ? 'شما نیاز به تقویت شخصیت ورزشی خود دارید' : 'You need to strengthen your sports personality')
+        ? 'You need to strengthen your sports personality'
         : activeTest === 'eq'
-        ? (i18n.language === 'fa' ? 'شما نیاز به بهبود هوش هیجانی خود دارید' : 'You need to improve your emotional intelligence')
-        : (i18n.language === 'fa' ? 'شما نیاز به تقویت پتانسیل ورزشی خود دارید' : 'You need to strengthen your exercise potential');
+        ? 'You need to improve your emotional intelligence'
+        : 'You need to strengthen your exercise potential';
     }
 
     setResults({
@@ -210,33 +166,33 @@ const PsychologyTest = () => {
   return (
     <div className="psychology-test" dir="ltr">
       <div className="psychology-test-header">
-        <h2>{i18n.language === 'fa' ? 'تست روانشناسی' : 'Psychology Test'}</h2>
+        <h2>Psychology Test</h2>
       </div>
 
       {!activeTest ? (
         <div className="test-selection">
           <div className="test-cards">
             <div className="test-card" onClick={() => startTest('personality')}>
-              <h3>{i18n.language === 'fa' ? 'آزمون سنجش شخصیت ورزشی' : 'Exercise Personality Assessment'}</h3>
-              <p>{i18n.language === 'fa' ? '15 سوال برای تحلیل شخصیت ورزشی شما' : '15 questions to analyze your exercise personality'}</p>
+              <h3>Exercise Personality Assessment</h3>
+              <p>15 questions to analyze your exercise personality</p>
               <button className="start-test-btn">
-                {i18n.language === 'fa' ? 'شروع آزمون' : 'Start Test'}
+                Start Test
               </button>
             </div>
 
             <div className="test-card" onClick={() => startTest('eq')}>
-              <h3>{i18n.language === 'fa' ? 'تست هوش هیجانی در ورزش' : 'Emotional Intelligence (EQ) Test in Sports'}</h3>
-              <p>{i18n.language === 'fa' ? '12 سوال برای سنجش هوش هیجانی شما در محیط ورزشی' : '12 questions to assess your emotional intelligence in sports'}</p>
+              <h3>Emotional Intelligence (EQ) Test in Sports</h3>
+              <p>12 questions to assess your emotional intelligence in sports</p>
               <button className="start-test-btn">
-                {i18n.language === 'fa' ? 'شروع آزمون' : 'Start Test'}
+                Start Test
               </button>
             </div>
 
             <div className="test-card" onClick={() => startTest('potential')}>
-              <h3>{i18n.language === 'fa' ? 'تست سنجش پتانسیل ورزشی' : 'Exercise Potential Assessment'}</h3>
-              <p>{i18n.language === 'fa' ? '12 سوال برای ارزیابی پتانسیل ورزشی شما' : '12 questions to evaluate your exercise potential'}</p>
+              <h3>Exercise Potential Assessment</h3>
+              <p>12 questions to evaluate your exercise potential</p>
               <button className="start-test-btn">
-                {i18n.language === 'fa' ? 'شروع آزمون' : 'Start Test'}
+                Start Test
               </button>
             </div>
           </div>
@@ -245,10 +201,10 @@ const PsychologyTest = () => {
         <div className="test-results">
           <h3>
             {activeTest === 'personality' 
-              ? (i18n.language === 'fa' ? 'نتایج آزمون شخصیت ورزشی' : 'Exercise Personality Results')
+              ? 'Exercise Personality Results'
               : activeTest === 'eq'
-              ? (i18n.language === 'fa' ? 'نتایج تست هوش هیجانی' : 'Emotional Intelligence Results')
-              : (i18n.language === 'fa' ? 'نتایج تست پتانسیل ورزشی' : 'Exercise Potential Results')}
+              ? 'Emotional Intelligence Results'
+              : 'Exercise Potential Results'}
           </h3>
           <div className="result-display">
             <div className="result-score">
@@ -258,7 +214,7 @@ const PsychologyTest = () => {
             <p className="result-description">{results.description}</p>
           </div>
           <button className="retake-test-btn" onClick={resetTest}>
-            {i18n.language === 'fa' ? 'بازگشت به منوی اصلی' : 'Back to Main Menu'}
+            Back to Main Menu
           </button>
         </div>
       ) : (
@@ -271,9 +227,7 @@ const PsychologyTest = () => {
               />
             </div>
             <p className="progress-text">
-              {i18n.language === 'fa' 
-                ? `سوال ${currentQuestion + 1} از ${questions.length}`
-                : `Question ${currentQuestion + 1} of ${questions.length}`}
+              {`Question ${currentQuestion + 1} of ${questions.length}`}
             </p>
           </div>
 
@@ -298,16 +252,14 @@ const PsychologyTest = () => {
               onClick={handlePrevious}
               disabled={currentQuestion === 0}
             >
-              {i18n.language === 'fa' ? 'قبلی' : 'Previous'}
+              Previous
             </button>
             <button 
               className="nav-btn next-btn" 
               onClick={handleNext}
               disabled={answers[currentQ.id] === undefined}
             >
-              {currentQuestion === questions.length - 1
-                ? (i18n.language === 'fa' ? 'پایان آزمون' : 'Finish Test')
-                : (i18n.language === 'fa' ? 'بعدی' : 'Next')}
+              {currentQuestion === questions.length - 1 ? 'Finish Test' : 'Next'}
             </button>
           </div>
         </div>

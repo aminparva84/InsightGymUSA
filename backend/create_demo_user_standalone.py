@@ -19,7 +19,7 @@ def create_demo_user():
             db.create_all()
         except Exception as e:
             print(f"[ERROR] Could not connect to database: {e}")
-            print("Set DATABASE_URL (e.g. postgresql://user:password@localhost:5432/raha_fitness)")
+            print("Set DATABASE_URL (e.g. postgresql://user:password@localhost:5432/insight_gym_usa)")
             return
         demo_user = User.query.filter_by(username='demo').first()
         if demo_user:

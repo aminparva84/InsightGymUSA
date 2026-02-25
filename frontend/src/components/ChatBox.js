@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
@@ -9,9 +8,8 @@ import './ChatBox.css';
 
 const API_BASE = getApiBase();
 
-const ChatBox = () => {
+const ChatBox = ({ embedded }) => {
   const navigate = useNavigate();
-  const { i18n } = useTranslation();
   const { user } = useAuth();
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
@@ -211,9 +209,7 @@ const ChatBox = () => {
       console.error('Error sending message:', error);
       const errorMessage = {
         role: 'assistant',
-        content: i18n.language === 'fa' 
-          ? 'خطا در ارسال پیام. لطفاً دوباره تلاش کنید.'
-          : 'Error sending message. Please try again.',
+        content: 'Error sending message. Please try again.',
         timestamp: new Date().toISOString(),
         error: true
       };
@@ -248,14 +244,14 @@ const ChatBox = () => {
                 <ul className="message-result-list">
                   {data.map((ex) => (
                     <li key={ex.id || ex.name}>
-                      {ex.name || ex.name_fa || ex.name_en}
+                      {ex.name_en || ex.name || ex.name_fa}
                     </li>
                   ))}
                 </ul>
               )}
               {(action === 'schedule_meeting' || action === 'schedule_appointment') && data && (
                 <div className="message-result-text">
-                  {i18n.language === 'fa' ? (data.message_fa || `جلسه: ${data.resolved_date} ساعت ${data.resolved_time}`) : (data.message_en || `Meeting: ${data.resolved_date} at ${data.resolved_time}`)}
+                  {data.message_en || `Meeting: ${data.resolved_date} at ${data.resolved_time}`}
                 </div>
               )}
               {action === 'create_workout_plan' && data && data.response && (
@@ -265,8 +261,8 @@ const ChatBox = () => {
                 <ul className="message-result-list">
                   {data.plans.map((p) => (
                     <li key={p.id || p.name}>
-                      <strong>{p.name || p.name_fa || p.name_en}</strong>
-                      {p.description_fa || p.description_en ? ` — ${(p.description_fa || p.description_en).slice(0, 80)}...` : ''}
+                      <strong>{p.name_en || p.name || p.name_fa}</strong>
+                      {p.description_en || p.description_fa ? ` — ${(p.description_en || p.description_fa).slice(0, 80)}...` : ''}
                     </li>
                   ))}
                 </ul>
@@ -276,12 +272,12 @@ const ChatBox = () => {
               )}
               {action === 'progress_check' && data && (
                 <div className="message-result-text">
-                  {i18n.language === 'fa' ? 'وضعیت:' : 'Status:'} {data.status}
+                  Status: {data.status}
                 </div>
               )}
               {action === 'trainer_message' && data && (
                 <div className="message-result-text">
-                  {i18n.language === 'fa' ? 'ارسال شد به:' : 'Sent to:'} {data.recipient_id}
+                  Sent to: {data.recipient_id}
                 </div>
               )}
               {action === 'site_settings' && data && data.updated && (
@@ -295,17 +291,15 @@ const ChatBox = () => {
   };
 
   return (
-    <div className="chatbox-container" dir="ltr" style={{ position: 'relative' }}>
+    <div className={`chatbox-container ${embedded ? 'chatbox-embedded' : ''}`} dir="ltr" style={{ position: 'relative' }}>
       <div className="chatbox-header">
-        <h3>
-          {i18n.language === 'fa' ? 'چت با AI' : 'Chat with AI'}
-        </h3>
+        {!embedded && <h3>Chat with AI</h3>}
         <div className="chatbox-header-actions">
           <button type="button" className="chatbox-header-btn" onClick={openHistory}>
-            {i18n.language === 'fa' ? 'تاریخچه' : 'History'}
+            History
           </button>
           <button type="button" className="chatbox-header-btn" onClick={startNewConversation}>
-            {i18n.language === 'fa' ? 'گفتگوی جدید' : 'New conversation'}
+            New conversation
           </button>
         </div>
       </div>
@@ -316,25 +310,25 @@ const ChatBox = () => {
             <h3>
               {historyView === 'detail' ? (
                 <button type="button" className="chatbox-history-back" onClick={() => setHistoryView('list')}>
-                  ← {i18n.language === 'fa' ? 'بازگشت' : 'Back'}
+                  ← Back
                 </button>
               ) : (
-                i18n.language === 'fa' ? 'تاریخچه گفتگو' : 'Conversation history'
+                <span>Conversation history</span>
               )}
             </h3>
             <button type="button" className="chatbox-history-close" onClick={() => { setShowHistory(false); setHistoryView('list'); }}>
-              {i18n.language === 'fa' ? 'بستن' : 'Close'}
+              Close
             </button>
           </div>
           <div className="chatbox-history-list">
             {historyLoading ? (
               <p className="chatbox-history-empty">
-                {i18n.language === 'fa' ? 'در حال بارگذاری...' : 'Loading...'}
+                Loading...
               </p>
             ) : historyView === 'list' ? (
               conversationsList.length === 0 ? (
                 <p className="chatbox-history-empty">
-                  {i18n.language === 'fa' ? 'هنوز گفتگویی ندارید.' : 'No conversations yet.'}
+                  No conversations yet.
                 </p>
               ) : (
                 conversationsList.map((conv) => (
@@ -351,8 +345,8 @@ const ChatBox = () => {
                       type="button"
                       className="chatbox-history-rename-btn"
                       onClick={(e) => openRename(conv, e)}
-                      title={i18n.language === 'fa' ? 'تغییر نام' : 'Rename'}
-                      aria-label={i18n.language === 'fa' ? 'تغییر نام' : 'Rename'}
+                      title="Rename"
+                      aria-label="Rename"
                     >
                       ✎
                     </button>
@@ -362,7 +356,7 @@ const ChatBox = () => {
             ) : (
               selectedConversationMessages.length === 0 ? (
                 <p className="chatbox-history-empty">
-                  {i18n.language === 'fa' ? 'پیامی در این گفتگو نیست.' : 'No messages in this conversation.'}
+                  No messages in this conversation.
                 </p>
               ) : (
                 selectedConversationMessages.map((msg, index) => (
@@ -377,22 +371,22 @@ const ChatBox = () => {
             <div className="chatbox-rename-modal">
               <div className="chatbox-rename-content">
                 <label className="chatbox-rename-label">
-                  {i18n.language === 'fa' ? 'نام گفتگو' : 'Conversation name'}
+                  Conversation name
                 </label>
                 <input
                   type="text"
                   className="chatbox-rename-input"
                   value={renameTitle}
                   onChange={(e) => setRenameTitle(e.target.value)}
-                  placeholder={i18n.language === 'fa' ? 'نام گفتگو' : 'Conversation name'}
+                  placeholder="Conversation name"
                   autoFocus
                 />
                 <div className="chatbox-rename-actions">
                   <button type="button" className="chatbox-rename-cancel" onClick={cancelRename}>
-                    {i18n.language === 'fa' ? 'انصراف' : 'Cancel'}
+                    Cancel
                   </button>
                   <button type="button" className="chatbox-rename-save" onClick={saveRename} disabled={renameSaving}>
-                    {renameSaving ? (i18n.language === 'fa' ? 'در حال ذخیره...' : 'Saving...') : (i18n.language === 'fa' ? 'ذخیره' : 'Save')}
+                    {renameSaving ? 'Saving...' : 'Save'}
                   </button>
                 </div>
               </div>
@@ -404,15 +398,15 @@ const ChatBox = () => {
       <div className="chatbox-messages" ref={messagesContainerRef}>
         {messages.length === 0 ? (
           <div className="chatbox-empty">
-            <p>{i18n.language === 'fa' ? 'پیامی ارسال نشده است. شروع به گفتگو کنید!' : 'No messages yet. Start a conversation!'}</p>
+            <p>Hi! I&apos;m your AI fitness coach. Ask me about workouts, nutrition, or your goals.</p>
           </div>
         ) : (
           messages.map((msg, index) => (
             <div key={index} className={`message ${msg.role}`}>
               <div className="message-content">
-                {msg.role === 'assistant' && typeof msg.content === 'string' && (msg.content.includes('خرید برنامه') || msg.content.includes('Buy program')) ? (
-                  msg.content.split(/(خرید برنامه|Buy program)/).map((part, i) =>
-                    (part === 'خرید برنامه' || part === 'Buy program') ? (
+                {msg.role === 'assistant' && typeof msg.content === 'string' && (msg.content.includes('Buy program')) ? (
+                  msg.content.split(/(Buy program)/).map((part, i) =>
+                    (part === 'Buy program') ? (
                       <button
                         key={i}
                         type="button"
@@ -422,8 +416,7 @@ const ChatBox = () => {
                           if (plan && plan.id) {
                             const program = {
                               id: plan.id,
-                              name_fa: plan.name_fa || plan.name,
-                              name_en: plan.name_en || plan.name,
+name_en: plan.name_en || plan.name,
                               price: Number(plan.price) || 99,
                             };
                             const payload = { program, packages: [] };
@@ -453,7 +446,7 @@ const ChatBox = () => {
         {loading && (
           <div className="message assistant">
             <div className="message-content loading">
-              <span className="typing-dots" aria-label={i18n.language === 'fa' ? 'در حال تایپ' : 'Typing'}>
+              <span className="typing-dots" aria-label="Typing">
                 <span />
                 <span />
                 <span />
@@ -469,11 +462,11 @@ const ChatBox = () => {
           className="chatbox-input"
           value={inputMessage}
           onChange={(e) => setInputMessage(e.target.value)}
-          placeholder={i18n.language === 'fa' ? 'پیام خود را بنویسید...' : 'Type your message...'}
+          placeholder="Type your message..."
           disabled={loading}
         />
         <button type="submit" className="chatbox-send-btn" disabled={loading || !inputMessage.trim()}>
-          {i18n.language === 'fa' ? 'ارسال' : 'Send'}
+          Send
         </button>
       </form>
 

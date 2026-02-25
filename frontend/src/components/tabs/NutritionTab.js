@@ -6,7 +6,7 @@ import { useAuth } from '../../context/AuthContext';
 import './NutritionTab.css';
 
 const NutritionTab = () => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const API_BASE = getApiBase();
   const { user, loading: authLoading } = useAuth();
   const [planType, setPlanType] = useState('2week');
@@ -154,7 +154,7 @@ const NutritionTab = () => {
                   ))}
                 </div>
               ) : (
-                <p className="no-meals">{i18n.language === 'fa' ? 'بدون برنامه' : 'No plan for this day'}</p>
+                <p className="no-meals">No plan for this day</p>
               )}
             </div>
           ))}

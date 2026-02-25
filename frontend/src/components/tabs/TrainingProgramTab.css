@@ -166,7 +166,7 @@
 .weekly-goal-item.completed .weekly-goal-check {
   background: var(--success);
   border-color: var(--success);
-  color: #fff;
+  color: var(--text-primary);
 }
 
 .weekly-goal-check:hover:not(:disabled) {
@@ -282,26 +282,26 @@
 .program-exercises {
   margin-top: 1.5rem;
   padding-top: 1.5rem;
-  border-top: 1px solid #e0e0e0;
+  border-top: 1px solid var(--border);
 }
 
 .program-exercises h4 {
   margin: 0 0 1rem 0;
   padding: 0;
-  color: #000000;
+  color: var(--text-primary);
   font-size: 1.1rem;
 }
 
 .program-exercises ul {
   margin: 0;
   padding-left: 1.5rem;
-  color: #000000;
+  color: var(--text-primary);
 }
 
 .program-exercises li {
   margin: 0.5rem 0;
   padding: 0;
-  color: #000000;
+  color: var(--text-primary);
 }
 
 .program-sessions {
@@ -336,9 +336,9 @@
 }
 
 .other-days-toggle-btn {
-  background: var(--color-accent-50);
+  background: var(--accent-muted);
   color: var(--text-primary);
-  border: 1px solid var(--color-accent-200);
+  border: 1px solid var(--border);
   border-radius: 999px;
   padding: 0.6rem 1.4rem;
   font-size: 0.95rem;
@@ -348,7 +348,7 @@
 }
 
 .other-days-toggle-btn:hover {
-  background: var(--color-accent-100);
+  background: var(--accent-muted);
 }
 
 .generate-next-sessions-row {
@@ -359,9 +359,9 @@
 }
 
 .generate-next-sessions-btn {
-  background: var(--color-accent-50);
+  background: var(--accent-muted);
   color: var(--text-primary);
-  border: 1px solid var(--color-accent-200);
+  border: 1px solid var(--border);
   border-radius: 999px;
   padding: 0.6rem 1.4rem;
   font-size: 0.95rem;
@@ -371,7 +371,7 @@
 }
 
 .generate-next-sessions-btn:hover:not(:disabled) {
-  background: var(--color-accent-100);
+  background: var(--accent-muted);
 }
 
 .generate-next-sessions-btn:disabled {
@@ -403,7 +403,7 @@
 }
 
 .session-card.expanded {
-  border-color: var(--color-accent-200);
+  border-color: var(--border);
   box-shadow: var(--shadow-sm);
 }
 
@@ -591,7 +591,7 @@
 .exercise-item-done .exercise-done-check {
   background: var(--accent);
   border-color: var(--accent);
-  color: #fff;
+  color: var(--text-primary);
 }
 
 .exercise-item-body {
@@ -603,7 +603,7 @@
   margin: 0.5rem 0 0 0;
   padding: 0.6rem 0.8rem;
   background-color: var(--surface-subtle);
-  border-left: 3px solid var(--color-accent-300);
+  border-left: 3px solid var(--border-strong);
   font-size: 0.9rem;
   color: var(--text-muted);
   font-style: italic;
@@ -748,8 +748,8 @@
 .current-set-done-btn {
   align-self: flex-start;
   padding: 0.75rem 1.5rem;
-  background: var(--gradient-accent, linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%));
-  color: #fff;
+  background: var(--gradient-primary);
+  color: var(--text-primary);
   border: none;
   border-radius: 10px;
   font-size: 1rem;
@@ -785,7 +785,7 @@
   background-color: rgba(22, 163, 74, 0.06);
 }
 .session-card.session-completed .session-header-content h5 {
-  color: #198754;
+  color: var(--success);
 }
 .session-badge {
   display: inline-block;
@@ -796,12 +796,12 @@
   font-weight: 600;
 }
 .session-badge-done {
-  background: #198754;
-  color: #fff;
+  background: var(--success);
+  color: var(--text-primary);
 }
 .session-badge-start {
-  background: #0d6efd;
-  color: #fff;
+  background: var(--accent);
+  color: var(--text-primary);
 }
 .session-start-row {
   padding: 0.75rem 1.5rem;
@@ -811,7 +811,7 @@
 .session-start-btn {
   padding: 0.5rem 1rem;
   background: var(--accent);
-  color: #fff;
+  color: var(--text-primary);
   border: none;
   border-radius: 10px;
   font-weight: 600;
@@ -882,7 +882,7 @@
 .set-done-btn.done {
   background: var(--success);
   border-color: var(--success);
-  color: #fff;
+  color: var(--text-primary);
 }
 
 /* Next set button (one button per movement instead of one per set) */
@@ -900,8 +900,8 @@
 }
 .next-set-btn {
   padding: 0.75rem 1.5rem;
-  background: var(--gradient-accent, linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%));
-  color: #fff;
+  background: var(--gradient-primary);
+  color: var(--text-primary);
   border: none;
   border-radius: 10px;
   font-size: 1rem;
@@ -918,8 +918,8 @@
 .next-movement-btn {
   margin-top: 1rem;
   padding: 0.75rem 1.5rem;
-  background: var(--gradient-accent, linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%));
-  color: #fff;
+  background: var(--gradient-primary);
+  color: var(--text-primary);
   border: none;
   border-radius: 10px;
   font-size: 1rem;
@@ -936,7 +936,7 @@
 .exercise-completed-label {
   display: inline-block;
   margin-left: 0.5rem;
-  color: #198754;
+  color: var(--success);
   font-weight: 600;
 }
 .session-end-row {
@@ -947,7 +947,7 @@
 .session-end-btn {
   padding: 0.6rem 1.25rem;
   background: var(--success);
-  color: #fff;
+  color: var(--text-primary);
   border: none;
   border-radius: 10px;
   font-weight: 600;
@@ -970,7 +970,7 @@
   padding: 1rem;
 }
 .training-modal {
-  background: #fff;
+  background-color: var(--bg-card);
   border-radius: 12px;
   padding: 1.5rem 2rem;
   max-width: 420px;
@@ -982,12 +982,12 @@
 .training-modal h3 {
   margin: 0 0 1rem 0;
   font-size: 1.25rem;
-  color: #000;
+  color: var(--text-primary);
 }
 .mood-modal-hint {
   margin: 0 0 1rem 0;
   font-size: 0.9rem;
-  color: #666;
+  color: var(--text-secondary);
 }
 .mood-options {
   display: flex;
@@ -997,15 +997,15 @@
 }
 .mood-option-btn {
   padding: 0.5rem 1rem;
-  background: #f8f9fa;
-  border: 1px solid #dee2e6;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
   border-radius: 8px;
   cursor: pointer;
   font-size: 0.95rem;
 }
 .mood-option-btn:hover {
-  background: #e9ecef;
-  border-color: #adb5bd;
+  background: var(--bg-muted);
+  border-color: var(--border-strong);
 }
 .mood-custom-row {
   display: flex;
@@ -1015,14 +1015,16 @@
 .mood-custom-row input {
   flex: 1;
   padding: 0.5rem 0.75rem;
-  border: 1px solid #dee2e6;
+  border: 1px solid var(--border);
   border-radius: 6px;
   font-size: 0.95rem;
+  background: var(--bg-elevated);
+  color: var(--text-primary);
 }
 .mood-submit-custom {
   padding: 0.5rem 1rem;
-  background: #0d6efd;
-  color: #fff;
+  background: var(--accent);
+  color: var(--text-primary);
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -1030,12 +1032,12 @@
 }
 .mood-loading {
   margin: 1rem 0 0 0;
-  color: #666;
+  color: var(--text-secondary);
   font-size: 0.9rem;
 }
 .post-set-modal p {
   margin: 0 0 1rem 0;
-  color: #333;
+  color: var(--text-primary);
   font-size: 0.95rem;
 }
 .post-set-form {
@@ -1049,22 +1051,24 @@
   flex-direction: column;
   gap: 0.25rem;
   font-size: 0.9rem;
-  color: #333;
+  color: var(--text-primary);
 }
 .post-set-form input,
 .post-set-form select {
   padding: 0.4rem 0.6rem;
-  border: 1px solid #dee2e6;
+  border: 1px solid var(--border);
   border-radius: 6px;
+  background: var(--bg-elevated);
+  color: var(--text-primary);
 }
 .post-set-feedback-text {
   padding: 1rem;
-  background: #e7f3ff;
-  border: 1px solid #b6d4fe;
+  background: var(--accent-muted);
+  border: 1px solid var(--accent);
   border-radius: 8px;
   margin-bottom: 1rem;
   font-size: 0.95rem;
-  color: #084298;
+  color: var(--accent);
 }
 .post-set-modal-actions {
   display: flex;
@@ -1072,8 +1076,8 @@
 }
 .post-set-submit {
   padding: 0.5rem 1rem;
-  background: #0d6efd;
-  color: #fff;
+  background: var(--accent);
+  color: var(--text-primary);
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -1085,8 +1089,8 @@
 }
 .post-set-close {
   padding: 0.5rem 1rem;
-  background: #f8f9fa;
-  border: 1px solid #dee2e6;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
   border-radius: 6px;
   cursor: pointer;
 }
@@ -1094,13 +1098,13 @@
   margin: 0 0 1rem 0;
   font-size: 1rem;
   line-height: 1.6;
-  color: #333;
+  color: var(--text-primary);
   white-space: pre-wrap;
 }
 .end-message-close {
   padding: 0.5rem 1.25rem;
-  background: #198754;
-  color: #fff;
+  background: var(--success);
+  color: var(--text-primary);
   border: none;
   border-radius: 8px;
   cursor: pointer;

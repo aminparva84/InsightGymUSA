@@ -1,23 +1,37 @@
-import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import TrainingLevelsInfoTab from './TrainingLevelsInfoTab';
 import ExerciseLibraryTab from './ExerciseLibraryTab';
 import TrainingMovementInfoTab from './TrainingMovementInfoTab';
 import WarmingCooldownTab from './WarmingCooldownTab';
 import DashboardIcon from '../DashboardIcon';
+import { getApiBase } from '../../services/apiBase';
 import './TrainingInfoTab.css';
 
-const SUBTABS = [
-  { id: 'training-levels', labelKeyFa: 'اطلاعات سطح‌های تمرینی', labelKeyEn: 'Training Levels Info', icon: 'bar_chart' },
-  { id: 'exercise-library', labelKeyFa: 'کتابخانه تمرینات', labelKeyEn: 'Exercise Library', icon: 'menu_book' },
-  { id: 'training-movement-info', labelKeyFa: 'اطلاعات حرکات تمرینی', labelKeyEn: 'Training Movement Info', icon: 'videocam' },
-  { id: 'warming-cooldown', labelKeyFa: 'گرم کردن و سرد کردن', labelKeyEn: 'Warming & Cooldown', icon: 'ac_unit' }
+const SUBTABS_ALL = [
+  { id: 'training-levels', label: 'Training Levels Info', icon: 'bar_chart' },
+  { id: 'exercise-library', label: 'Exercise Library', icon: 'menu_book' },
+  { id: 'training-movement-info', label: 'Training Movement Info', icon: 'videocam' },
+  { id: 'warming-cooldown', label: 'Warming & Cooldown', icon: 'ac_unit' }
+];
+
+const SUBTABS_COACH = [
+  { id: 'training-levels', label: 'Training Levels Info', icon: 'bar_chart' }
 ];
 
 const TrainingInfoTab = () => {
-  const { i18n } = useTranslation();
   const [activeSubTab, setActiveSubTab] = useState('training-levels');
-  const fa = i18n.language === 'fa';
+  const [userRole, setUserRole] = useState(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    axios.get(`${getApiBase()}/api/admin/check-admin`, { headers: { Authorization: `Bearer ${token}` } })
+      .then(res => setUserRole(res.data.role || 'member'))
+      .catch(() => setUserRole('member'));
+  }, []);
+
+  const subtabs = userRole === 'coach' ? SUBTABS_COACH : SUBTABS_ALL;
 
   const renderSubTabContent = () => {
     switch (activeSubTab) {
@@ -37,7 +51,7 @@ const TrainingInfoTab = () => {
   return (
     <div className="training-info-tab" dir="ltr">
       <div className="training-info-subtabs">
-        {SUBTABS.map((sub) => (
+        {subtabs.map((sub) => (
           <button
             key={sub.id}
             type="button"
@@ -45,7 +59,7 @@ const TrainingInfoTab = () => {
             onClick={() => setActiveSubTab(sub.id)}
           >
             <span className="training-info-subtab-icon"><DashboardIcon name={sub.icon} /></span>
-            {fa ? sub.labelKeyFa : sub.labelKeyEn}
+            {sub.label}
           </button>
         ))}
       </div>

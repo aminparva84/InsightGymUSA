@@ -1,4 +1,4 @@
-# Insight GYM - American Gym Management Platform
+# Insight GYM USA - American Gym Management Platform
 
 A comprehensive gym management platform for American fitness facilities. Features AI-powered workout plans, coach management, member tracking, and professional coach registration with certifications and licenses.
 
@@ -12,6 +12,16 @@ A comprehensive gym management platform for American fitness facilities. Feature
 - **Training Programs**: Beginner to advanced, EMS options
 - **Progress Tracking**: Workout logs, measurements, AI feedback
 
+### American Gym Website Features
+- **Class Schedule** – Public page with weekly group class schedule
+- **Trainer/Team Page** – Public page listing approved coaches with bios and certifications
+- **Pricing Page** – Membership tiers and pricing
+- **Free Trial CTA** – Prominent "Start Free Trial" on landing page
+- **Testimonials** – Member success stories (editable via Admin Site Settings)
+- **FAQ** – Common questions (editable via Admin Site Settings)
+- **Location & Hours** – Address, operating hours, optional map embed
+- **Coach Approval Flow** – Admin UI to approve/reject pending coaches
+
 ## Tech Stack
 
 ### Backend
@@ -19,6 +29,20 @@ A comprehensive gym management platform for American fitness facilities. Feature
 
 ### Frontend
 - React, React Router, React i18next, Axios
+
+## Quick Start (Windows)
+
+```bash
+# First-time setup (creates venv, installs deps, creates .env)
+setup.bat
+
+# Launch backend + frontend
+launch.bat
+```
+
+If `launch.bat` is run without prior setup, it will auto-run setup when venv or node_modules are missing.
+
+**Ports** (to avoid conflicts with other projects): Backend `5001`, Frontend `3001`. Override backend with `PORT` in backend `.env`.
 
 ## Setup
 
@@ -32,7 +56,7 @@ pip install -r requirements.txt
 
 Create `.env`:
 ```
-DATABASE_URL=postgresql://user:password@localhost:5432/insight_gym
+DATABASE_URL=postgresql://user:password@localhost:5432/insight_gym_usa
 JWT_SECRET_KEY=your-secret-key
 ```
 

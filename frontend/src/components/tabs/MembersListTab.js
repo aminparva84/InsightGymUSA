@@ -1,49 +1,48 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
 import axios from 'axios';
 import { getApiBase } from '../../services/apiBase';
 import './MembersListTab.css';
 
 const fitnessGoalsOptions = [
-  { value: 'weight_loss', label_fa: 'کاهش وزن', label_en: 'Weight Loss' },
-  { value: 'muscle_gain', label_fa: 'افزایش عضله', label_en: 'Muscle Gain' },
-  { value: 'strength', label_fa: 'قدرت', label_en: 'Strength' },
-  { value: 'endurance', label_fa: 'استقامت', label_en: 'Endurance' },
-  { value: 'flexibility', label_fa: 'انعطاف‌پذیری', label_en: 'Flexibility' }
+  { value: 'weight_loss', label: 'Weight Loss' },
+  { value: 'muscle_gain', label: 'Muscle Gain' },
+  { value: 'strength', label: 'Strength' },
+  { value: 'endurance', label: 'Endurance' },
+  { value: 'flexibility', label: 'Flexibility' }
 ];
 const injuryOptions = [
-  { value: 'knee', label_fa: 'زانو', label_en: 'Knee' },
-  { value: 'shoulder', label_fa: 'شانه', label_en: 'Shoulder' },
-  { value: 'lower_back', label_fa: 'کمر', label_en: 'Lower Back' },
-  { value: 'neck', label_fa: 'گردن', label_en: 'Neck' },
-  { value: 'wrist', label_fa: 'مچ دست', label_en: 'Wrist' },
-  { value: 'ankle', label_fa: 'مچ پا', label_en: 'Ankle' }
+  { value: 'knee', label: 'Knee' },
+  { value: 'shoulder', label: 'Shoulder' },
+  { value: 'lower_back', label: 'Lower Back' },
+  { value: 'neck', label: 'Neck' },
+  { value: 'wrist', label: 'Wrist' },
+  { value: 'ankle', label: 'Ankle' }
 ];
 const medicalConditionOptions = [
-  { value: 'heart_disease', label_fa: 'بیماری قلبی', label_en: 'Heart Disease' },
-  { value: 'high_blood_pressure', label_fa: 'فشار خون بالا', label_en: 'High Blood Pressure' },
-  { value: 'pregnancy', label_fa: 'بارداری', label_en: 'Pregnancy' }
+  { value: 'heart_disease', label: 'Heart Disease' },
+  { value: 'high_blood_pressure', label: 'High Blood Pressure' },
+  { value: 'pregnancy', label: 'Pregnancy' }
 ];
 const equipmentAccessOptions = [
-  { value: 'machine', label_fa: 'دستگاه', label_en: 'Machine' },
-  { value: 'dumbbells', label_fa: 'دمبل', label_en: 'Dumbbells' },
-  { value: 'barbell', label_fa: 'میله', label_en: 'Barbell' },
-  { value: 'cable', label_fa: 'کابل', label_en: 'Cable' }
+  { value: 'machine', label: 'Machine' },
+  { value: 'dumbbells', label: 'Dumbbells' },
+  { value: 'barbell', label: 'Barbell' },
+  { value: 'cable', label: 'Cable' }
 ];
 const homeEquipmentOptions = [
-  { value: 'dumbbells', label_fa: 'دمبل', label_en: 'Dumbbells' },
-  { value: 'resistance_bands', label_fa: 'بند مقاومتی', label_en: 'Resistance Bands' },
-  { value: 'yoga_mat', label_fa: 'مت یوگا', label_en: 'Yoga Mat' },
-  { value: 'body_weight_only', label_fa: 'فقط وزن بدن', label_en: 'Body Weight Only' }
+  { value: 'dumbbells', label: 'Dumbbells' },
+  { value: 'resistance_bands', label: 'Resistance Bands' },
+  { value: 'yoga_mat', label: 'Yoga Mat' },
+  { value: 'body_weight_only', label: 'Body Weight Only' }
 ];
 
 const MembersListTab = () => {
-  const { i18n } = useTranslation();
   const API_BASE = getApiBase();
+  // eslint-disable-next-line no-unused-vars
   const { user } = useAuth();
   const [members, setMembers] = useState([]);
-  const [assistants, setAssistants] = useState([]);
+  const [, setAssistants] = useState([]);
   const [loading, setLoading] = useState(false);
   const [editingMember, setEditingMember] = useState(null);
   const [memberFormData, setMemberFormData] = useState({});
@@ -74,11 +73,11 @@ const MembersListTab = () => {
       setMembers(response.data);
     } catch (error) {
       console.error('Error fetching members:', error);
-      alert(i18n.language === 'fa' ? 'خطا در دریافت لیست اعضا' : 'Error fetching members');
+      alert('Error fetching members');
     } finally {
       setLoading(false);
     }
-  }, [API_BASE, getAxiosConfig, i18n.language]);
+  }, [API_BASE, getAxiosConfig]);
 
   const fetchAssistants = useCallback(async () => {
     try {
@@ -89,6 +88,7 @@ const MembersListTab = () => {
     }
   }, [API_BASE, getAxiosConfig]);
 
+  // Admin no longer assigns members - members choose coach at registration
   const checkUserRole = useCallback(async () => {
     try {
       const response = await axios.get(`${API_BASE}/api/admin/check-admin`, getAxiosConfig());
@@ -104,19 +104,6 @@ const MembersListTab = () => {
     fetchMembers();
     fetchAssistants();
   }, [checkUserRole, fetchMembers, fetchAssistants]);
-
-  const handleAssignMember = async (memberId, assistantId) => {
-    try {
-      await axios.post(`${API_BASE}/api/admin/members/${memberId}/assign`, {
-        assigned_to_id: assistantId || null
-      }, getAxiosConfig());
-      alert(i18n.language === 'fa' ? 'تخصیص با موفقیت انجام شد' : 'Assignment successful');
-      fetchMembers();
-    } catch (error) {
-      console.error('Error assigning member:', error);
-      alert(i18n.language === 'fa' ? 'خطا در تخصیص عضو' : 'Error assigning member');
-    }
-  };
 
   const fetchMemberDetails = async (memberId) => {
     try {
@@ -179,50 +166,48 @@ const MembersListTab = () => {
         await axios.put(`${API_BASE}/api/admin/members/${editingMember.id}`, { username, email }, getAxiosConfig());
       }
       await axios.put(`${API_BASE}/api/admin/members/${editingMember.id}/profile`, profilePayload, getAxiosConfig());
-      alert(i18n.language === 'fa' ? 'پروفایل عضو به‌روزرسانی شد' : 'Member profile updated');
+      alert('Member profile updated');
       setEditingMember(null);
       fetchMembers();
     } catch (error) {
       console.error('Error updating member profile:', error);
-      alert(i18n.language === 'fa' ? 'خطا در به‌روزرسانی پروفایل' : 'Error updating profile');
+      alert('Error updating profile');
     }
   };
 
   const handleDeleteMember = async (memberId) => {
     try {
       await axios.delete(`${API_BASE}/api/admin/members/${memberId}`, getAxiosConfig());
-      alert(i18n.language === 'fa' ? 'عضو با موفقیت حذف شد' : 'Member deleted successfully');
+      alert('Member deleted successfully');
       fetchMembers();
     } catch (error) {
       console.error('Error deleting member:', error);
-      alert(i18n.language === 'fa' 
-        ? `خطا در حذف عضو: ${error.response?.data?.error || error.message}`
-        : `Error deleting member: ${error.response?.data?.error || error.message}`);
+      alert(`Error deleting member: ${error.response?.data?.error || error.message}`);
     }
   };
 
   return (
     <div className="members-list-tab" dir="ltr">
       <div className="members-list-header">
-        <h2>{i18n.language === 'fa' ? 'لیست اعضا' : 'Members List'}</h2>
+        <h2>Members List</h2>
       </div>
 
       {loading ? (
-        <div className="loading">{i18n.language === 'fa' ? 'در حال بارگذاری...' : 'Loading...'}</div>
+        <div className="loading">Loading...</div>
       ) : (
         <div className="members-list-container">
           <div className="members-table-wrapper">
             <table className="members-table">
               <thead>
                 <tr>
-                  <th>{i18n.language === 'fa' ? 'نام کاربری' : 'Username'}</th>
-                  <th>{i18n.language === 'fa' ? 'ایمیل' : 'Email'}</th>
-                  <th>{i18n.language === 'fa' ? 'تخصیص یافته به' : 'Assigned To'}</th>
-                  <th>{i18n.language === 'fa' ? 'سطح تمرین' : 'Training Level'}</th>
+                  <th>Username</th>
+                  <th>Email</th>
+                  <th>Assigned To</th>
+                  <th>Training Level</th>
                   {userRole === 'admin' && (
                     <>
-                      <th>{i18n.language === 'fa' ? 'عملیات' : 'Actions'}</th>
-                      <th>{i18n.language === 'fa' ? 'حذف' : 'Delete'}</th>
+                      <th>Actions</th>
+                      <th>Delete</th>
                     </>
                   )}
                 </tr>
@@ -231,7 +216,7 @@ const MembersListTab = () => {
                 {members.length === 0 ? (
                   <tr>
                     <td colSpan={userRole === 'admin' ? 6 : 4} className="no-data">
-                      {i18n.language === 'fa' ? 'هیچ عضوی یافت نشد' : 'No members found'}
+                      No members found
                     </td>
                   </tr>
                 ) : (
@@ -240,40 +225,12 @@ const MembersListTab = () => {
                       <td>{member.username}</td>
                       <td>{member.email}</td>
                       <td>
-                        {userRole === 'admin' ? (
-                          <select
-                            value={
-                              member.assigned_to?.id === user?.id 
-                                ? 'admin' 
-                                : (member.assigned_to?.id || '')
-                            }
-                            onChange={(e) => {
-                              const value = e.target.value;
-                              if (value === 'admin') {
-                                handleAssignMember(member.id, user?.id || null);
-                              } else {
-                                handleAssignMember(member.id, value ? parseInt(value) : null);
-                              }
-                            }}
-                          >
-                            <option value="">{i18n.language === 'fa' ? 'تخصیص نشده' : 'Unassigned'}</option>
-                            <option value="admin">{i18n.language === 'fa' ? 'مدیر' : 'Admin'}</option>
-                            {assistants.map(assistant => (
-                              <option key={assistant.id} value={assistant.id}>
-                                {assistant.username} ({i18n.language === 'fa' ? 'دستیار' : 'Assistant'})
-                              </option>
-                            ))}
-                          </select>
-                        ) : (
-                          <span>
-                            {member.assigned_to 
-                              ? (member.assigned_to.id === user?.id 
-                                  ? (i18n.language === 'fa' ? 'مدیر' : 'Admin')
-                                  : `${member.assigned_to.username} (${i18n.language === 'fa' ? 'دستیار' : 'Assistant'})`)
-                              : (i18n.language === 'fa' ? 'تخصیص نشده' : 'Unassigned')
-                            }
-                          </span>
-                        )}
+                        <span>
+                          {member.assigned_to
+                            ? `${member.assigned_to.username}`
+                            : 'Unassigned'
+                          }
+                        </span>
                       </td>
                       <td>{member.profile?.training_level || '-'}</td>
                       <td>
@@ -282,7 +239,7 @@ const MembersListTab = () => {
                             className="btn-edit"
                             onClick={() => handleEditMember(member)}
                           >
-                            {i18n.language === 'fa' ? 'ویرایش' : 'Edit'}
+                            Edit
                           </button>
                         )}
                       </td>
@@ -292,15 +249,13 @@ const MembersListTab = () => {
                             className="btn-delete"
                             onClick={() => {
                               if (window.confirm(
-                                i18n.language === 'fa' 
-                                  ? `آیا مطمئن هستید که می‌خواهید عضو "${member.username}" را حذف کنید؟`
-                                  : `Are you sure you want to delete member "${member.username}"?`
+                                `Are you sure you want to delete member "${member.username}"?`
                               )) {
                                 handleDeleteMember(member.id);
                               }
                             }}
                           >
-                            {i18n.language === 'fa' ? 'حذف' : 'Delete'}
+                            Delete
                           </button>
                         )}
                       </td>
@@ -314,12 +269,12 @@ const MembersListTab = () => {
           {editingMember && (
             <div className="admin-form-overlay">
               <div className="admin-form-container" style={{ maxHeight: '90vh', overflowY: 'auto' }}>
-                <h3>{i18n.language === 'fa' ? `ویرایش پروفایل: ${editingMember.username}` : `Edit Profile: ${editingMember.username}`}</h3>
+                <h3>Edit Profile: {editingMember.username}</h3>
                 
-                <h4>{i18n.language === 'fa' ? 'اطلاعات حساب' : 'Account'}</h4>
+                <h4>Account</h4>
                 <div className="form-row">
                   <div className="form-group">
-                    <label>{i18n.language === 'fa' ? 'نام کاربری' : 'Username'}</label>
+                    <label>Username</label>
                     <input
                       type="text"
                       value={memberFormData.username || ''}
@@ -327,7 +282,7 @@ const MembersListTab = () => {
                     />
                   </div>
                   <div className="form-group">
-                    <label>{i18n.language === 'fa' ? 'ایمیل' : 'Email'}</label>
+                    <label>Email</label>
                     <input
                       type="email"
                       value={memberFormData.email || ''}
@@ -336,9 +291,9 @@ const MembersListTab = () => {
                   </div>
                 </div>
 
-                <h4>{i18n.language === 'fa' ? 'اطلاعات پایه' : 'Basic Info'}</h4>
+                <h4>Basic Info</h4>
                 <div className="form-group">
-                  <label>{i18n.language === 'fa' ? 'سن' : 'Age'}</label>
+                  <label>Age</label>
                   <input
                     type="number"
                     value={memberFormData.age || ''}
@@ -349,21 +304,21 @@ const MembersListTab = () => {
                 </div>
 
                 <div className="form-group">
-                  <label>{i18n.language === 'fa' ? 'جنسیت' : 'Gender'}</label>
+                  <label>Gender</label>
                   <select
                     value={memberFormData.gender || ''}
                     onChange={(e) => setMemberFormData({...memberFormData, gender: e.target.value})}
                   >
-                    <option value="">{i18n.language === 'fa' ? 'انتخاب کنید' : 'Select'}</option>
-                    <option value="male">{i18n.language === 'fa' ? 'مرد' : 'Male'}</option>
-                    <option value="female">{i18n.language === 'fa' ? 'زن' : 'Female'}</option>
-                    <option value="other">{i18n.language === 'fa' ? 'سایر' : 'Other'}</option>
+                    <option value="">Select</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
                   </select>
                 </div>
 
                 <div className="form-row">
                   <div className="form-group">
-                    <label>{i18n.language === 'fa' ? 'وزن (کیلوگرم)' : 'Weight (kg)'}</label>
+                    <label>Weight (kg)</label>
                     <input
                       type="number"
                       value={memberFormData.weight || ''}
@@ -372,7 +327,7 @@ const MembersListTab = () => {
                     />
                   </div>
                   <div className="form-group">
-                    <label>{i18n.language === 'fa' ? 'قد (سانتی‌متر)' : 'Height (cm)'}</label>
+                    <label>Height (cm)</label>
                     <input
                       type="number"
                       value={memberFormData.height || ''}
@@ -383,22 +338,22 @@ const MembersListTab = () => {
                 </div>
 
                 <div className="form-group">
-                  <label>{i18n.language === 'fa' ? 'سطح تمرین' : 'Training Level'}</label>
+                  <label>Training Level</label>
                   <select
                     value={memberFormData.training_level || ''}
                     onChange={(e) => setMemberFormData({...memberFormData, training_level: e.target.value})}
                   >
-                    <option value="">{i18n.language === 'fa' ? 'انتخاب کنید' : 'Select'}</option>
-                    <option value="beginner">{i18n.language === 'fa' ? 'مبتدی' : 'Beginner'}</option>
-                    <option value="intermediate">{i18n.language === 'fa' ? 'متوسط' : 'Intermediate'}</option>
-                    <option value="advanced">{i18n.language === 'fa' ? 'پیشرفته' : 'Advanced'}</option>
+                    <option value="">Select</option>
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                    <option value="advanced">Advanced</option>
                   </select>
                 </div>
 
-                <h4>{i18n.language === 'fa' ? 'اندازه‌گیری بدن (سانتی‌متر)' : 'Body Measurements (cm)'}</h4>
+                <h4>Body Measurements (cm)</h4>
                 <div className="form-row">
                   <div className="form-group">
-                    <label>{i18n.language === 'fa' ? 'دور سینه' : 'Chest'}</label>
+                    <label>Chest</label>
                     <input
                       type="number"
                       value={memberFormData.chest_circumference || ''}
@@ -407,7 +362,7 @@ const MembersListTab = () => {
                     />
                   </div>
                   <div className="form-group">
-                    <label>{i18n.language === 'fa' ? 'دور کمر' : 'Waist'}</label>
+                    <label>Waist</label>
                     <input
                       type="number"
                       value={memberFormData.waist_circumference || ''}
@@ -418,7 +373,7 @@ const MembersListTab = () => {
                 </div>
                 <div className="form-row">
                   <div className="form-group">
-                    <label>{i18n.language === 'fa' ? 'دور شکم' : 'Abdomen'}</label>
+                    <label>Abdomen</label>
                     <input
                       type="number"
                       value={memberFormData.abdomen_circumference || ''}
@@ -427,7 +382,7 @@ const MembersListTab = () => {
                     />
                   </div>
                   <div className="form-group">
-                    <label>{i18n.language === 'fa' ? 'دور بازو' : 'Arm'}</label>
+                    <label>Arm</label>
                     <input
                       type="number"
                       value={memberFormData.arm_circumference || ''}
@@ -438,7 +393,7 @@ const MembersListTab = () => {
                 </div>
                 <div className="form-row">
                   <div className="form-group">
-                    <label>{i18n.language === 'fa' ? 'دور باسن' : 'Hip'}</label>
+                    <label>Hip</label>
                     <input
                       type="number"
                       value={memberFormData.hip_circumference || ''}
@@ -447,7 +402,7 @@ const MembersListTab = () => {
                     />
                   </div>
                   <div className="form-group">
-                    <label>{i18n.language === 'fa' ? 'دور ران' : 'Thigh'}</label>
+                    <label>Thigh</label>
                     <input
                       type="number"
                       value={memberFormData.thigh_circumference || ''}
@@ -457,7 +412,7 @@ const MembersListTab = () => {
                   </div>
                 </div>
 
-                <h4>{i18n.language === 'fa' ? 'اهداف تناسب اندام' : 'Fitness Goals'}</h4>
+                <h4>Fitness Goals</h4>
                 <div className="form-group checkbox-group">
                   {fitnessGoalsOptions.map(opt => (
                     <label key={opt.value} className="checkbox-label">
@@ -466,14 +421,14 @@ const MembersListTab = () => {
                         checked={(memberFormData.fitness_goals || []).includes(opt.value)}
                         onChange={(e) => handleArrayChange('fitness_goals', opt.value, e.target.checked)}
                       />
-                      <span>{i18n.language === 'fa' ? opt.label_fa : opt.label_en}</span>
+                      <span>{opt.label}</span>
                     </label>
                   ))}
                 </div>
 
-                <h4>{i18n.language === 'fa' ? 'آسیب‌ها و شرایط پزشکی' : 'Injuries & Medical'}</h4>
+                <h4>Injuries & Medical</h4>
                 <div className="form-group">
-                  <label>{i18n.language === 'fa' ? 'آسیب‌ها' : 'Injuries'}</label>
+                  <label>Injuries</label>
                   <div className="checkbox-group">
                     {injuryOptions.map(opt => (
                       <label key={opt.value} className="checkbox-label">
@@ -482,13 +437,13 @@ const MembersListTab = () => {
                           checked={(memberFormData.injuries || []).includes(opt.value)}
                           onChange={(e) => handleArrayChange('injuries', opt.value, e.target.checked)}
                         />
-                        <span>{i18n.language === 'fa' ? opt.label_fa : opt.label_en}</span>
+                        <span>{opt.label}</span>
                       </label>
                     ))}
                   </div>
                 </div>
                 <div className="form-group">
-                  <label>{i18n.language === 'fa' ? 'جزئیات آسیب' : 'Injury Details'}</label>
+                  <label>Injury Details</label>
                   <textarea
                     value={memberFormData.injury_details || ''}
                     onChange={(e) => setMemberFormData({...memberFormData, injury_details: e.target.value})}
@@ -496,7 +451,7 @@ const MembersListTab = () => {
                   />
                 </div>
                 <div className="form-group">
-                  <label>{i18n.language === 'fa' ? 'شرایط پزشکی' : 'Medical Conditions'}</label>
+                  <label>Medical Conditions</label>
                   <div className="checkbox-group">
                     {medicalConditionOptions.map(opt => (
                       <label key={opt.value} className="checkbox-label">
@@ -505,13 +460,13 @@ const MembersListTab = () => {
                           checked={(memberFormData.medical_conditions || []).includes(opt.value)}
                           onChange={(e) => handleArrayChange('medical_conditions', opt.value, e.target.checked)}
                         />
-                        <span>{i18n.language === 'fa' ? opt.label_fa : opt.label_en}</span>
+                        <span>{opt.label}</span>
                       </label>
                     ))}
                   </div>
                 </div>
                 <div className="form-group">
-                  <label>{i18n.language === 'fa' ? 'جزئیات شرایط پزشکی' : 'Medical Condition Details'}</label>
+                  <label>Medical Condition Details</label>
                   <textarea
                     value={memberFormData.medical_condition_details || ''}
                     onChange={(e) => setMemberFormData({...memberFormData, medical_condition_details: e.target.value})}
@@ -519,10 +474,10 @@ const MembersListTab = () => {
                   />
                 </div>
 
-                <h4>{i18n.language === 'fa' ? 'تاریخچه تمرین' : 'Exercise History'}</h4>
+                <h4>Exercise History</h4>
                 <div className="form-row">
                   <div className="form-group">
-                    <label>{i18n.language === 'fa' ? 'سال‌های تجربه' : 'Years of Experience'}</label>
+                    <label>Years of Experience</label>
                     <input
                       type="number"
                       value={memberFormData.exercise_history_years ?? ''}
@@ -532,7 +487,7 @@ const MembersListTab = () => {
                     />
                   </div>
                   <div className="form-group">
-                    <label>{i18n.language === 'fa' ? 'توضیحات' : 'Description'}</label>
+                    <label>Description</label>
                     <input
                       type="text"
                       value={memberFormData.exercise_history_description || ''}
@@ -541,9 +496,9 @@ const MembersListTab = () => {
                   </div>
                 </div>
 
-                <h4>{i18n.language === 'fa' ? 'دسترسی به تجهیزات' : 'Equipment Access'}</h4>
+                <h4>Equipment Access</h4>
                 <div className="form-group">
-                  <label>{i18n.language === 'fa' ? 'تجهیزات در دسترس' : 'Equipment Access'}</label>
+                  <label>Equipment Access</label>
                   <div className="checkbox-group">
                     {equipmentAccessOptions.map(opt => (
                       <label key={opt.value} className="checkbox-label">
@@ -552,7 +507,7 @@ const MembersListTab = () => {
                           checked={(memberFormData.equipment_access || []).includes(opt.value)}
                           onChange={(e) => handleArrayChange('equipment_access', opt.value, e.target.checked)}
                         />
-                        <span>{i18n.language === 'fa' ? opt.label_fa : opt.label_en}</span>
+                        <span>{opt.label}</span>
                       </label>
                     ))}
                   </div>
@@ -564,11 +519,11 @@ const MembersListTab = () => {
                       checked={!!memberFormData.gym_access}
                       onChange={(e) => setMemberFormData({...memberFormData, gym_access: e.target.checked})}
                     />
-                    <span>{i18n.language === 'fa' ? 'دسترسی به باشگاه' : 'Gym Access'}</span>
+                    <span>Gym Access</span>
                   </label>
                 </div>
                 <div className="form-group">
-                  <label>{i18n.language === 'fa' ? 'تجهیزات خانگی' : 'Home Equipment'}</label>
+                  <label>Home Equipment</label>
                   <div className="checkbox-group">
                     {homeEquipmentOptions.map(opt => (
                       <label key={opt.value} className="checkbox-label">
@@ -577,28 +532,28 @@ const MembersListTab = () => {
                           checked={(memberFormData.home_equipment || []).includes(opt.value)}
                           onChange={(e) => handleArrayChange('home_equipment', opt.value, e.target.checked)}
                         />
-                        <span>{i18n.language === 'fa' ? opt.label_fa : opt.label_en}</span>
+                        <span>{opt.label}</span>
                       </label>
                     ))}
                   </div>
                 </div>
 
-                <h4>{i18n.language === 'fa' ? 'ترجیحات تمرین' : 'Workout Preferences'}</h4>
+                <h4>Workout Preferences</h4>
                 <div className="form-row">
                   <div className="form-group">
-                    <label>{i18n.language === 'fa' ? 'زمان ترجیحی' : 'Preferred Time'}</label>
+                    <label>Preferred Time</label>
                     <select
                       value={memberFormData.preferred_workout_time || ''}
                       onChange={(e) => setMemberFormData({...memberFormData, preferred_workout_time: e.target.value})}
                     >
-                      <option value="">{i18n.language === 'fa' ? 'انتخاب کنید' : 'Select'}</option>
-                      <option value="morning">{i18n.language === 'fa' ? 'صبح' : 'Morning'}</option>
-                      <option value="afternoon">{i18n.language === 'fa' ? 'عصر' : 'Afternoon'}</option>
-                      <option value="evening">{i18n.language === 'fa' ? 'شب' : 'Evening'}</option>
+                      <option value="">Select</option>
+                      <option value="morning">Morning</option>
+                      <option value="afternoon">Afternoon</option>
+                      <option value="evening">Evening</option>
                     </select>
                   </div>
                   <div className="form-group">
-                    <label>{i18n.language === 'fa' ? 'روزهای تمرین در هفته' : 'Days per Week'}</label>
+                    <label>Days per Week</label>
                     <input
                       type="number"
                       value={memberFormData.workout_days_per_week ?? ''}
@@ -608,25 +563,25 @@ const MembersListTab = () => {
                     />
                   </div>
                   <div className="form-group">
-                    <label>{i18n.language === 'fa' ? 'شدت ترجیحی' : 'Preferred Intensity'}</label>
+                    <label>Preferred Intensity</label>
                     <select
                       value={memberFormData.preferred_intensity || ''}
                       onChange={(e) => setMemberFormData({...memberFormData, preferred_intensity: e.target.value})}
                     >
-                      <option value="">{i18n.language === 'fa' ? 'انتخاب کنید' : 'Select'}</option>
-                      <option value="light">{i18n.language === 'fa' ? 'سبک' : 'Light'}</option>
-                      <option value="medium">{i18n.language === 'fa' ? 'متوسط' : 'Medium'}</option>
-                      <option value="heavy">{i18n.language === 'fa' ? 'سنگین' : 'Heavy'}</option>
+                      <option value="">Select</option>
+                      <option value="light">Light</option>
+                      <option value="medium">Medium</option>
+                      <option value="heavy">Heavy</option>
                     </select>
                   </div>
                 </div>
 
                 <div className="form-actions">
                   <button type="button" className="btn-primary" onClick={handleSaveMemberProfile}>
-                    {i18n.language === 'fa' ? 'ذخیره' : 'Save'}
+                    Save
                   </button>
                   <button type="button" className="btn-secondary" onClick={() => setEditingMember(null)}>
-                    {i18n.language === 'fa' ? 'لغو' : 'Cancel'}
+                    Cancel
                   </button>
                 </div>
               </div>

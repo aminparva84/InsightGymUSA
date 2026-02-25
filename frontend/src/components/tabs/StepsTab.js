@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { getApiBase } from '../../services/apiBase';
 import './StepsTab.css';
@@ -12,7 +11,6 @@ const getAuthConfig = () => {
 };
 
 const StepsTab = () => {
-  const { i18n } = useTranslation();
   const [todaySteps, setTodaySteps] = useState(null);
   const [manualSteps, setManualSteps] = useState('');
   const [history, setHistory] = useState([]);
@@ -75,30 +73,29 @@ const StepsTab = () => {
     saveSteps(manualSteps, 'manual');
   };
 
-  const fa = i18n.language === 'fa';
   return (
     <div className="steps-tab" dir="ltr">
       <div className="steps-header">
-        <h2>{fa ? 'شمارش قدم' : 'Step Counter'}</h2>
+        <h2>Step Counter</h2>
         <p className="steps-subtitle">
-          {fa ? 'قدم‌های امروز را وارد کنید یا از دستگاه (موبایل) استفاده کنید.' : 'Enter your steps for today or use your device (mobile).'}
+          Enter your steps for today or use your device (mobile).
         </p>
       </div>
 
       {loading ? (
-        <div className="steps-loading">{fa ? 'در حال بارگذاری...' : 'Loading...'}</div>
+        <div className="steps-loading">Loading...</div>
       ) : (
         <>
           <div className="steps-today-card">
-            <h3>{fa ? 'امروز' : 'Today'}</h3>
+            <h3>Today</h3>
             <div className="steps-today-value">
               {(todaySteps !== null && todaySteps !== undefined) ? todaySteps : '—'}
             </div>
             <p className="steps-source">
-              {todaySteps != null && (fa ? 'ثبت شده' : 'Recorded')}
+              {todaySteps != null && 'Recorded'}
             </p>
             <form onSubmit={handleManualSubmit} className="steps-manual-form">
-              <label htmlFor="steps-input">{fa ? 'تعداد قدم' : 'Number of steps'}</label>
+              <label htmlFor="steps-input">Number of steps</label>
               <input
                 id="steps-input"
                 type="number"
@@ -106,18 +103,18 @@ const StepsTab = () => {
                 step="1"
                 value={manualSteps}
                 onChange={(e) => setManualSteps(e.target.value)}
-                placeholder={fa ? 'مثلاً 5000' : 'e.g. 5000'}
+                placeholder="e.g. 5000"
               />
               <button type="submit" disabled={saving}>
-                {saving ? (fa ? 'در حال ذخیره...' : 'Saving...') : (fa ? 'ذخیره' : 'Save')}
+                {saving ? 'Saving...' : 'Save'}
               </button>
             </form>
           </div>
 
           <div className="steps-history">
-            <h3>{fa ? 'تاریخچه (۳۰ روز گذشته)' : 'History (last 30 days)'}</h3>
+            <h3>History (last 30 days)</h3>
             {history.length === 0 ? (
-              <p className="steps-no-history">{fa ? 'هنوز قدمی ثبت نشده است.' : 'No steps recorded yet.'}</p>
+              <p className="steps-no-history">No steps recorded yet.</p>
             ) : (
               <ul className="steps-history-list">
                 {history.slice(0, 14).map((entry) => (

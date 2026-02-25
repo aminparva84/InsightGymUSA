@@ -7,7 +7,7 @@ import requests
 import json
 
 # Backend API URL
-BASE_URL = "http://localhost:5000"
+BASE_URL = "http://localhost:5001"
 
 # Complete test account data
 test_account = {
@@ -140,7 +140,7 @@ def create_test_account():
             
     except requests.exceptions.ConnectionError:
         print("[ERROR] Could not connect to backend server.")
-        print("   Make sure the backend is running on http://localhost:5000")
+        print("   Make sure the backend is running on http://localhost:5001")
         return False
     except Exception as e:
         print(f"[ERROR] {str(e)}")

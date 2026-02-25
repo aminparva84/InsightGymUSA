@@ -5,7 +5,7 @@
   min-width: 0;
   margin: 0;
   padding: 0 0 1rem 0;
-  background-color: #fff;
+  background-color: transparent;
 }
 
 .break-requests-header {
@@ -15,13 +15,13 @@
 .break-requests-header h2 {
   margin: 0 0 0.5rem 0;
   font-size: 1.8rem;
-  color: #000;
+  color: var(--text-primary);
   font-weight: 600;
 }
 
 .break-requests-desc {
   margin: 0 0 1rem 0;
-  color: #666;
+  color: var(--text-secondary);
   font-size: 0.95rem;
 }
 
@@ -33,28 +33,28 @@
 
 .break-requests-filters button {
   padding: 0.5rem 1rem;
-  border: 1px solid #dee2e6;
-  background: #fff;
+  border: 1px solid var(--border);
+  background-color: var(--bg-card);
   border-radius: 8px;
   cursor: pointer;
   font-size: 0.9rem;
 }
 
 .break-requests-filters button.active {
-  background: #0d6efd;
-  color: #fff;
-  border-color: #0d6efd;
+  background: var(--accent);
+  color: var(--text-primary);
+  border-color: var(--accent);
 }
 
 .break-requests-filters button:hover:not(.active) {
-  background: #f8f9fa;
+  background: var(--bg-elevated);
 }
 
 .break-requests-loading,
 .break-requests-empty {
   text-align: center;
   padding: 2rem;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .break-requests-list {
@@ -68,24 +68,24 @@
 
 .break-request-item {
   padding: 1.25rem;
-  background: #f8f9fa;
+  background: var(--bg-elevated);
   border-radius: 12px;
   border: 1px solid #e9ecef;
-  border-left: 4px solid #0d6efd;
+  border-left: 4px solid var(--accent);
 }
 
 .break-request-item.seen {
-  border-left-color: #6c757d;
+  border-left-color: var(--text-muted);
   opacity: 0.9;
 }
 
 .break-request-item.accepted {
-  border-left-color: #198754;
+  border-left-color: var(--success);
   opacity: 0.95;
 }
 
 .break-request-item.denied {
-  border-left-color: #dc3545;
+  border-left-color: var(--error);
   opacity: 0.95;
 }
 
@@ -98,13 +98,13 @@
 }
 
 .break-request-meta strong {
-  color: #000;
+  color: var(--text-primary);
   font-size: 1rem;
 }
 
 .break-request-date {
   font-size: 0.85rem;
-  color: #6c757d;
+  color: var(--text-secondary);
 }
 
 .break-request-status-badge {
@@ -115,23 +115,23 @@
 }
 
 .break-request-status-badge.status-pending {
-  background: #fff3cd;
-  color: #856404;
+  background: var(--warning-muted);
+  color: var(--warning);
 }
 
 .break-request-status-badge.status-accepted {
-  background: #d1e7dd;
-  color: #0f5132;
+  background: var(--success-muted);
+  color: var(--success);
 }
 
 .break-request-status-badge.status-denied {
-  background: #f8d7da;
-  color: #842029;
+  background: var(--error-muted);
+  color: var(--error);
 }
 
 .break-request-status-badge.status-seen {
-  background: #e2e3e5;
-  color: #41464b;
+  background: var(--bg-muted);
+  color: var(--text-secondary);
 }
 
 .break-request-actions {
@@ -142,8 +142,8 @@
 
 .break-request-accept {
   padding: 0.35rem 0.75rem;
-  background: #198754;
-  color: #fff;
+  background: var(--success);
+  color: var(--text-primary);
   border: none;
   border-radius: 6px;
   font-size: 0.85rem;
@@ -152,13 +152,13 @@
 }
 
 .break-request-accept:hover:not(:disabled) {
-  background: #157347;
+  background: var(--success);
 }
 
 .break-request-deny {
   padding: 0.35rem 0.75rem;
-  background: #dc3545;
-  color: #fff;
+  background: var(--error);
+  color: var(--text-primary);
   border: none;
   border-radius: 6px;
   font-size: 0.85rem;
@@ -167,7 +167,7 @@
 }
 
 .break-request-deny:hover:not(:disabled) {
-  background: #bb2d3b;
+  background: var(--error);
 }
 
 .break-request-accept:disabled,
@@ -179,23 +179,23 @@
 .break-request-respond-form {
   margin-top: 0.75rem;
   padding: 0.75rem;
-  background: #fff;
+  background-color: var(--bg-card);
   border-radius: 8px;
-  border: 1px solid #dee2e6;
+  border: 1px solid var(--border);
 }
 
 .break-request-respond-form label {
   display: block;
   font-size: 0.85rem;
   font-weight: 500;
-  color: #333;
+  color: var(--text-primary);
   margin-bottom: 0.35rem;
 }
 
 .break-request-respond-form textarea {
   width: 100%;
   padding: 0.5rem;
-  border: 1px solid #dee2e6;
+  border: 1px solid var(--border);
   border-radius: 6px;
   font-size: 0.9rem;
   font-family: inherit;
@@ -214,30 +214,30 @@
   border-radius: 6px;
   font-size: 0.85rem;
   cursor: pointer;
-  background: #f8f9fa;
-  border: 1px solid #dee2e6;
-  color: #333;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
 }
 
 .break-request-deny-confirm {
-  background: #dc3545 !important;
-  color: #fff !important;
-  border-color: #dc3545 !important;
+  background: var(--error) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--error) !important;
 }
 
 .break-request-deny-confirm:hover:not(:disabled) {
-  background: #bb2d3b !important;
+  background: var(--error) !important;
 }
 
 .break-request-response {
   margin-top: 0.5rem;
   padding-top: 0.5rem;
-  border-top: 1px solid #e9ecef;
+  border-top: 1px solid var(--border);
 }
 
 .break-request-responded-at {
   font-size: 0.8rem;
-  color: #6c757d;
+  color: var(--text-secondary);
   display: block;
   margin-bottom: 0.25rem;
 }
@@ -245,25 +245,25 @@
 .break-request-response-message {
   margin: 0;
   font-size: 0.9rem;
-  color: #495057;
-  background: #f8f9fa;
+  color: var(--text-secondary);
+  background: var(--bg-elevated);
   padding: 0.5rem 0.75rem;
   border-radius: 6px;
-  border-left: 3px solid #0d6efd;
+  border-left: 3px solid var(--accent);
   white-space: pre-wrap;
 }
 
 .break-request-message {
   margin: 0 0 0.5rem 0;
   padding: 0;
-  color: #212529;
+  color: var(--text-primary);
   line-height: 1.5;
   white-space: pre-wrap;
 }
 
 .break-request-seen-at {
   font-size: 0.8rem;
-  color: #6c757d;
+  color: var(--text-secondary);
   display: block;
   margin-top: 0.25rem;
 }

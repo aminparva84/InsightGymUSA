@@ -1,5 +1,5 @@
 /**
- * Insight GYM - American Gym Version
+ * Insight GYM USA - American Gym Version
  * English only - no Persian/Farsi
  */
 import i18n from 'i18next';
@@ -8,7 +8,7 @@ import { initReactI18next } from 'react-i18next';
 const resources = {
   en: {
     translation: {
-      appName: 'Insight GYM',
+      appName: 'Insight GYM USA',
       welcome: 'Welcome',
       login: 'Login',
       register: 'Register',
@@ -50,7 +50,7 @@ const resources = {
       noInjuries: 'No injury information available',
       language: 'Language',
       english: 'English',
-      welcomeMessage: "Hello! I'm Insight GYM's AI fitness assistant. How can I help you today?",
+      welcomeMessage: "Hello! I'm Insight GYM USA's AI fitness assistant. How can I help you today?",
       getFitnessPlan: 'Get Fitness Plan',
       suggestNutrition: 'Suggest Nutrition',
       getHelp: 'Get Help',
@@ -115,9 +115,9 @@ const resources = {
       // American Gym Landing
       introBadge: 'Premium Fitness',
       introHeadline: 'Transform Your Body. Elevate Your Life.',
-      introParagraph1: 'Insight GYM combines expert coaching with AI-powered personalization. Get custom workout plans, track your progress, and achieve your fitness goals.',
+      introParagraph1: 'Insight GYM USA combines expert coaching with AI-powered personalization. Get custom workout plans, track your progress, and achieve your fitness goals.',
       introParagraph2: 'Our certified coaches and smart technology work together to deliver results. Whether you are building muscle, losing fat, or improving endurance, we have you covered.',
-      introFeaturesTitle: 'Why Choose Insight GYM',
+      introFeaturesTitle: 'Why Choose Insight GYM USA',
       introFeature1Title: 'Expert Coaches',
       introFeature1Desc: 'Certified trainers with proven track records. Coaches can join our platform and bring their expertise to members.',
       introFeature2Title: 'AI-Powered Plans',
@@ -128,7 +128,7 @@ const resources = {
       introFeature4Desc: 'Choose the plan that fits your goals. Free trial available for new members.',
       introFeature5Title: 'Video Guides',
       introFeature5Desc: 'Learn proper form with step-by-step video instructions for every exercise.',
-      introClosing: 'Join Insight GYM today. Start your free trial and experience the difference.',
+      introClosing: 'Join Insight GYM USA today. Start your free trial and experience the difference.',
       // Coach registration
       coachCertifications: 'Certifications (e.g. NASM-CPT, ACE)',
       coachLicenses: 'Professional Licenses',
@@ -286,6 +286,7 @@ const resources = {
       tpMarkNotDone: 'Mark not done',
       tpLoadNextSessions: 'Load next sessions (AI designs them)',
       // Admin - Coaches
+      memberList: 'Member List',
       coaches: 'Coaches',
       members: 'Members',
       membersAndCoaches: 'Members & Coaches',
@@ -302,6 +303,7 @@ i18n
     resources,
     lng: 'en',
     fallbackLng: 'en',
+    supportedLngs: ['en'],
     interpolation: {
       escapeValue: false
     }

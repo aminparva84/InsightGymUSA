@@ -560,10 +560,22 @@ class TrainingActionNote(db.Model):
 
 
 class Configuration(db.Model):
-    """Configuration for training levels and injuries"""
+    """Configuration for training levels and injuries (site-wide fallback)"""
     __tablename__ = 'configuration'
     
     id = db.Column(db.Integer, primary_key=True)
+    training_levels = db.Column(db.Text)  # JSON string
+    injuries = db.Column(db.Text)  # JSON string
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+
+class CoachTrainingInfo(db.Model):
+    """Per-coach training levels and injuries (used when member has assigned coach)"""
+    __tablename__ = 'coach_training_info'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    coach_id = db.Column(db.Integer, db.ForeignKey('user.id'), unique=True, nullable=False)
     training_levels = db.Column(db.Text)  # JSON string
     injuries = db.Column(db.Text)  # JSON string
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -595,6 +607,13 @@ class SiteSettings(db.Model):
     training_plans_products_json = db.Column(db.Text)
     # JSON: AI provider settings (selected_provider, openai/anthropic/gemini: api_key, source, last_tested_at, is_valid)
     ai_settings_json = db.Column(db.Text)
+    # American gym: location, hours, class schedule, testimonials, pricing, FAQ
+    operating_hours_json = db.Column(db.Text)
+    map_url = db.Column(db.Text)
+    class_schedule_json = db.Column(db.Text)
+    testimonials_json = db.Column(db.Text)
+    pricing_tiers_json = db.Column(db.Text)
+    faq_json = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 

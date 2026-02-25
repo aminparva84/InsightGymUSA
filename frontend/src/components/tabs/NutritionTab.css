@@ -5,7 +5,7 @@
   min-width: 0;
   margin: 0;
   padding: 0 0 1rem 0;
-  background-color: #ffffff;
+  background-color: var(--bg-card);
 }
 
 .nutrition-header {
@@ -18,9 +18,9 @@
 }
 
 .nutrition-header h2 {
-  color: #000000;
+  color: var(--text-primary);
   margin: 0;
-  background-color: #ffffff;
+  background-color: var(--bg-card);
 }
 
 .plan-type-selector {
@@ -30,32 +30,32 @@
 
 .plan-type-btn {
   padding: 0.75rem 1.5rem;
-  background-color: #ffffff;
-  border: 1px solid #e0e0e0;
-  color: #000000;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.3s;
 }
 
 .plan-type-btn:hover {
-  background-color: #f8f9fa;
-  border-color: #F6F3C2;
-  color: #000000;
+  background-color: var(--bg-elevated);
+  border-color: var(--warning-muted);
+  color: var(--text-primary);
 }
 
 .plan-type-btn.active {
-  background-color: #F6F3C2;
-  color: #000000;
-  border-color: #F6F3C2;
+  background-color: var(--warning-muted);
+  color: var(--text-primary);
+  border-color: var(--warning-muted);
 }
 
 .no-data {
   text-align: center;
   padding: 3rem;
-  color: #000000;
+  color: var(--text-primary);
   font-size: 1.1rem;
-  background-color: #ffffff;
+  background-color: var(--bg-card);
 }
 
 .nutrition-plans {
@@ -65,8 +65,8 @@
 }
 
 .nutrition-day {
-  background-color: #ffffff;
-  border: 1px solid #e0e0e0;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
   border-radius: 8px;
   padding: 1.5rem;
   min-height: 200px;
@@ -77,10 +77,10 @@
 }
 
 .day-header {
-  color: #000000;
+  color: var(--text-primary);
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
-  border-bottom: 2px solid #e0e0e0;
+  border-bottom: 2px solid var(--border);
   font-size: 1.2rem;
 }
 
@@ -91,8 +91,8 @@
 }
 
 .meal-item {
-  background-color: #ffffff;
-  border: 1px solid #e0e0e0;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
   border-radius: 6px;
   padding: 1rem;
 }
@@ -108,12 +108,12 @@
 
 .meal-type {
   font-weight: 600;
-  color: #000000;
+  color: var(--text-primary);
   font-size: 0.9rem;
 }
 
 .meal-food {
-  color: #000000;
+  color: var(--text-primary);
   font-weight: 500;
 }
 
@@ -125,18 +125,18 @@
 }
 
 .nutrition-badge {
-  background-color: #f8f9fa;
+  background-color: var(--bg-elevated);
   padding: 0.25rem 0.75rem;
   border-radius: 4px;
   font-size: 0.85rem;
-  color: #000000;
+  color: var(--text-primary);
 }
 
 .meal-notes {
   margin-top: 0.5rem;
   padding-top: 0.5rem;
-  border-top: 1px solid #e0e0e0;
-  color: #000000;
+  border-top: 1px solid var(--border);
+  color: var(--text-primary);
   font-size: 0.9rem;
   font-style: italic;
 }
@@ -144,15 +144,15 @@
 .no-meals {
   text-align: center;
   padding: 1rem;
-  color: #000000;
+  color: var(--text-primary);
   font-style: italic;
 }
 
 .loading {
   text-align: center;
   padding: 3rem;
-  color: #000000;
-  background-color: #ffffff;
+  color: var(--text-primary);
+  background-color: var(--bg-card);
 }
 
 @media (max-width: 768px) {

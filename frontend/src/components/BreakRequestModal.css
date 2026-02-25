@@ -100,7 +100,7 @@
 .break-request-modal-actions button[type="submit"] {
   background: var(--accent);
   border: none;
-  color: #fff;
+  color: var(--text-primary);
 }
 
 .break-request-modal-actions button[type="submit"]:hover:not(:disabled) {

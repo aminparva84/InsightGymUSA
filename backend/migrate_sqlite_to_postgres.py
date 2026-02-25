@@ -1,12 +1,12 @@
 """
 One-time data migration: SQLite -> PostgreSQL.
 
-Use this script when you have an existing SQLite database (e.g. raha_fitness.db)
+Use this script when you have an existing SQLite database (e.g. insight_gym_usa.db)
 and want to move its data to PostgreSQL before switching the app to DATABASE_URL.
 
 Usage:
   1. Set DATABASE_URL to your PostgreSQL connection in .env.
-  2. Set SOURCE_SQLITE_URL to the SQLite file (default: sqlite:///instance/raha_fitness.db
+  2. Set SOURCE_SQLITE_URL to the SQLite file (default: sqlite:///instance/insight_gym_usa.db
      relative to backend, or pass as env var).
   3. From backend: python migrate_sqlite_to_postgres.py
 
@@ -28,8 +28,8 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from dotenv import load_dotenv
 load_dotenv()
 
-# Source SQLite URL (default: instance/raha_fitness.db under backend)
-SOURCE_SQLITE_URL = os.getenv('SOURCE_SQLITE_URL', 'sqlite:///instance/raha_fitness.db')
+# Source SQLite URL (default: instance/insight_gym_usa.db under backend)
+SOURCE_SQLITE_URL = os.getenv('SOURCE_SQLITE_URL', 'sqlite:///instance/insight_gym_usa.db')
 # Resolve relative path for sqlite so it's under backend
 if SOURCE_SQLITE_URL.startswith('sqlite:///') and 'instance' in SOURCE_SQLITE_URL:
     _rel = SOURCE_SQLITE_URL.replace('sqlite:///', '')
@@ -43,7 +43,7 @@ if not TARGET_DATABASE_URL or not TARGET_DATABASE_URL.startswith('postgresql'):
     if TARGET_DATABASE_URL and TARGET_DATABASE_URL.startswith('postgres://'):
         TARGET_DATABASE_URL = TARGET_DATABASE_URL.replace('postgres://', 'postgresql://', 1)
     else:
-        print("[ERROR] DATABASE_URL must be set to a PostgreSQL URL (e.g. postgresql://user:password@localhost:5432/raha_fitness)")
+        print("[ERROR] DATABASE_URL must be set to a PostgreSQL URL (e.g. postgresql://user:password@localhost:5432/insight_gym_usa)")
         sys.exit(1)
 
 from sqlalchemy import create_engine, text, inspect

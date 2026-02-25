@@ -1,12 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { getApiBase } from '../../services/apiBase';
 import { useAuth } from '../../context/AuthContext';
 import './ProgressTrend.css';
 
 const ProgressTrend = () => {
-  const { i18n } = useTranslation();
   const API_BASE = getApiBase();
   const { user } = useAuth();
   const [userProfile, setUserProfile] = useState(null);
@@ -85,7 +83,7 @@ const ProgressTrend = () => {
     if (file && (file.type.startsWith('image/') || file.type === 'application/pdf')) {
       setUploadFile(file);
     } else {
-      alert(i18n.language === 'fa' ? 'لطفاً یک تصویر یا فایل PDF انتخاب کنید' : 'Please select an image or PDF file');
+      alert('Please select an image or PDF file');
     }
   };
 
@@ -96,7 +94,7 @@ const ProgressTrend = () => {
     try {
       const token = getAuthToken();
       if (!token) {
-        alert(i18n.language === 'fa' ? 'لطفاً وارد شوید' : 'Please log in');
+        alert('Please log in');
         return;
       }
 
@@ -157,10 +155,10 @@ const ProgressTrend = () => {
       });
       setUploadFile(null);
       
-      alert(i18n.language === 'fa' ? 'اطلاعات با موفقیت ثبت شد' : 'Data saved successfully');
+      alert('Data saved successfully');
     } catch (error) {
       console.error('Error submitting progress:', error);
-      alert(i18n.language === 'fa' ? 'خطا در ثبت اطلاعات' : 'Error saving data');
+      alert('Error saving data');
     } finally {
       setSubmitting(false);
     }
@@ -171,7 +169,7 @@ const ProgressTrend = () => {
     return progressEntries
       .filter(entry => entry.weight_kg && userProfile?.height)
       .map(entry => ({
-        date: new Date(entry.recorded_at).toLocaleDateString(i18n.language === 'fa' ? 'fa-IR' : 'en-US'),
+        date: new Date(entry.recorded_at).toLocaleDateString('en-US'),
         bmi: parseFloat(calculateBMI(entry.weight_kg, userProfile.height)),
         timestamp: new Date(entry.recorded_at).getTime()
       }))
@@ -182,7 +180,7 @@ const ProgressTrend = () => {
     return progressEntries
       .filter(entry => entry.weight_kg)
       .map(entry => ({
-        date: new Date(entry.recorded_at).toLocaleDateString(i18n.language === 'fa' ? 'fa-IR' : 'en-US'),
+        date: new Date(entry.recorded_at).toLocaleDateString('en-US'),
         weight: entry.weight_kg,
         timestamp: new Date(entry.recorded_at).getTime()
       }))
@@ -195,7 +193,7 @@ const ProgressTrend = () => {
     
     progressEntries.forEach(entry => {
       const entryData = {
-        date: new Date(entry.recorded_at).toLocaleDateString(i18n.language === 'fa' ? 'fa-IR' : 'en-US'),
+        date: new Date(entry.recorded_at).toLocaleDateString('en-US'),
         timestamp: new Date(entry.recorded_at).getTime()
       };
       
@@ -217,7 +215,7 @@ const ProgressTrend = () => {
     return progressEntries
       .filter(entry => entry.muscle_mass_kg || entry.body_fat_percentage)
       .map(entry => ({
-        date: new Date(entry.recorded_at).toLocaleDateString(i18n.language === 'fa' ? 'fa-IR' : 'en-US'),
+        date: new Date(entry.recorded_at).toLocaleDateString('en-US'),
         muscle_mass: entry.muscle_mass_kg,
         body_fat: entry.body_fat_percentage,
         timestamp: new Date(entry.recorded_at).getTime()
@@ -227,7 +225,7 @@ const ProgressTrend = () => {
 
   const renderSimpleChart = (data, valueKey, labelKey = 'date') => {
     if (!data || data.length === 0) {
-      return <p className="no-data-message">{i18n.language === 'fa' ? 'داده‌ای برای نمایش وجود ندارد' : 'No data to display'}</p>;
+      return <p className="no-data-message">No data to display</p>;
     }
 
     // For a single point, duplicate it so the polyline draws a visible horizontal segment
@@ -280,7 +278,7 @@ const ProgressTrend = () => {
   };
 
   if (loading) {
-    return <div className="progress-trend-loading">{i18n.language === 'fa' ? 'در حال بارگذاری...' : 'Loading...'}</div>;
+    return <div className="progress-trend-loading">Loading...</div>;
   }
 
   const currentBMI = userProfile?.weight && userProfile?.height 
@@ -290,113 +288,113 @@ const ProgressTrend = () => {
   return (
     <div className="progress-trend" dir="ltr">
       <div className="progress-trend-header">
-        <h2>{i18n.language === 'fa' ? 'روند تغییرات' : 'Progress Trend'}</h2>
+        <h2>Progress Trend</h2>
         {currentBMI && (
           <p className="current-bmi">
-            {i18n.language === 'fa' ? 'BMI فعلی' : 'Current BMI'}: {currentBMI}
+            Current BMI: {currentBMI}
           </p>
         )}
       </div>
 
       {/* Input Form */}
       <div className="progress-form-section">
-        <h3>{i18n.language === 'fa' ? 'ثبت اطلاعات جدید' : 'Add New Data'}</h3>
+        <h3>Add New Data</h3>
         <form onSubmit={handleSubmit} className="progress-form">
           <div className="form-row">
             <div className="form-group">
-              <label>{i18n.language === 'fa' ? 'وزن (کیلوگرم)' : 'Weight (kg)'}</label>
+              <label>Weight (kg)</label>
               <input
                 type="number"
                 name="weight_kg"
                 value={formData.weight_kg}
                 onChange={handleInputChange}
                 step="0.1"
-                placeholder={i18n.language === 'fa' ? 'مثال: 75.5' : 'e.g., 75.5'}
+                placeholder="e.g., 75.5"
               />
             </div>
             <div className="form-group">
-              <label>{i18n.language === 'fa' ? 'سینه (سانتی‌متر)' : 'Chest (cm)'}</label>
+              <label>Chest (cm)</label>
               <input
                 type="number"
                 name="chest_cm"
                 value={formData.chest_cm}
                 onChange={handleInputChange}
                 step="0.1"
-                placeholder={i18n.language === 'fa' ? 'مثال: 100' : 'e.g., 100'}
+                placeholder="e.g., 100"
               />
             </div>
             <div className="form-group">
-              <label>{i18n.language === 'fa' ? 'کمر (سانتی‌متر)' : 'Waist (cm)'}</label>
+              <label>Waist (cm)</label>
               <input
                 type="number"
                 name="waist_cm"
                 value={formData.waist_cm}
                 onChange={handleInputChange}
                 step="0.1"
-                placeholder={i18n.language === 'fa' ? 'مثال: 85' : 'e.g., 85'}
+                placeholder="e.g., 85"
               />
             </div>
             <div className="form-group">
-              <label>{i18n.language === 'fa' ? 'لگن (سانتی‌متر)' : 'Hips (cm)'}</label>
+              <label>Hips (cm)</label>
               <input
                 type="number"
                 name="hips_cm"
                 value={formData.hips_cm}
                 onChange={handleInputChange}
                 step="0.1"
-                placeholder={i18n.language === 'fa' ? 'مثال: 95' : 'e.g., 95'}
+                placeholder="e.g., 95"
               />
             </div>
           </div>
           <div className="form-row">
             <div className="form-group">
-              <label>{i18n.language === 'fa' ? 'بازوی چپ (سانتی‌متر)' : 'Left Arm (cm)'}</label>
+              <label>Left Arm (cm)</label>
               <input
                 type="number"
                 name="arm_left_cm"
                 value={formData.arm_left_cm}
                 onChange={handleInputChange}
                 step="0.1"
-                placeholder={i18n.language === 'fa' ? 'مثال: 35' : 'e.g., 35'}
+                placeholder="e.g., 35"
               />
             </div>
             <div className="form-group">
-              <label>{i18n.language === 'fa' ? 'بازوی راست (سانتی‌متر)' : 'Right Arm (cm)'}</label>
+              <label>Right Arm (cm)</label>
               <input
                 type="number"
                 name="arm_right_cm"
                 value={formData.arm_right_cm}
                 onChange={handleInputChange}
                 step="0.1"
-                placeholder={i18n.language === 'fa' ? 'مثال: 35' : 'e.g., 35'}
+                placeholder="e.g., 35"
               />
             </div>
             <div className="form-group">
-              <label>{i18n.language === 'fa' ? 'ران چپ (سانتی‌متر)' : 'Left Thigh (cm)'}</label>
+              <label>Left Thigh (cm)</label>
               <input
                 type="number"
                 name="thigh_left_cm"
                 value={formData.thigh_left_cm}
                 onChange={handleInputChange}
                 step="0.1"
-                placeholder={i18n.language === 'fa' ? 'مثال: 60' : 'e.g., 60'}
+                placeholder="e.g., 60"
               />
             </div>
             <div className="form-group">
-              <label>{i18n.language === 'fa' ? 'ران راست (سانتی‌متر)' : 'Right Thigh (cm)'}</label>
+              <label>Right Thigh (cm)</label>
               <input
                 type="number"
                 name="thigh_right_cm"
                 value={formData.thigh_right_cm}
                 onChange={handleInputChange}
                 step="0.1"
-                placeholder={i18n.language === 'fa' ? 'مثال: 60' : 'e.g., 60'}
+                placeholder="e.g., 60"
               />
             </div>
           </div>
           <div className="form-row">
             <div className="form-group file-upload-group">
-              <label>{i18n.language === 'fa' ? 'آپلود فایل تحلیل عضله و چربی (PDF یا تصویر)' : 'Upload Muscle/Fat Analysis (PDF or Image)'}</label>
+              <label>Upload Muscle/Fat Analysis (PDF or Image)</label>
               <input
                 type="file"
                 accept="image/*,.pdf"
@@ -409,8 +407,8 @@ const ProgressTrend = () => {
           </div>
           <button type="submit" className="submit-btn" disabled={submitting}>
             {submitting 
-              ? (i18n.language === 'fa' ? 'در حال ثبت...' : 'Saving...')
-              : (i18n.language === 'fa' ? 'ثبت اطلاعات' : 'Save Data')
+              ? 'Saving...'
+              : 'Save Data'
             }
           </button>
         </form>
@@ -423,61 +421,61 @@ const ProgressTrend = () => {
             className={`trend-nav-btn ${activeSection === 'bmi' ? 'active' : ''}`}
             onClick={() => setActiveSection('bmi')}
           >
-            {i18n.language === 'fa' ? 'روند BMI' : 'BMI Trend'}
+            BMI Trend
           </button>
           <button
             className={`trend-nav-btn ${activeSection === 'weight' ? 'active' : ''}`}
             onClick={() => setActiveSection('weight')}
           >
-            {i18n.language === 'fa' ? 'روند وزن' : 'Weight Trend'}
+            Weight Trend
           </button>
           <button
             className={`trend-nav-btn ${activeSection === 'size' ? 'active' : ''}`}
             onClick={() => setActiveSection('size')}
           >
-            {i18n.language === 'fa' ? 'روند اندازه بدن' : 'Body Size Trend'}
+            Body Size Trend
           </button>
           <button
             className={`trend-nav-btn ${activeSection === 'muscle' ? 'active' : ''}`}
             onClick={() => setActiveSection('muscle')}
           >
-            {i18n.language === 'fa' ? 'روند عضله' : 'Muscle Trend'}
+            Muscle Trend
           </button>
         </div>
 
         <div className="trend-content">
           {activeSection === 'bmi' && (
             <div className="trend-section">
-              <h3>{i18n.language === 'fa' ? 'روند تغییرات BMI' : 'BMI Change Trend'}</h3>
+              <h3>BMI Change Trend</h3>
               {renderSimpleChart(getBMIData(), 'bmi')}
             </div>
           )}
 
           {activeSection === 'weight' && (
             <div className="trend-section">
-              <h3>{i18n.language === 'fa' ? 'روند تغییرات وزن' : 'Weight Change Trend'}</h3>
+              <h3>Weight Change Trend</h3>
               {renderSimpleChart(getWeightData(), 'weight')}
             </div>
           )}
 
           {activeSection === 'size' && (
             <div className="trend-section">
-              <h3>{i18n.language === 'fa' ? 'روند تغییرات اندازه بدن' : 'Body Size Change Trend'}</h3>
+              <h3>Body Size Change Trend</h3>
               <div className="body-size-chart">
                 {getBodySizeData().length === 0 ? (
-                  <p className="no-data-message">{i18n.language === 'fa' ? 'داده‌ای برای نمایش وجود ندارد' : 'No data to display'}</p>
+                  <p className="no-data-message">No data to display</p>
                 ) : (
                   <table className="body-size-table">
                     <thead>
                       <tr>
-                        <th>{i18n.language === 'fa' ? 'تاریخ' : 'Date'}</th>
-                        <th>{i18n.language === 'fa' ? 'سینه' : 'Chest'}</th>
-                        <th>{i18n.language === 'fa' ? 'کمر' : 'Waist'}</th>
-                        <th>{i18n.language === 'fa' ? 'لگن' : 'Hips'}</th>
-                        <th>{i18n.language === 'fa' ? 'بازو چپ' : 'L Arm'}</th>
-                        <th>{i18n.language === 'fa' ? 'بازو راست' : 'R Arm'}</th>
-                        <th>{i18n.language === 'fa' ? 'ران چپ' : 'L Thigh'}</th>
-                        <th>{i18n.language === 'fa' ? 'ران راست' : 'R Thigh'}</th>
+                        <th>Date</th>
+                        <th>Chest</th>
+                        <th>Waist</th>
+                        <th>Hips</th>
+                        <th>L Arm</th>
+                        <th>R Arm</th>
+                        <th>L Thigh</th>
+                        <th>R Thigh</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -502,10 +500,10 @@ const ProgressTrend = () => {
 
           {activeSection === 'muscle' && (
             <div className="trend-section">
-              <h3>{i18n.language === 'fa' ? 'روند تغییرات عضله' : 'Muscle Change Trend'}</h3>
+              <h3>Muscle Change Trend</h3>
               <div className="muscle-charts">
                 {getMuscleData().length === 0 ? (
-                  <p className="no-data-message">{i18n.language === 'fa' ? 'داده‌ای برای نمایش وجود ندارد. لطفاً فایل تحلیل عضله و چربی را آپلود کنید.' : 'No data to display. Please upload muscle/fat analysis file.'}</p>
+                  <p className="no-data-message">No data to display. Please upload muscle/fat analysis file.</p>
                 ) : (
                   <>
                     {renderSimpleChart(

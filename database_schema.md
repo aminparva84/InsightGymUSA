@@ -1,8 +1,8 @@
-# Database Schema Documentation - Raha Fitness
+# Database Schema Documentation - Insight GYM USA
 
 ## Overview
 
-This document describes the database schema for the Raha Fitness platform, designed to support Persian (Farsi) and English text with full UTF-8 encoding.
+This document describes the database schema for the Insight GYM USA platform, designed to support Persian (Farsi) and English text with full UTF-8 encoding.
 
 ## Exercise Categories
 

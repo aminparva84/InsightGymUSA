@@ -1,12 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
 import axios from 'axios';
 import { getApiBase } from '../../services/apiBase';
 import './OnlineLab.css';
 
 const OnlineLab = () => {
-  const { i18n } = useTranslation();
   const API_BASE = getApiBase();
   const { user } = useAuth();
   const [activeSection, setActiveSection] = useState('bmi');
@@ -228,24 +226,24 @@ const OnlineLab = () => {
   };
 
   const sections = [
-    { id: 'bmi', label: i18n.language === 'fa' ? 'محاسبه BMI' : 'BMI Calculator' },
-    { id: 'bfp', label: i18n.language === 'fa' ? 'محاسبه درصد چربی بدن' : 'Body Fat % Calculator' },
-    { id: 'ibw', label: i18n.language === 'fa' ? 'محاسبه وزن ایده‌آل' : 'Ideal Weight Calculator' },
-    { id: 'rhr', label: i18n.language === 'fa' ? 'محاسبه ضربان قلب پایه' : 'Resting Heart Rate' },
-    { id: 'water', label: i18n.language === 'fa' ? 'محاسبه نیاز روزانه آب' : 'Daily Water Needs' },
-    { id: 'rm', label: i18n.language === 'fa' ? 'محاسبه قدرت بیشینه (1RM)' : 'One Rep Max (1RM)' },
-    { id: 'frame', label: i18n.language === 'fa' ? 'محاسبه نوع استخوان‌بندی' : 'Body Frame Type' },
-    { id: 'bmr', label: i18n.language === 'fa' ? 'محاسبه متابولیسم پایه (BMR)' : 'Basal Metabolic Rate (BMR)' }
+    { id: 'bmi', label: 'BMI Calculator' },
+    { id: 'bfp', label: 'Body Fat % Calculator' },
+    { id: 'ibw', label: 'Ideal Weight Calculator' },
+    { id: 'rhr', label: 'Resting Heart Rate' },
+    { id: 'water', label: 'Daily Water Needs' },
+    { id: 'rm', label: 'One Rep Max (1RM)' },
+    { id: 'frame', label: 'Body Frame Type' },
+    { id: 'bmr', label: 'Basal Metabolic Rate (BMR)' }
   ];
 
   if (loading) {
-    return <div className="online-lab-loading">{i18n.language === 'fa' ? 'در حال بارگذاری...' : 'Loading...'}</div>;
+    return <div className="online-lab-loading">Loading...</div>;
   }
 
   return (
     <div className="online-lab" dir="ltr">
       <div className="online-lab-header">
-        <h2>{i18n.language === 'fa' ? 'آزمایشگاه آنلاین' : 'Online Laboratory'}</h2>
+        <h2>Online Laboratory</h2>
       </div>
 
       <div className="online-lab-content">
@@ -265,26 +263,26 @@ const OnlineLab = () => {
           {/* 1. BMI Calculator */}
           {activeSection === 'bmi' && (
             <div className="calculator-section">
-              <h3>{i18n.language === 'fa' ? 'محاسبه شاخص توده بدنی (BMI)' : 'Body Mass Index (BMI) Calculator'}</h3>
+              <h3>Body Mass Index (BMI) Calculator</h3>
               <div className="calculator-form">
                 <div className="form-group">
-                  <label>{i18n.language === 'fa' ? 'وزن (کیلوگرم)' : 'Weight (kg)'}</label>
+                  <label>Weight (kg)</label>
                   <input
                     type="number"
                     value={bmiData.weight}
                     onChange={(e) => setBmiData({ ...bmiData, weight: e.target.value })}
                     step="0.1"
-                    placeholder={i18n.language === 'fa' ? 'مثال: 75' : 'e.g., 75'}
+                    placeholder="e.g., 75"
                   />
                 </div>
                 <div className="form-group">
-                  <label>{i18n.language === 'fa' ? 'قد (سانتی‌متر)' : 'Height (cm)'}</label>
+                  <label>Height (cm)</label>
                   <input
                     type="number"
                     value={bmiData.height}
                     onChange={(e) => setBmiData({ ...bmiData, height: e.target.value })}
                     step="0.1"
-                    placeholder={i18n.language === 'fa' ? 'مثال: 175' : 'e.g., 175'}
+                    placeholder="e.g., 175"
                   />
                 </div>
                 {calculateBMI() && (
@@ -294,9 +292,7 @@ const OnlineLab = () => {
                       <span className="result-unit">BMI</span>
                     </div>
                     <p className="result-description">
-                      {i18n.language === 'fa' 
-                        ? 'BMI شما: ' + calculateBMI() 
-                        : 'Your BMI: ' + calculateBMI()}
+                      {'Your BMI: ' + calculateBMI()}
                     </p>
                   </div>
                 )}
@@ -307,47 +303,47 @@ const OnlineLab = () => {
           {/* 2. Body Fat Percentage */}
           {activeSection === 'bfp' && (
             <div className="calculator-section">
-              <h3>{i18n.language === 'fa' ? 'محاسبه درصد چربی بدن (BFP)' : 'Body Fat Percentage (BFP) Calculator'}</h3>
+              <h3>Body Fat Percentage (BFP) Calculator</h3>
               <div className="calculator-form">
                 <div className="form-row">
                   <div className="form-group">
-                    <label>{i18n.language === 'fa' ? 'سن' : 'Age'}</label>
+                    <label>Age</label>
                     <input
                       type="number"
                       value={bfpData.age}
                       onChange={(e) => setBfpData({ ...bfpData, age: e.target.value })}
-                      placeholder={i18n.language === 'fa' ? 'مثال: 30' : 'e.g., 30'}
+                      placeholder="e.g., 30"
                     />
                   </div>
                   <div className="form-group">
-                    <label>{i18n.language === 'fa' ? 'وزن (کیلوگرم)' : 'Weight (kg)'}</label>
+                    <label>Weight (kg)</label>
                     <input
                       type="number"
                       value={bfpData.weight}
                       onChange={(e) => setBfpData({ ...bfpData, weight: e.target.value })}
                       step="0.1"
-                      placeholder={i18n.language === 'fa' ? 'مثال: 75' : 'e.g., 75'}
+                      placeholder="e.g., 75"
                     />
                   </div>
                   <div className="form-group">
-                    <label>{i18n.language === 'fa' ? 'قد (سانتی‌متر)' : 'Height (cm)'}</label>
+                    <label>Height (cm)</label>
                     <input
                       type="number"
                       value={bfpData.height}
                       onChange={(e) => setBfpData({ ...bfpData, height: e.target.value })}
                       step="0.1"
-                      placeholder={i18n.language === 'fa' ? 'مثال: 175' : 'e.g., 175'}
+                      placeholder="e.g., 175"
                     />
                   </div>
                   <div className="form-group">
-                    <label>{i18n.language === 'fa' ? 'جنسیت' : 'Gender'}</label>
+                    <label>Gender</label>
                     <select
                       value={bfpData.gender}
                       onChange={(e) => setBfpData({ ...bfpData, gender: e.target.value })}
                     >
-                      <option value="">{i18n.language === 'fa' ? 'انتخاب کنید' : 'Select'}</option>
-                      <option value="male">{i18n.language === 'fa' ? 'مرد' : 'Male'}</option>
-                      <option value="female">{i18n.language === 'fa' ? 'زن' : 'Female'}</option>
+                      <option value="">Select</option>
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
                     </select>
                   </div>
                 </div>
@@ -358,9 +354,7 @@ const OnlineLab = () => {
                       <span className="result-unit">%</span>
                     </div>
                     <p className="result-description">
-                      {i18n.language === 'fa' 
-                        ? 'درصد چربی بدن شما: ' + calculateBFP() + '%'
-                        : 'Your Body Fat Percentage: ' + calculateBFP() + '%'}
+                      {'Your Body Fat Percentage: ' + calculateBFP() + '%'}
                     </p>
                   </div>
                 )}
@@ -371,28 +365,28 @@ const OnlineLab = () => {
           {/* 3. Ideal Body Weight */}
           {activeSection === 'ibw' && (
             <div className="calculator-section">
-              <h3>{i18n.language === 'fa' ? 'محاسبه وزن ایده‌آل (IBW)' : 'Ideal Body Weight (IBW) Calculator'}</h3>
+              <h3>Ideal Body Weight (IBW) Calculator</h3>
               <div className="calculator-form">
                 <div className="form-row">
                   <div className="form-group">
-                    <label>{i18n.language === 'fa' ? 'قد (سانتی‌متر)' : 'Height (cm)'}</label>
+                    <label>Height (cm)</label>
                     <input
                       type="number"
                       value={ibwData.height}
                       onChange={(e) => setIbwData({ ...ibwData, height: e.target.value })}
                       step="0.1"
-                      placeholder={i18n.language === 'fa' ? 'مثال: 175' : 'e.g., 175'}
+                      placeholder="e.g., 175"
                     />
                   </div>
                   <div className="form-group">
-                    <label>{i18n.language === 'fa' ? 'جنسیت' : 'Gender'}</label>
+                    <label>Gender</label>
                     <select
                       value={ibwData.gender}
                       onChange={(e) => setIbwData({ ...ibwData, gender: e.target.value })}
                     >
-                      <option value="">{i18n.language === 'fa' ? 'انتخاب کنید' : 'Select'}</option>
-                      <option value="male">{i18n.language === 'fa' ? 'مرد' : 'Male'}</option>
-                      <option value="female">{i18n.language === 'fa' ? 'زن' : 'Female'}</option>
+                      <option value="">Select</option>
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
                     </select>
                   </div>
                 </div>
@@ -403,9 +397,7 @@ const OnlineLab = () => {
                       <span className="result-unit">kg</span>
                     </div>
                     <p className="result-description">
-                      {i18n.language === 'fa' 
-                        ? 'وزن ایده‌آل شما: ' + calculateIBW() + ' کیلوگرم'
-                        : 'Your Ideal Body Weight: ' + calculateIBW() + ' kg'}
+                      {'Your Ideal Body Weight: ' + calculateIBW() + ' kg'}
                     </p>
                   </div>
                 )}
@@ -416,25 +408,25 @@ const OnlineLab = () => {
           {/* 4. Resting Heart Rate */}
           {activeSection === 'rhr' && (
             <div className="calculator-section">
-              <h3>{i18n.language === 'fa' ? 'محاسبه ضربان قلب پایه' : 'Resting Heart Rate Calculator'}</h3>
+              <h3>Resting Heart Rate Calculator</h3>
               <div className="calculator-form">
                 <div className="form-row">
                   <div className="form-group">
-                    <label>{i18n.language === 'fa' ? 'سن' : 'Age'}</label>
+                    <label>Age</label>
                     <input
                       type="number"
                       value={rhrData.age}
                       onChange={(e) => setRhrData({ ...rhrData, age: e.target.value })}
-                      placeholder={i18n.language === 'fa' ? 'مثال: 30' : 'e.g., 30'}
+                      placeholder="e.g., 30"
                     />
                   </div>
                   <div className="form-group">
-                    <label>{i18n.language === 'fa' ? 'ضربان قلب در حالت استراحت (اختیاری)' : 'Resting Heart Rate (optional)'}</label>
+                    <label>Resting Heart Rate (optional)</label>
                     <input
                       type="number"
                       value={rhrData.resting_hr}
                       onChange={(e) => setRhrData({ ...rhrData, resting_hr: e.target.value })}
-                      placeholder={i18n.language === 'fa' ? 'مثال: 70' : 'e.g., 70'}
+                      placeholder="e.g., 70"
                     />
                   </div>
                 </div>
@@ -445,9 +437,7 @@ const OnlineLab = () => {
                       <span className="result-unit">bpm</span>
                     </div>
                     <p className="result-description">
-                      {i18n.language === 'fa' 
-                        ? 'ضربان قلب پایه شما: ' + calculateRHR() + ' ضربه در دقیقه'
-                        : 'Your Resting Heart Rate: ' + calculateRHR() + ' beats per minute'}
+                      {'Your Resting Heart Rate: ' + calculateRHR() + ' beats per minute'}
                     </p>
                   </div>
                 )}
@@ -458,30 +448,30 @@ const OnlineLab = () => {
           {/* 5. Daily Water Needs */}
           {activeSection === 'water' && (
             <div className="calculator-section">
-              <h3>{i18n.language === 'fa' ? 'محاسبه نیاز روزانه آب بدن' : 'Daily Water Needs Calculator'}</h3>
+              <h3>Daily Water Needs Calculator</h3>
               <div className="calculator-form">
                 <div className="form-row">
                   <div className="form-group">
-                    <label>{i18n.language === 'fa' ? 'وزن (کیلوگرم)' : 'Weight (kg)'}</label>
+                    <label>Weight (kg)</label>
                     <input
                       type="number"
                       value={waterData.weight}
                       onChange={(e) => setWaterData({ ...waterData, weight: e.target.value })}
                       step="0.1"
-                      placeholder={i18n.language === 'fa' ? 'مثال: 75' : 'e.g., 75'}
+                      placeholder="e.g., 75"
                     />
                   </div>
                   <div className="form-group">
-                    <label>{i18n.language === 'fa' ? 'سطح فعالیت' : 'Activity Level'}</label>
+                    <label>Activity Level</label>
                     <select
                       value={waterData.activity_level}
                       onChange={(e) => setWaterData({ ...waterData, activity_level: e.target.value })}
                     >
-                      <option value="sedentary">{i18n.language === 'fa' ? 'بی‌تحرک' : 'Sedentary'}</option>
-                      <option value="light">{i18n.language === 'fa' ? 'سبک' : 'Light'}</option>
-                      <option value="moderate">{i18n.language === 'fa' ? 'متوسط' : 'Moderate'}</option>
-                      <option value="active">{i18n.language === 'fa' ? 'فعال' : 'Active'}</option>
-                      <option value="very_active">{i18n.language === 'fa' ? 'خیلی فعال' : 'Very Active'}</option>
+                      <option value="sedentary">Sedentary</option>
+                      <option value="light">Light</option>
+                      <option value="moderate">Moderate</option>
+                      <option value="active">Active</option>
+                      <option value="very_active">Very Active</option>
                     </select>
                   </div>
                 </div>
@@ -492,9 +482,7 @@ const OnlineLab = () => {
                       <span className="result-unit">ml</span>
                     </div>
                     <p className="result-description">
-                      {i18n.language === 'fa' 
-                        ? 'نیاز روزانه آب شما: ' + calculateWaterNeeds() + ' میلی‌لیتر (' + (calculateWaterNeeds() / 1000).toFixed(1) + ' لیتر)'
-                        : 'Your Daily Water Needs: ' + calculateWaterNeeds() + ' ml (' + (calculateWaterNeeds() / 1000).toFixed(1) + ' liters)'}
+                      {'Your Daily Water Needs: ' + calculateWaterNeeds() + ' ml (' + (calculateWaterNeeds() / 1000).toFixed(1) + ' liters)'}
                     </p>
                   </div>
                 )}
@@ -505,28 +493,28 @@ const OnlineLab = () => {
           {/* 6. One Rep Max */}
           {activeSection === 'rm' && (
             <div className="calculator-section">
-              <h3>{i18n.language === 'fa' ? 'محاسبه قدرت بیشینه (1RM)' : 'One Rep Max (1RM) Calculator'}</h3>
+              <h3>One Rep Max (1RM) Calculator</h3>
               <div className="calculator-form">
                 <div className="form-row">
                   <div className="form-group">
-                    <label>{i18n.language === 'fa' ? 'وزن استفاده شده (کیلوگرم)' : 'Weight Used (kg)'}</label>
+                    <label>Weight Used (kg)</label>
                     <input
                       type="number"
                       value={rmData.weight}
                       onChange={(e) => setRmData({ ...rmData, weight: e.target.value })}
                       step="0.1"
-                      placeholder={i18n.language === 'fa' ? 'مثال: 80' : 'e.g., 80'}
+                      placeholder="e.g., 80"
                     />
                   </div>
                   <div className="form-group">
-                    <label>{i18n.language === 'fa' ? 'تعداد تکرار' : 'Number of Reps'}</label>
+                    <label>Number of Reps</label>
                     <input
                       type="number"
                       value={rmData.reps}
                       onChange={(e) => setRmData({ ...rmData, reps: e.target.value })}
                       min="1"
                       max="10"
-                      placeholder={i18n.language === 'fa' ? 'مثال: 5' : 'e.g., 5'}
+                      placeholder="e.g., 5"
                     />
                   </div>
                 </div>
@@ -537,9 +525,7 @@ const OnlineLab = () => {
                       <span className="result-unit">kg</span>
                     </div>
                     <p className="result-description">
-                      {i18n.language === 'fa' 
-                        ? 'قدرت بیشینه شما (1RM): ' + calculate1RM() + ' کیلوگرم'
-                        : 'Your One Rep Max (1RM): ' + calculate1RM() + ' kg'}
+                      {'Your One Rep Max (1RM): ' + calculate1RM() + ' kg'}
                     </p>
                   </div>
                 )}
@@ -550,38 +536,38 @@ const OnlineLab = () => {
           {/* 7. Body Frame Type */}
           {activeSection === 'frame' && (
             <div className="calculator-section">
-              <h3>{i18n.language === 'fa' ? 'محاسبه نوع استخوان‌بندی' : 'Body Frame Type Calculator'}</h3>
+              <h3>Body Frame Type Calculator</h3>
               <div className="calculator-form">
                 <div className="form-row">
                   <div className="form-group">
-                    <label>{i18n.language === 'fa' ? 'قد (سانتی‌متر)' : 'Height (cm)'}</label>
+                    <label>Height (cm)</label>
                     <input
                       type="number"
                       value={frameData.height}
                       onChange={(e) => setFrameData({ ...frameData, height: e.target.value })}
                       step="0.1"
-                      placeholder={i18n.language === 'fa' ? 'مثال: 175' : 'e.g., 175'}
+                      placeholder="e.g., 175"
                     />
                   </div>
                   <div className="form-group">
-                    <label>{i18n.language === 'fa' ? 'دور مچ دست (سانتی‌متر)' : 'Wrist Circumference (cm)'}</label>
+                    <label>Wrist Circumference (cm)</label>
                     <input
                       type="number"
                       value={frameData.wrist}
                       onChange={(e) => setFrameData({ ...frameData, wrist: e.target.value })}
                       step="0.1"
-                      placeholder={i18n.language === 'fa' ? 'مثال: 17' : 'e.g., 17'}
+                      placeholder="e.g., 17"
                     />
                   </div>
                   <div className="form-group">
-                    <label>{i18n.language === 'fa' ? 'جنسیت' : 'Gender'}</label>
+                    <label>Gender</label>
                     <select
                       value={frameData.gender}
                       onChange={(e) => setFrameData({ ...frameData, gender: e.target.value })}
                     >
-                      <option value="">{i18n.language === 'fa' ? 'انتخاب کنید' : 'Select'}</option>
-                      <option value="male">{i18n.language === 'fa' ? 'مرد' : 'Male'}</option>
-                      <option value="female">{i18n.language === 'fa' ? 'زن' : 'Female'}</option>
+                      <option value="">Select</option>
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
                     </select>
                   </div>
                 </div>
@@ -590,16 +576,14 @@ const OnlineLab = () => {
                     <div className="result-value">
                       <span className="result-number">
                         {calculateFrameType() === 'small' 
-                          ? (i18n.language === 'fa' ? 'ریز' : 'Small')
+                          ? 'Small'
                           : calculateFrameType() === 'medium'
-                          ? (i18n.language === 'fa' ? 'متوسط' : 'Medium')
-                          : (i18n.language === 'fa' ? 'درشت' : 'Large')}
+                          ? 'Medium'
+                          : 'Large'}
                       </span>
                     </div>
                     <p className="result-description">
-                      {i18n.language === 'fa' 
-                        ? 'نوع استخوان‌بندی شما: ' + (calculateFrameType() === 'small' ? 'ریز' : calculateFrameType() === 'medium' ? 'متوسط' : 'درشت')
-                        : 'Your Body Frame Type: ' + calculateFrameType()}
+                      {'Your Body Frame Type: ' + calculateFrameType()}
                     </p>
                   </div>
                 )}
@@ -610,60 +594,60 @@ const OnlineLab = () => {
           {/* 8. BMR */}
           {activeSection === 'bmr' && (
             <div className="calculator-section">
-              <h3>{i18n.language === 'fa' ? 'محاسبه متابولیسم پایه (BMR)' : 'Basal Metabolic Rate (BMR) Calculator'}</h3>
+              <h3>Basal Metabolic Rate (BMR) Calculator</h3>
               <div className="calculator-form">
                 <div className="form-row">
                   <div className="form-group">
-                    <label>{i18n.language === 'fa' ? 'سن' : 'Age'}</label>
+                    <label>Age</label>
                     <input
                       type="number"
                       value={bmrData.age}
                       onChange={(e) => setBmrData({ ...bmrData, age: e.target.value })}
-                      placeholder={i18n.language === 'fa' ? 'مثال: 30' : 'e.g., 30'}
+                      placeholder="e.g., 30"
                     />
                   </div>
                   <div className="form-group">
-                    <label>{i18n.language === 'fa' ? 'وزن (کیلوگرم)' : 'Weight (kg)'}</label>
+                    <label>Weight (kg)</label>
                     <input
                       type="number"
                       value={bmrData.weight}
                       onChange={(e) => setBmrData({ ...bmrData, weight: e.target.value })}
                       step="0.1"
-                      placeholder={i18n.language === 'fa' ? 'مثال: 75' : 'e.g., 75'}
+                      placeholder="e.g., 75"
                     />
                   </div>
                   <div className="form-group">
-                    <label>{i18n.language === 'fa' ? 'قد (سانتی‌متر)' : 'Height (cm)'}</label>
+                    <label>Height (cm)</label>
                     <input
                       type="number"
                       value={bmrData.height}
                       onChange={(e) => setBmrData({ ...bmrData, height: e.target.value })}
                       step="0.1"
-                      placeholder={i18n.language === 'fa' ? 'مثال: 175' : 'e.g., 175'}
+                      placeholder="e.g., 175"
                     />
                   </div>
                   <div className="form-group">
-                    <label>{i18n.language === 'fa' ? 'جنسیت' : 'Gender'}</label>
+                    <label>Gender</label>
                     <select
                       value={bmrData.gender}
                       onChange={(e) => setBmrData({ ...bmrData, gender: e.target.value })}
                     >
-                      <option value="">{i18n.language === 'fa' ? 'انتخاب کنید' : 'Select'}</option>
-                      <option value="male">{i18n.language === 'fa' ? 'مرد' : 'Male'}</option>
-                      <option value="female">{i18n.language === 'fa' ? 'زن' : 'Female'}</option>
+                      <option value="">Select</option>
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
                     </select>
                   </div>
                   <div className="form-group">
-                    <label>{i18n.language === 'fa' ? 'سطح فعالیت' : 'Activity Level'}</label>
+                    <label>Activity Level</label>
                     <select
                       value={bmrData.activity_level}
                       onChange={(e) => setBmrData({ ...bmrData, activity_level: e.target.value })}
                     >
-                      <option value="sedentary">{i18n.language === 'fa' ? 'بی‌تحرک' : 'Sedentary'}</option>
-                      <option value="light">{i18n.language === 'fa' ? 'سبک' : 'Light'}</option>
-                      <option value="moderate">{i18n.language === 'fa' ? 'متوسط' : 'Moderate'}</option>
-                      <option value="active">{i18n.language === 'fa' ? 'فعال' : 'Active'}</option>
-                      <option value="very_active">{i18n.language === 'fa' ? 'خیلی فعال' : 'Very Active'}</option>
+                      <option value="sedentary">Sedentary</option>
+                      <option value="light">Light</option>
+                      <option value="moderate">Moderate</option>
+                      <option value="active">Active</option>
+                      <option value="very_active">Very Active</option>
                     </select>
                   </div>
                 </div>
@@ -674,14 +658,10 @@ const OnlineLab = () => {
                       <span className="result-unit">kcal/day</span>
                     </div>
                     <p className="result-description">
-                      {i18n.language === 'fa' 
-                        ? `متابولیسم پایه (BMR): ${calculateBMR().bmr} کیلوکالری در روز`
-                        : `Basal Metabolic Rate (BMR): ${calculateBMR().bmr} kcal/day`}
+                      {`Basal Metabolic Rate (BMR): ${calculateBMR().bmr} kcal/day`}
                     </p>
                     <p className="result-description">
-                      {i18n.language === 'fa' 
-                        ? `مصرف انرژی روزانه (TDEE): ${calculateBMR().tdee} کیلوکالری در روز`
-                        : `Total Daily Energy Expenditure (TDEE): ${calculateBMR().tdee} kcal/day`}
+                      {`Total Daily Energy Expenditure (TDEE): ${calculateBMR().tdee} kcal/day`}
                     </p>
                   </div>
                 )}

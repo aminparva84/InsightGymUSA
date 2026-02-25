@@ -10,7 +10,7 @@
 .tpp-loading {
   padding: 2rem;
   text-align: center;
-  color: #555;
+  color: var(--text-secondary);
 }
 
 .tpp-header {
@@ -20,13 +20,13 @@
 .tpp-header h2 {
   margin: 0 0 0.5rem 0;
   font-size: 1.5rem;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .tpp-desc {
   margin: 0 0 1rem 0;
   font-size: 0.9rem;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .tpp-section {
@@ -36,14 +36,15 @@
 .tpp-section h3 {
   margin: 0 0 1rem 0;
   padding-bottom: 0.5rem;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid var(--border);
   font-size: 1.1rem;
+  color: var(--text-primary);
 }
 
 .tpp-card {
-  background: #fff;
-  border: 1px solid #e0e0e0;
-  border-radius: 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
   padding: 1rem 1.25rem;
   margin-bottom: 1rem;
 }
@@ -51,7 +52,7 @@
 .tpp-card h4 {
   margin: 0 0 0.75rem 0;
   font-size: 1rem;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .tpp-row {
@@ -73,7 +74,7 @@
   display: block;
   font-size: 0.9rem;
   margin-bottom: 0.5rem;
-  color: #555;
+  color: var(--text-secondary);
 }
 
 .tpp-feature-row {
@@ -85,28 +86,32 @@
 
 .tpp-feature-row input {
   padding: 0.4rem 0.5rem;
-  border: 1px solid #ddd;
-  border-radius: 6px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
   font-size: 0.9rem;
+  background: var(--bg-elevated);
+  color: var(--text-primary);
 }
 
 .tpp-price input {
   width: 80px;
 }
 
-.form-group label {
+.training-plans-products-tab .form-group label {
   display: block;
   font-size: 0.85rem;
   margin-bottom: 0.25rem;
-  color: #555;
+  color: var(--text-secondary);
 }
 
-.form-group input {
+.training-plans-products-tab .form-group input {
   width: 100%;
   padding: 0.5rem;
-  border: 1px solid #ddd;
-  border-radius: 6px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
   font-size: 0.9rem;
+  background: var(--bg-elevated);
+  color: var(--text-primary);
 }
 
 .tpp-actions {
@@ -116,12 +121,18 @@
 .tpp-actions .btn-primary,
 .tpp-header .btn-primary {
   padding: 0.5rem 1.25rem;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   border: none;
-  background: #1976d2;
-  color: #fff;
+  background: var(--accent);
+  color: var(--text-primary);
   font-weight: 600;
   cursor: pointer;
+  transition: background var(--transition);
+}
+
+.tpp-actions .btn-primary:hover:not(:disabled),
+.tpp-header .btn-primary:hover:not(:disabled) {
+  background: var(--accent-hover);
 }
 
 .tpp-actions .btn-primary:disabled,

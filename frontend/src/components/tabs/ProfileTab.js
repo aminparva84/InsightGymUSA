@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
 import axios from 'axios';
 import { getApiBase } from '../../services/apiBase';
@@ -8,7 +7,7 @@ import './ProfileTab.css';
 const API_BASE = getApiBase();
 
 // BMI Calculator Component
-const BMICalculator = ({ weight, height, gender, language }) => {
+const BMICalculator = ({ weight, height, gender }) => {
   const bmi = useMemo(() => {
     if (!weight || !height || height <= 0) return null;
     // BMI = weight (kg) / (height (m))^2
@@ -22,33 +21,33 @@ const BMICalculator = ({ weight, height, gender, language }) => {
     
     // Slightly different ranges for males and females
     if (gender === 'female') {
-      if (bmiNum < 18.5) return { category: 'underweight', color: '#ff9800', label: language === 'fa' ? 'کم‌وزن' : 'Underweight' };
-      if (bmiNum < 24.9) return { category: 'normal', color: '#4caf50', label: language === 'fa' ? 'طبیعی' : 'Normal' };
-      if (bmiNum < 29.9) return { category: 'overweight', color: '#ff9800', label: language === 'fa' ? 'اضافه وزن' : 'Overweight' };
-      return { category: 'obese', color: '#f44336', label: language === 'fa' ? 'چاق' : 'Obese' };
+      if (bmiNum < 18.5) return { category: 'underweight', color: '#ff9800', label: 'Underweight' };
+      if (bmiNum < 24.9) return { category: 'normal', color: '#4caf50', label: 'Normal' };
+      if (bmiNum < 29.9) return { category: 'overweight', color: '#ff9800', label: 'Overweight' };
+      return { category: 'obese', color: '#f44336', label: 'Obese' };
     } else {
       // Male or other
-      if (bmiNum < 18.5) return { category: 'underweight', color: '#ff9800', label: language === 'fa' ? 'کم‌وزن' : 'Underweight' };
-      if (bmiNum < 25) return { category: 'normal', color: '#4caf50', label: language === 'fa' ? 'طبیعی' : 'Normal' };
-      if (bmiNum < 30) return { category: 'overweight', color: '#ff9800', label: language === 'fa' ? 'اضافه وزن' : 'Overweight' };
-      return { category: 'obese', color: '#f44336', label: language === 'fa' ? 'چاق' : 'Obese' };
+      if (bmiNum < 18.5) return { category: 'underweight', color: '#ff9800', label: 'Underweight' };
+      if (bmiNum < 25) return { category: 'normal', color: '#4caf50', label: 'Normal' };
+      if (bmiNum < 30) return { category: 'overweight', color: '#ff9800', label: 'Overweight' };
+      return { category: 'obese', color: '#f44336', label: 'Obese' };
     }
   };
 
   const getBMIRange = () => {
     if (gender === 'female') {
       return [
-        { min: 0, max: 18.5, color: '#ff9800', label: language === 'fa' ? 'کم‌وزن' : 'Underweight' },
-        { min: 18.5, max: 24.9, color: '#4caf50', label: language === 'fa' ? 'طبیعی' : 'Normal' },
-        { min: 24.9, max: 29.9, color: '#ff9800', label: language === 'fa' ? 'اضافه وزن' : 'Overweight' },
-        { min: 29.9, max: 50, color: '#f44336', label: language === 'fa' ? 'چاق' : 'Obese' }
+        { min: 0, max: 18.5, color: '#ff9800', label: 'Underweight' },
+        { min: 18.5, max: 24.9, color: '#4caf50', label: 'Normal' },
+        { min: 24.9, max: 29.9, color: '#ff9800', label: 'Overweight' },
+        { min: 29.9, max: 50, color: '#f44336', label: 'Obese' }
       ];
     } else {
       return [
-        { min: 0, max: 18.5, color: '#ff9800', label: language === 'fa' ? 'کم‌وزن' : 'Underweight' },
-        { min: 18.5, max: 25, color: '#4caf50', label: language === 'fa' ? 'طبیعی' : 'Normal' },
-        { min: 25, max: 30, color: '#ff9800', label: language === 'fa' ? 'اضافه وزن' : 'Overweight' },
-        { min: 30, max: 50, color: '#f44336', label: language === 'fa' ? 'چاق' : 'Obese' }
+        { min: 0, max: 18.5, color: '#ff9800', label: 'Underweight' },
+        { min: 18.5, max: 25, color: '#4caf50', label: 'Normal' },
+        { min: 25, max: 30, color: '#ff9800', label: 'Overweight' },
+        { min: 30, max: 50, color: '#f44336', label: 'Obese' }
       ];
     }
   };
@@ -62,7 +61,7 @@ const BMICalculator = ({ weight, height, gender, language }) => {
 
   return (
     <div className="bmi-calculator">
-      <h4>{language === 'fa' ? 'محاسبه BMI' : 'BMI Calculator'}</h4>
+      <h4>BMI Calculator</h4>
       <div className="bmi-display">
         <div className="bmi-value">
           <span className="bmi-number">{bmi}</span>
@@ -97,7 +96,7 @@ const BMICalculator = ({ weight, height, gender, language }) => {
             className="bmi-indicator"
             style={{
               left: `${currentPosition}%`,
-              backgroundColor: category?.color || '#666'
+              backgroundColor: category?.color || 'var(--text-secondary)'
             }}
           />
         </div>
@@ -120,7 +119,6 @@ const BMICalculator = ({ weight, height, gender, language }) => {
 };
 
 const ProfileTab = () => {
-  const { i18n } = useTranslation();
   const { user, loading: authLoading } = useAuth();
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -162,9 +160,7 @@ const ProfileTab = () => {
     
     if (!token || token.trim() === '') {
       console.error('No auth token found in localStorage!');
-      alert(i18n.language === 'fa' 
-        ? 'خطا: توکن احراز هویت یافت نشد. لطفاً دوباره وارد شوید.'
-        : 'Error: Authentication token not found. Please log in again.');
+      alert('Error: Authentication token not found. Please log in again.');
       return {};
     }
     
@@ -554,7 +550,7 @@ const ProfileTab = () => {
     const file = e.target.files[0];
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
-        alert(i18n.language === 'fa' ? 'حجم فایل باید کمتر از 5 مگابایت باشد' : 'File size must be less than 5MB');
+        alert('File size must be less than 5MB');
         return;
       }
       
@@ -644,7 +640,7 @@ const ProfileTab = () => {
 
   const handleSave = async () => {
     if (!profile) {
-      alert(i18n.language === 'fa' ? 'پروفایل یافت نشد' : 'Profile not found');
+      alert('Profile not found');
       return;
     }
     
@@ -657,9 +653,7 @@ const ProfileTab = () => {
     // Check for token before attempting to save
     const authToken = getAuthToken();
     if (!authToken) {
-      alert(i18n.language === 'fa' 
-        ? 'خطا: توکن احراز هویت یافت نشد. لطفاً دوباره وارد شوید.'
-        : 'Error: Authentication token not found. Please log in again.');
+      alert('Error: Authentication token not found. Please log in again.');
       return;
     }
     
@@ -699,9 +693,7 @@ const ProfileTab = () => {
         } catch (userError) {
           console.error('Error updating user info:', userError);
           // Don't fail the whole save if user update fails, but show a warning
-          alert(i18n.language === 'fa' 
-            ? 'پروفایل به‌روزرسانی شد اما به‌روزرسانی اطلاعات کاربری با خطا مواجه شد'
-            : 'Profile updated but user info update failed');
+          alert('Profile updated but user info update failed');
         }
       }
       
@@ -714,9 +706,7 @@ const ProfileTab = () => {
         try {
           const profileCheck = await axios.get(`${API_BASE}/api/admin/check-profile-complete`, getAxiosConfig());
           if (profileCheck.data.profile_complete) {
-            alert(i18n.language === 'fa' 
-              ? 'پروفایل با موفقیت به‌روزرسانی شد. در حال بارگذاری مجدد...' 
-              : 'Profile updated successfully. Reloading...');
+            alert('Profile updated successfully. Reloading...');
             // Reload to show assistant dashboard
             window.location.reload();
             return;
@@ -726,48 +716,46 @@ const ProfileTab = () => {
         }
       }
       
-      alert(i18n.language === 'fa' ? 'پروفایل با موفقیت به‌روزرسانی شد' : 'Profile updated successfully');
+      alert('Profile updated successfully');
     } catch (error) {
       console.error('Error saving profile:', error);
       console.error('Error response:', error.response);
       const errorMessage = error.response?.data?.error || error.response?.data?.message || error.message || 'Unknown error';
       console.error('Full error details:', error.response?.data);
-      alert(i18n.language === 'fa' 
-        ? `خطا در به‌روزرسانی پروفایل: ${errorMessage}`
-        : `Error updating profile: ${errorMessage}`);
+      alert(`Error updating profile: ${errorMessage}`);
     } finally {
       setSaving(false);
     }
   };
 
   if (loading) {
-    return <div className="profile-loading">{i18n.language === 'fa' ? 'در حال بارگذاری...' : 'Loading...'}</div>;
+    return <div className="profile-loading">Loading...</div>;
   }
 
   if (!profile) {
-    return <div className="profile-loading">{i18n.language === 'fa' ? 'در حال بارگذاری پروفایل...' : 'Loading profile...'}</div>;
+    return <div className="profile-loading">Loading profile...</div>;
   }
 
   const fitnessGoalsOptions = [
-    { value: 'weight_loss', label_fa: 'کاهش وزن', label_en: 'Weight Loss' },
-    { value: 'muscle_gain', label_fa: 'افزایش عضله', label_en: 'Muscle Gain' },
-    { value: 'strength', label_fa: 'قدرت', label_en: 'Strength' },
-    { value: 'endurance', label_fa: 'استقامت', label_en: 'Endurance' },
-    { value: 'flexibility', label_fa: 'انعطاف‌پذیری', label_en: 'Flexibility' }
+    { value: 'weight_loss', label_en: 'Weight Loss' },
+    { value: 'muscle_gain', label_en: 'Muscle Gain' },
+    { value: 'strength', label_en: 'Strength' },
+    { value: 'endurance', label_en: 'Endurance' },
+    { value: 'flexibility', label_en: 'Flexibility' }
   ];
 
   const injuryOptions = [
-    { value: 'knee', label_fa: 'زانو', label_en: 'Knee' },
-    { value: 'shoulder', label_fa: 'شانه', label_en: 'Shoulder' },
-    { value: 'lower_back', label_fa: 'کمر', label_en: 'Lower Back' },
-    { value: 'ankle', label_fa: 'مچ پا', label_en: 'Ankle' },
-    { value: 'wrist', label_fa: 'مچ دست', label_en: 'Wrist' }
+    { value: 'knee', label_en: 'Knee' },
+    { value: 'shoulder', label_en: 'Shoulder' },
+    { value: 'lower_back', label_en: 'Lower Back' },
+    { value: 'ankle', label_en: 'Ankle' },
+    { value: 'wrist', label_en: 'Wrist' }
   ];
 
   return (
     <div className="profile-tab" dir="ltr">
       <div className="profile-header">
-        <h2>{i18n.language === 'fa' ? 'پروفایل کاربری' : 'User Profile'}</h2>
+        <h2>User Profile</h2>
         {!editing && (
           <button className="edit-btn" onClick={() => {
             // Ensure profile data is loaded before entering edit mode
@@ -776,7 +764,7 @@ const ProfileTab = () => {
             }
             setEditing(true);
           }}>
-            {i18n.language === 'fa' ? 'ویرایش' : 'Edit'}
+            Edit
           </button>
         )}
       </div>
@@ -789,7 +777,7 @@ const ProfileTab = () => {
                 <img src={imagePreview} alt="Profile" className="profile-image" />
               ) : (
                 <div className="profile-image-placeholder">
-                  {i18n.language === 'fa' ? 'تصویر پروفایل' : 'Profile Image'}
+                  Profile Image
                 </div>
               )}
               {editing && (
@@ -801,7 +789,7 @@ const ProfileTab = () => {
                       onChange={handleImageChange}
                       style={{ display: 'none' }}
                     />
-                    {i18n.language === 'fa' ? 'انتخاب تصویر' : 'Choose Image'}
+                    Choose Image
                   </label>
                 </div>
               )}
@@ -809,21 +797,21 @@ const ProfileTab = () => {
           </div>
           <div className="profile-summary-info">
             <h3 className="profile-summary-name">
-              {username || (i18n.language === 'fa' ? 'کاربر' : 'User')}
+              {username || 'User'}
             </h3>
             <p className="profile-summary-email">{email || '—'}</p>
             <div className="profile-summary-meta">
               <span className="summary-chip">
-                {i18n.language === 'fa' ? 'سن' : 'Age'}: {profile?.age ?? '—'}
+                Age: {profile?.age ?? '—'}
               </span>
               <span className="summary-chip">
-                {i18n.language === 'fa' ? 'وزن' : 'Weight'}: {profile?.weight ?? '—'}
+                Weight: {profile?.weight ?? '—'}
               </span>
               <span className="summary-chip">
-                {i18n.language === 'fa' ? 'قد' : 'Height'}: {profile?.height ?? '—'}
+                Height: {profile?.height ?? '—'}
               </span>
               <span className="summary-chip">
-                {i18n.language === 'fa' ? 'سطح' : 'Level'}: {profile?.training_level || '—'}
+                Level: {profile?.training_level || '—'}
               </span>
             </div>
           </div>
@@ -832,13 +820,13 @@ const ProfileTab = () => {
         {/* Basic Information */}
         <div className={`profile-section ${expandedSections.basic ? 'expanded' : 'collapsed'}`}>
           <button type="button" className="section-toggle" onClick={() => toggleSection('basic')}>
-            <span>{i18n.language === 'fa' ? 'اطلاعات پایه' : 'Basic Information'}</span>
+            <span>Basic Information</span>
             <span className="section-toggle-icon">{expandedSections.basic ? '−' : '+'}</span>
           </button>
           <div className="section-body">
             <div className="form-grid">
             <div className="form-group">
-              <label>{i18n.language === 'fa' ? 'نام کاربری' : 'Username'}</label>
+              <label>Username</label>
               <input 
                 type="text" 
                 name="username"
@@ -848,7 +836,7 @@ const ProfileTab = () => {
               />
             </div>
             <div className="form-group">
-              <label>{i18n.language === 'fa' ? 'ایمیل' : 'Email'}</label>
+              <label>Email</label>
               <input 
                 type="email" 
                 name="email"
@@ -858,7 +846,7 @@ const ProfileTab = () => {
               />
             </div>
             <div className="form-group">
-              <label>{i18n.language === 'fa' ? 'سن' : 'Age'}</label>
+              <label>Age</label>
               <input
                 type="number"
                 name="age"
@@ -870,37 +858,37 @@ const ProfileTab = () => {
               />
             </div>
             <div className="form-group">
-              <label>{i18n.language === 'fa' ? 'جنسیت' : 'Gender'}</label>
+              <label>Gender</label>
               <select
                 name="gender"
                 value={profile?.gender || ''}
                 onChange={handleInputChange}
                 disabled={!editing}
               >
-                {editing && <option value="">{i18n.language === 'fa' ? 'انتخاب کنید' : 'Select'}</option>}
+                {editing && <option value="">Select</option>}
                 {!editing && !profile?.gender && <option value=""></option>}
-                <option value="male">{i18n.language === 'fa' ? 'مرد' : 'Male'}</option>
-                <option value="female">{i18n.language === 'fa' ? 'زن' : 'Female'}</option>
-                <option value="other">{i18n.language === 'fa' ? 'سایر' : 'Other'}</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
               </select>
             </div>
             <div className="form-group">
-              <label>{i18n.language === 'fa' ? 'نوع حساب کاربری' : 'Account Type'}</label>
+              <label>Account Type</label>
               <select
                 name="account_type"
                 value={profile?.account_type || ''}
                 onChange={handleInputChange}
                 disabled={!editing}
               >
-                {editing && <option value="">{i18n.language === 'fa' ? 'انتخاب کنید' : 'Select'}</option>}
+                {editing && <option value="">Select</option>}
                 {!editing && !profile?.account_type && <option value=""></option>}
-                <option value="assistant">{i18n.language === 'fa' ? 'دستیار' : 'Assistant'}</option>
-                <option value="admin">{i18n.language === 'fa' ? 'مدیر' : 'Admin'}</option>
-                <option value="member">{i18n.language === 'fa' ? 'عضو' : 'Member'}</option>
+                <option value="assistant">Assistant</option>
+                <option value="admin">Admin</option>
+                <option value="member">Member</option>
               </select>
             </div>
             <div className="form-group">
-              <label>{i18n.language === 'fa' ? 'وزن (کیلوگرم)' : 'Weight (kg)'}</label>
+              <label>Weight (kg)</label>
               <input
                 type="number"
                 name="weight"
@@ -912,7 +900,7 @@ const ProfileTab = () => {
               />
             </div>
             <div className="form-group">
-              <label>{i18n.language === 'fa' ? 'قد (سانتی‌متر)' : 'Height (cm)'}</label>
+              <label>Height (cm)</label>
               <input
                 type="number"
                 name="height"
@@ -931,7 +919,6 @@ const ProfileTab = () => {
               weight={parseFloat(profile.weight)} 
               height={parseFloat(profile.height)} 
               gender={profile.gender}
-              language={i18n.language}
             />
           )}
           </div>
@@ -940,20 +927,18 @@ const ProfileTab = () => {
         {/* Body Measurements */}
         <div className={`profile-section ${expandedSections.body ? 'expanded' : 'collapsed'}`}>
           <button type="button" className="section-toggle" onClick={() => toggleSection('body')}>
-            <span>{i18n.language === 'fa' ? 'اندازه‌گیری بدن' : 'Body Measurements'}</span>
+            <span>Body Measurements</span>
             <span className="section-toggle-icon">{expandedSections.body ? '−' : '+'}</span>
           </button>
           <div className="section-body">
-            <p className="section-description" style={{ color: '#000000', marginBottom: '1rem', fontSize: '0.9rem' }}>
-              {i18n.language === 'fa' 
-                ? 'اندازه‌های بدن بر حسب سانتی‌متر'
-                : 'Body measurements in centimeters'}
+            <p className="section-description" style={{ color: 'var(--text-primary)', marginBottom: '1rem', fontSize: '0.9rem' }}>
+              Body measurements in centimeters
             </p>
             <div className="form-grid">
             <div className="form-group">
-              <label>{i18n.language === 'fa' ? 'دور سینه (سانتی‌متر)' : 'Chest Circumference (cm)'}</label>
-              <p className="measurement-description" style={{ color: '#000000', fontSize: '0.85rem', marginTop: '0.25rem', marginBottom: '0.5rem', opacity: 0.8, fontStyle: 'italic' }}>
-                {i18n.language === 'fa' ? 'دور برجسته ترین قسمت سینه' : 'Circumference of the most prominent part of the chest'}
+              <label>Chest Circumference (cm)</label>
+              <p className="measurement-description" style={{ color: 'var(--text-primary)', fontSize: '0.85rem', marginTop: '0.25rem', marginBottom: '0.5rem', opacity: 0.8, fontStyle: 'italic' }}>
+                Circumference of the most prominent part of the chest
               </p>
               <input
                 type="number"
@@ -966,9 +951,9 @@ const ProfileTab = () => {
               />
             </div>
             <div className="form-group">
-              <label>{i18n.language === 'fa' ? 'دور کمر (سانتی‌متر)' : 'Waist Circumference (cm)'}</label>
-              <p className="measurement-description" style={{ color: '#000000', fontSize: '0.85rem', marginTop: '0.25rem', marginBottom: '0.5rem', opacity: 0.8, fontStyle: 'italic' }}>
-                {i18n.language === 'fa' ? 'دور باریک ترین قسمت کمر' : 'Circumference of the narrowest part of the waist'}
+              <label>Waist Circumference (cm)</label>
+              <p className="measurement-description" style={{ color: 'var(--text-primary)', fontSize: '0.85rem', marginTop: '0.25rem', marginBottom: '0.5rem', opacity: 0.8, fontStyle: 'italic' }}>
+                Circumference of the narrowest part of the waist
               </p>
               <input
                 type="number"
@@ -981,9 +966,9 @@ const ProfileTab = () => {
               />
             </div>
             <div className="form-group">
-              <label>{i18n.language === 'fa' ? 'دور شکم (سانتی‌متر)' : 'Abdomen Circumference (cm)'}</label>
-              <p className="measurement-description" style={{ color: '#000000', fontSize: '0.85rem', marginTop: '0.25rem', marginBottom: '0.5rem', opacity: 0.8, fontStyle: 'italic' }}>
-                {i18n.language === 'fa' ? 'دور برجسته ترین قسمت شکم' : 'Circumference of the most prominent part of the abdomen'}
+              <label>Abdomen Circumference (cm)</label>
+              <p className="measurement-description" style={{ color: 'var(--text-primary)', fontSize: '0.85rem', marginTop: '0.25rem', marginBottom: '0.5rem', opacity: 0.8, fontStyle: 'italic' }}>
+                Circumference of the most prominent part of the abdomen
               </p>
               <input
                 type="number"
@@ -996,9 +981,9 @@ const ProfileTab = () => {
               />
             </div>
             <div className="form-group">
-              <label>{i18n.language === 'fa' ? 'دور بازو (سانتی‌متر)' : 'Arm Circumference (cm)'}</label>
-              <p className="measurement-description" style={{ color: '#000000', fontSize: '0.85rem', marginTop: '0.25rem', marginBottom: '0.5rem', opacity: 0.8, fontStyle: 'italic' }}>
-                {i18n.language === 'fa' ? 'دور برجسته ترین قسمت بازو' : 'Circumference of the most prominent part of the arm'}
+              <label>Arm Circumference (cm)</label>
+              <p className="measurement-description" style={{ color: 'var(--text-primary)', fontSize: '0.85rem', marginTop: '0.25rem', marginBottom: '0.5rem', opacity: 0.8, fontStyle: 'italic' }}>
+                Circumference of the most prominent part of the arm
               </p>
               <input
                 type="number"
@@ -1011,9 +996,9 @@ const ProfileTab = () => {
               />
             </div>
             <div className="form-group">
-              <label>{i18n.language === 'fa' ? 'دور باسن (سانتی‌متر)' : 'Hip Circumference (cm)'}</label>
-              <p className="measurement-description" style={{ color: '#000000', fontSize: '0.85rem', marginTop: '0.25rem', marginBottom: '0.5rem', opacity: 0.8, fontStyle: 'italic' }}>
-                {i18n.language === 'fa' ? 'دور برجسته ترین قسمت باسن' : 'Circumference of the most prominent part of the hip'}
+              <label>Hip Circumference (cm)</label>
+              <p className="measurement-description" style={{ color: 'var(--text-primary)', fontSize: '0.85rem', marginTop: '0.25rem', marginBottom: '0.5rem', opacity: 0.8, fontStyle: 'italic' }}>
+                Circumference of the most prominent part of the hip
               </p>
               <input
                 type="number"
@@ -1026,9 +1011,9 @@ const ProfileTab = () => {
               />
             </div>
             <div className="form-group">
-              <label>{i18n.language === 'fa' ? 'دور ران (سانتی‌متر)' : 'Thigh Circumference (cm)'}</label>
-              <p className="measurement-description" style={{ color: '#000000', fontSize: '0.85rem', marginTop: '0.25rem', marginBottom: '0.5rem', opacity: 0.8, fontStyle: 'italic' }}>
-                {i18n.language === 'fa' ? 'دور برجسته ترین قسمت ران' : 'Circumference of the most prominent part of the thigh'}
+              <label>Thigh Circumference (cm)</label>
+              <p className="measurement-description" style={{ color: 'var(--text-primary)', fontSize: '0.85rem', marginTop: '0.25rem', marginBottom: '0.5rem', opacity: 0.8, fontStyle: 'italic' }}>
+                Circumference of the most prominent part of the thigh
               </p>
               <input
                 type="number"
@@ -1047,28 +1032,28 @@ const ProfileTab = () => {
         {/* Training Information */}
         <div className={`profile-section ${expandedSections.training ? 'expanded' : 'collapsed'}`}>
           <button type="button" className="section-toggle" onClick={() => toggleSection('training')}>
-            <span>{i18n.language === 'fa' ? 'اطلاعات تمرینی' : 'Training Information'}</span>
+            <span>Training Information</span>
             <span className="section-toggle-icon">{expandedSections.training ? '−' : '+'}</span>
           </button>
           <div className="section-body">
             <div className="form-grid">
             <div className="form-group">
-              <label>{i18n.language === 'fa' ? 'سطح تمرین' : 'Training Level'}</label>
+              <label>Training Level</label>
               <select
                 name="training_level"
                 value={profile?.training_level || ''}
                 onChange={handleInputChange}
                 disabled={!editing}
               >
-                {editing && <option value="">{i18n.language === 'fa' ? 'انتخاب کنید' : 'Select'}</option>}
+                {editing && <option value="">Select</option>}
                 {!editing && !profile?.training_level && <option value=""></option>}
-                <option value="beginner">{i18n.language === 'fa' ? 'مبتدی' : 'Beginner'}</option>
-                <option value="intermediate">{i18n.language === 'fa' ? 'متوسط' : 'Intermediate'}</option>
-                <option value="advanced">{i18n.language === 'fa' ? 'پیشرفته' : 'Advanced'}</option>
+                <option value="beginner">Beginner</option>
+                <option value="intermediate">Intermediate</option>
+                <option value="advanced">Advanced</option>
               </select>
             </div>
             <div className="form-group">
-              <label>{i18n.language === 'fa' ? 'روزهای تمرین در هفته' : 'Workout Days Per Week'}</label>
+              <label>Workout Days Per Week</label>
               <input
                 type="number"
                 name="workout_days_per_week"
@@ -1080,39 +1065,39 @@ const ProfileTab = () => {
               />
             </div>
             <div className="form-group">
-              <label>{i18n.language === 'fa' ? 'زمان ترجیحی تمرین' : 'Preferred Workout Time'}</label>
+              <label>Preferred Workout Time</label>
               <select
                 name="preferred_workout_time"
                 value={profile?.preferred_workout_time || ''}
                 onChange={handleInputChange}
                 disabled={!editing}
               >
-                {editing && <option value="">{i18n.language === 'fa' ? 'انتخاب کنید' : 'Select'}</option>}
+                {editing && <option value="">Select</option>}
                 {!editing && !profile?.preferred_workout_time && <option value=""></option>}
-                <option value="morning">{i18n.language === 'fa' ? 'صبح' : 'Morning'}</option>
-                <option value="afternoon">{i18n.language === 'fa' ? 'ظهر' : 'Afternoon'}</option>
-                <option value="evening">{i18n.language === 'fa' ? 'عصر' : 'Evening'}</option>
+                <option value="morning">Morning</option>
+                <option value="afternoon">Afternoon</option>
+                <option value="evening">Evening</option>
               </select>
             </div>
             <div className="form-group">
-              <label>{i18n.language === 'fa' ? 'شدت ترجیحی' : 'Preferred Intensity'}</label>
+              <label>Preferred Intensity</label>
               <select
                 name="preferred_intensity"
                 value={profile?.preferred_intensity || ''}
                 onChange={handleInputChange}
                 disabled={!editing}
               >
-                {editing && <option value="">{i18n.language === 'fa' ? 'انتخاب کنید' : 'Select'}</option>}
+                {editing && <option value="">Select</option>}
                 {!editing && !profile?.preferred_intensity && <option value=""></option>}
-                <option value="light">{i18n.language === 'fa' ? 'سبک' : 'Light'}</option>
-                <option value="medium">{i18n.language === 'fa' ? 'متوسط' : 'Medium'}</option>
-                <option value="heavy">{i18n.language === 'fa' ? 'سنگین' : 'Heavy'}</option>
+                <option value="light">Light</option>
+                <option value="medium">Medium</option>
+                <option value="heavy">Heavy</option>
               </select>
             </div>
           </div>
 
           <div className="form-group full-width">
-            <label>{i18n.language === 'fa' ? 'اهداف تناسب اندام' : 'Fitness Goals'}</label>
+            <label>Fitness Goals</label>
             <div className="checkbox-group">
               {fitnessGoalsOptions.map(option => (
                 <label key={option.value} className="checkbox-label">
@@ -1122,7 +1107,7 @@ const ProfileTab = () => {
                     onChange={(e) => handleArrayChange('fitness_goals', option.value, e.target.checked)}
                     disabled={!editing}
                   />
-                  {i18n.language === 'fa' ? option.label_fa : option.label_en}
+                  {option.label_en}
                 </label>
               ))}
             </div>
@@ -1133,12 +1118,12 @@ const ProfileTab = () => {
         {/* Health Information */}
         <div className={`profile-section ${expandedSections.health ? 'expanded' : 'collapsed'}`}>
           <button type="button" className="section-toggle" onClick={() => toggleSection('health')}>
-            <span>{i18n.language === 'fa' ? 'اطلاعات سلامتی' : 'Health Information'}</span>
+            <span>Health Information</span>
             <span className="section-toggle-icon">{expandedSections.health ? '−' : '+'}</span>
           </button>
           <div className="section-body">
             <div className="form-group full-width">
-              <label>{i18n.language === 'fa' ? 'آسیب‌ها' : 'Injuries'}</label>
+              <label>Injuries</label>
               <div className="checkbox-group">
                 {injuryOptions.map(option => (
                   <label key={option.value} className="checkbox-label">
@@ -1148,13 +1133,13 @@ const ProfileTab = () => {
                       onChange={(e) => handleArrayChange('injuries', option.value, e.target.checked)}
                       disabled={!editing}
                     />
-                    {i18n.language === 'fa' ? option.label_fa : option.label_en}
+                    {option.label_en}
                   </label>
                 ))}
               </div>
             </div>
             <div className="form-group full-width">
-              <label>{i18n.language === 'fa' ? 'جزئیات آسیب‌ها' : 'Injury Details'}</label>
+              <label>Injury Details</label>
               <textarea
                 name="injury_details"
                 value={profile?.injury_details || ''}
@@ -1169,13 +1154,13 @@ const ProfileTab = () => {
         {/* Exercise History */}
         <div className={`profile-section ${expandedSections.history ? 'expanded' : 'collapsed'}`}>
           <button type="button" className="section-toggle" onClick={() => toggleSection('history')}>
-            <span>{i18n.language === 'fa' ? 'سابقه تمرینی' : 'Exercise History'}</span>
+            <span>Exercise History</span>
             <span className="section-toggle-icon">{expandedSections.history ? '−' : '+'}</span>
           </button>
           <div className="section-body">
             <div className="form-grid">
               <div className="form-group">
-                <label>{i18n.language === 'fa' ? 'سال‌های سابقه تمرین' : 'Years of Exercise History'}</label>
+                <label>Years of Exercise History</label>
                 <input
                   type="number"
                   name="exercise_history_years"
@@ -1188,14 +1173,14 @@ const ProfileTab = () => {
               </div>
             </div>
             <div className="form-group full-width">
-              <label>{i18n.language === 'fa' ? 'توضیحات سابقه تمرینی' : 'Exercise History Description'}</label>
+              <label>Exercise History Description</label>
               <textarea
                 name="exercise_history_description"
                 value={profile?.exercise_history_description || ''}
                 onChange={handleInputChange}
                 disabled={!editing}
                 rows="3"
-                placeholder={i18n.language === 'fa' ? 'سابقه تمرینات قبلی خود را شرح دهید...' : 'Describe your previous exercise experience...'}
+                placeholder="Describe your previous exercise experience..."
               />
             </div>
           </div>
@@ -1204,12 +1189,12 @@ const ProfileTab = () => {
         {/* Medical Conditions */}
         <div className={`profile-section ${expandedSections.medical ? 'expanded' : 'collapsed'}`}>
           <button type="button" className="section-toggle" onClick={() => toggleSection('medical')}>
-            <span>{i18n.language === 'fa' ? 'شرایط پزشکی' : 'Medical Conditions'}</span>
+            <span>Medical Conditions</span>
             <span className="section-toggle-icon">{expandedSections.medical ? '−' : '+'}</span>
           </button>
           <div className="section-body">
             <div className="form-group full-width">
-              <label>{i18n.language === 'fa' ? 'بیماری‌ها و شرایط پزشکی' : 'Medical Conditions'}</label>
+              <label>Medical Conditions</label>
               <div className="checkbox-group">
                 <label className="checkbox-label">
                   <input
@@ -1218,7 +1203,7 @@ const ProfileTab = () => {
                     onChange={(e) => handleArrayChange('medical_conditions', 'heart_disease', e.target.checked)}
                     disabled={!editing}
                   />
-                  {i18n.language === 'fa' ? 'بیماری قلبی' : 'Heart Disease'}
+                  Heart Disease
                 </label>
                 <label className="checkbox-label">
                   <input
@@ -1227,7 +1212,7 @@ const ProfileTab = () => {
                     onChange={(e) => handleArrayChange('medical_conditions', 'high_blood_pressure', e.target.checked)}
                     disabled={!editing}
                   />
-                  {i18n.language === 'fa' ? 'فشار خون بالا' : 'High Blood Pressure'}
+                  High Blood Pressure
                 </label>
                 <label className="checkbox-label">
                   <input
@@ -1236,19 +1221,19 @@ const ProfileTab = () => {
                     onChange={(e) => handleArrayChange('medical_conditions', 'pregnancy', e.target.checked)}
                     disabled={!editing}
                   />
-                  {i18n.language === 'fa' ? 'بارداری' : 'Pregnancy'}
+                  Pregnancy
                 </label>
               </div>
             </div>
             <div className="form-group full-width">
-              <label>{i18n.language === 'fa' ? 'توضیحات شرایط پزشکی' : 'Medical Condition Details'}</label>
+              <label>Medical Condition Details</label>
               <textarea
                 name="medical_condition_details"
                 value={profile?.medical_condition_details || ''}
                 onChange={handleInputChange}
                 disabled={!editing}
                 rows="3"
-                placeholder={i18n.language === 'fa' ? 'جزئیات شرایط پزشکی خود را شرح دهید...' : 'Describe your medical conditions in detail...'}
+                placeholder="Describe your medical conditions in detail..."
               />
             </div>
           </div>
@@ -1257,7 +1242,7 @@ const ProfileTab = () => {
         {/* Equipment Access */}
         <div className={`profile-section ${expandedSections.equipment ? 'expanded' : 'collapsed'}`}>
           <button type="button" className="section-toggle" onClick={() => toggleSection('equipment')}>
-            <span>{i18n.language === 'fa' ? 'دسترسی به تجهیزات' : 'Equipment Access'}</span>
+            <span>Equipment Access</span>
             <span className="section-toggle-icon">{expandedSections.equipment ? '−' : '+'}</span>
           </button>
           <div className="section-body">
@@ -1270,13 +1255,13 @@ const ProfileTab = () => {
                   onChange={handleInputChange}
                   disabled={!editing}
                 />
-                {i18n.language === 'fa' ? 'دسترسی به باشگاه' : 'Gym Access'}
+                Gym Access
               </label>
             </div>
             
             {profile?.gym_access && (
               <div className="form-group full-width">
-                <label>{i18n.language === 'fa' ? 'تجهیزات باشگاه' : 'Gym Equipment'}</label>
+                <label>Gym Equipment</label>
                 <div className="checkbox-group">
                   <label className="checkbox-label">
                     <input
@@ -1285,7 +1270,7 @@ const ProfileTab = () => {
                       onChange={(e) => handleArrayChange('equipment_access', 'machine', e.target.checked)}
                       disabled={!editing}
                     />
-                    {i18n.language === 'fa' ? 'دستگاه' : 'Machines'}
+                    Machines
                   </label>
                   <label className="checkbox-label">
                     <input
@@ -1294,7 +1279,7 @@ const ProfileTab = () => {
                       onChange={(e) => handleArrayChange('equipment_access', 'dumbbells', e.target.checked)}
                       disabled={!editing}
                     />
-                    {i18n.language === 'fa' ? 'دمبل' : 'Dumbbells'}
+                    Dumbbells
                   </label>
                   <label className="checkbox-label">
                     <input
@@ -1303,7 +1288,7 @@ const ProfileTab = () => {
                       onChange={(e) => handleArrayChange('equipment_access', 'barbell', e.target.checked)}
                       disabled={!editing}
                     />
-                    {i18n.language === 'fa' ? 'هالتر' : 'Barbell'}
+                    Barbell
                   </label>
                   <label className="checkbox-label">
                     <input
@@ -1312,7 +1297,7 @@ const ProfileTab = () => {
                       onChange={(e) => handleArrayChange('equipment_access', 'cable', e.target.checked)}
                       disabled={!editing}
                     />
-                    {i18n.language === 'fa' ? 'کابل' : 'Cable Machine'}
+                    Cable Machine
                   </label>
                 </div>
               </div>
@@ -1320,7 +1305,7 @@ const ProfileTab = () => {
 
             {!profile?.gym_access && (
               <div className="form-group full-width">
-                <label>{i18n.language === 'fa' ? 'تجهیزات خانگی' : 'Home Equipment'}</label>
+                <label>Home Equipment</label>
                 <div className="checkbox-group">
                   <label className="checkbox-label">
                     <input
@@ -1329,7 +1314,7 @@ const ProfileTab = () => {
                       onChange={(e) => handleArrayChange('home_equipment', 'dumbbells', e.target.checked)}
                       disabled={!editing}
                     />
-                    {i18n.language === 'fa' ? 'دمبل' : 'Dumbbells'}
+                    Dumbbells
                   </label>
                   <label className="checkbox-label">
                     <input
@@ -1338,7 +1323,7 @@ const ProfileTab = () => {
                       onChange={(e) => handleArrayChange('home_equipment', 'resistance_bands', e.target.checked)}
                       disabled={!editing}
                     />
-                    {i18n.language === 'fa' ? 'باند مقاومتی' : 'Resistance Bands'}
+                    Resistance Bands
                   </label>
                   <label className="checkbox-label">
                     <input
@@ -1347,7 +1332,7 @@ const ProfileTab = () => {
                       onChange={(e) => handleArrayChange('home_equipment', 'yoga_mat', e.target.checked)}
                       disabled={!editing}
                     />
-                    {i18n.language === 'fa' ? 'تشک یوگا' : 'Yoga Mat'}
+                    Yoga Mat
                   </label>
                   <label className="checkbox-label">
                     <input
@@ -1356,7 +1341,7 @@ const ProfileTab = () => {
                       onChange={(e) => handleArrayChange('home_equipment', 'body_weight_only', e.target.checked)}
                       disabled={!editing}
                     />
-                    {i18n.language === 'fa' ? 'فقط وزن بدن' : 'Body Weight Only'}
+                    Body Weight Only
                   </label>
                 </div>
               </div>
@@ -1368,7 +1353,7 @@ const ProfileTab = () => {
         {editing && (
           <div className="profile-actions">
             <button className="save-btn" onClick={handleSave} disabled={saving}>
-              {saving ? (i18n.language === 'fa' ? 'در حال ذخیره...' : 'Saving...') : (i18n.language === 'fa' ? 'ذخیره' : 'Save')}
+              {saving ? 'Saving...' : 'Save'}
             </button>
             <button className="cancel-btn" onClick={() => { 
               setEditing(false); 
@@ -1380,7 +1365,7 @@ const ProfileTab = () => {
               }
               loadProfile(); 
             }}>
-              {i18n.language === 'fa' ? 'لغو' : 'Cancel'}
+              Cancel
             </button>
           </div>
         )}

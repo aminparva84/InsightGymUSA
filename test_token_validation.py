@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 
 load_dotenv('backend/.env')
 
-BASE_URL = "http://localhost:5000"
+BASE_URL = "http://localhost:5001"
 
 # Test credentials
 credentials = {

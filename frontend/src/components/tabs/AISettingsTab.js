@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { getApiBase } from '../../services/apiBase';
 import './AISettingsTab.css';
@@ -8,11 +7,7 @@ const API_BASE = getApiBase();
 
 const PROVIDER_IDS = ['openai', 'anthropic', 'gemini', 'vertex'];
 const PROVIDER_NAMES = { auto: 'Auto', openai: 'OpenAI', anthropic: 'Anthropic', gemini: 'Gemini', vertex: 'Vertex AI' };
-const PROVIDER_NAMES_FA = { auto: 'خودکار', openai: 'اوپن‌ای‌آی', anthropic: 'آنتروپیک', gemini: 'جمینی', vertex: 'ورتکس' };
-
 const AISettingsTab = () => {
-  const { i18n } = useTranslation();
-  const fa = i18n.language === 'fa';
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [testing, setTesting] = useState(null);
@@ -71,14 +66,12 @@ const AISettingsTab = () => {
         },
         getAxiosConfig()
       );
-      if (fa) alert('ذخیره شد');
-      else alert('Saved');
+      alert('Saved');
       setKeys((p) => ({ ...p, [provider]: '' }));
       await fetchSettings();
     } catch (err) {
       console.error('Error saving AI settings:', err);
-      if (fa) alert('خطا در ذخیره');
-      else alert('Error saving');
+      alert('Error saving');
     } finally {
       setSaving(false);
     }
@@ -92,13 +85,11 @@ const AISettingsTab = () => {
         { selected_provider: provider },
         getAxiosConfig()
       );
-      if (fa) alert('ارائه‌دهنده AI ذخیره شد');
-      else alert('AI provider saved');
+      alert('AI provider saved');
       setSettings((s) => ({ ...s, selected_provider: provider }));
     } catch (err) {
       console.error('Error updating selected provider:', err);
-      if (fa) alert('خطا در ذخیره');
-      else alert('Error saving');
+      alert('Error saving');
     } finally {
       setSaving(false);
     }
@@ -110,12 +101,10 @@ const AISettingsTab = () => {
       const body = useFormKey && keys[provider] ? { provider, api_key: keys[provider].trim() } : { provider };
       const res = await axios.post(`${API_BASE}/api/admin/ai-settings/test`, body, getAxiosConfig());
       const ok = res.data && res.data.success;
-      if (fa) alert(ok ? 'کلید API معتبر است.' : (res.data?.message || 'خطا در تست'));
-      else alert(ok ? 'API key is valid.' : (res.data?.message || 'Test failed'));
+      alert(ok ? 'API key is valid.' : (res.data?.message || 'Test failed'));
       await fetchSettings();
     } catch (err) {
-      if (fa) alert('خطا: ' + (err.response?.data?.message || err.message));
-      else alert('Error: ' + (err.response?.data?.message || err.message));
+      alert('Error: ' + (err.response?.data?.message || err.message));
     } finally {
       setTesting(null);
     }
@@ -125,11 +114,10 @@ const AISettingsTab = () => {
     try {
       setKbIndexing(true);
       await axios.post(`${API_BASE}/api/admin/website-kb/reindex`, {}, getAxiosConfig());
-      if (fa) alert('ایندکس KB به‌روزرسانی شد');
-      else alert('KB reindexed');
+      alert('KB index updated');
       fetchKbStatus();
     } catch (err) {
-      const msg = err.response?.data?.error || err.message || (fa ? 'خطا در ایندکس KB' : 'Error reindexing KB');
+      const msg = err.response?.data?.error || err.message || 'Error reindexing KB';
       alert(msg);
     } finally {
       setKbIndexing(false);
@@ -147,46 +135,42 @@ const AISettingsTab = () => {
   if (loading) {
     return (
       <div className="ai-settings-tab">
-        <p className="ai-settings-loading">{fa ? 'در حال بارگذاری...' : 'Loading...'}</p>
+        <p className="ai-settings-loading">Loading...</p>
       </div>
     );
   }
 
   return (
     <div className="ai-settings-tab">
-      <h2>{fa ? 'تنظیمات AI' : 'AI Settings'}</h2>
+      <h2>AI Settings</h2>
       <p className="ai-settings-desc">
-        {fa
-          ? 'ارائه‌دهنده AI برای چت و تولید متن را انتخاب کنید. برای هر ارائه‌دهنده کلید API را وارد کرده و تست کنید.'
-          : 'Choose which AI provider to use for chat and text generation. Enter API key for each provider and test.'}
+        Choose which AI provider to use for chat and text generation. Enter API key for each provider and test.
       </p>
       <p className="ai-settings-desc">
-        {fa
-          ? 'Vertex AI از REST API با کلید API (مثلاً از Google Cloud) استفاده می‌کند؛ مدل: gemini-2.5-flash-lite.'
-          : 'Vertex AI uses the REST API with an API key (e.g. from Google Cloud); model: gemini-2.5-flash-lite.'}
+        Vertex AI uses the REST API with an API key (e.g. from Google Cloud); model: gemini-2.5-flash-lite.
       </p>
 
       <div className="ai-settings-selected">
-        <label>{fa ? 'ارائه‌دهنده فعلی' : 'Current provider'}</label>
+        <label>Current provider</label>
         <select
           value={displayValue}
           onChange={(e) => handleSelectProvider(e.target.value)}
           disabled={saving}
         >
-          <option value="auto">{fa ? 'خودکار (اولین معتبر)' : 'Auto (first valid)'}</option>
+          <option value="auto">Auto (first valid)</option>
           {validProviders.length === 0 ? (
-            <option value="openai" disabled>{fa ? 'هیچ ارائه‌دهنده معتبری نیست' : 'No valid provider'}</option>
+            <option value="openai" disabled>No valid provider</option>
           ) : (
             validProviders.map((p) => (
               <option key={p} value={p}>
-                {fa ? PROVIDER_NAMES_FA[p] : PROVIDER_NAMES[p]}
+                {PROVIDER_NAMES[p]}
               </option>
             ))
           )}
         </select>
         {validProviders.length === 0 && (
           <p className="ai-settings-warn">
-            {fa ? 'حداقل یک ارائه‌دهنده را با کلید معتبر پیکربندی و تست کنید.' : 'Configure and test at least one provider with a valid key.'}
+            Configure and test at least one provider with a valid key.
           </p>
         )}
       </div>
@@ -195,33 +179,33 @@ const AISettingsTab = () => {
         <table className="ai-settings-table">
           <thead>
             <tr>
-              <th>{fa ? 'ارائه‌دهنده' : 'Provider'}</th>
-              <th>{fa ? 'نصب SDK' : 'SDK installed'}</th>
-              <th>{fa ? 'کلید API' : 'API key'}</th>
-              <th>{fa ? 'منبع' : 'Source'}</th>
-              <th>{fa ? 'معتبر' : 'Valid'}</th>
-              <th>{fa ? 'آخرین تست' : 'Last test'}</th>
-              <th>{fa ? 'کلید API / اقدامات' : 'API key / Actions'}</th>
+              <th>Provider</th>
+              <th>SDK installed</th>
+              <th>API key</th>
+              <th>Source</th>
+              <th>Valid</th>
+              <th>Last test</th>
+              <th>API key / Actions</th>
             </tr>
           </thead>
           <tbody>
             {PROVIDER_IDS.map((id) => {
               const p = providers[id] || {};
-              const name = fa ? PROVIDER_NAMES_FA[id] : PROVIDER_NAMES[id];
+              const name = PROVIDER_NAMES[id];
               const canUse = p.sdk_installed && p.has_key && p.is_valid;
               return (
                 <tr key={id} className={canUse ? 'valid' : ''}>
                   <td className="ai-settings-cell-name">{name}</td>
-                  <td>{p.sdk_installed ? (fa ? 'بله' : 'Yes') : (fa ? 'خیر' : 'No')}</td>
-                  <td>{p.has_key ? (fa ? 'وارد شده' : 'Set') : (fa ? 'وارد نشده' : 'Not set')}</td>
+                  <td>{p.sdk_installed ? 'Yes' : 'No'}</td>
+                  <td>{p.has_key ? 'Set' : 'Not set'}</td>
                   <td>{p.source || '—'}</td>
-                  <td>{p.is_valid ? (fa ? 'بله' : 'Yes') : (fa ? 'خیر' : 'No')}</td>
+                  <td>{p.is_valid ? 'Yes' : 'No'}</td>
                   <td>{p.last_tested_at ? new Date(p.last_tested_at).toLocaleString() : '—'}</td>
                   <td>
                     <div className="ai-settings-cell-actions">
                       <input
                         type="password"
-                        placeholder={fa ? 'کلید API' : 'API key'}
+                        placeholder="API key"
                         value={keys[id] || ''}
                         onChange={(e) => setKeys((k) => ({ ...k, [id]: e.target.value }))}
                         className="ai-settings-key-input"
@@ -232,7 +216,7 @@ const AISettingsTab = () => {
                         onClick={() => handleSaveKey(id)}
                         disabled={saving}
                       >
-                        {fa ? 'ذخیره' : 'Save'}
+                        Save
                       </button>
                       <button
                         type="button"
@@ -240,7 +224,7 @@ const AISettingsTab = () => {
                         onClick={() => handleTest(id, true)}
                         disabled={testing !== null}
                       >
-                        {testing === id ? '…' : fa ? 'تست' : 'Test'}
+                        {testing === id ? '…' : 'Test'}
                       </button>
                     </div>
                   </td>
@@ -252,18 +236,16 @@ const AISettingsTab = () => {
       </div>
 
       <div className="ai-kb-section">
-        <h3>{fa ? 'پایگاه دانش سایت (KB)' : 'Website Knowledge Base (KB)'}</h3>
+        <h3>Website Knowledge Base (KB)</h3>
         <p className="ai-settings-desc">
-          {fa
-            ? 'با کلیک روی «به‌روزرسانی ایندکس»، تمام اطلاعات سایت ایندکس می‌شوند: تنظیمات سایت، سطوح تمرینی، حرکات اصلاحی، کتابخانه تمرینات، گرم‌کردن و سردکردن.'
-            : 'Click "Reindex" to index all website info: site settings, training levels, corrective movements, exercise library, warming & cooldown.'}
+          Click &quot;Reindex&quot; to index all website info: site settings, training levels, corrective movements, exercise library, warming &amp; cooldown.
         </p>
         <div className="ai-kb-meta">
           <span>
-            {fa ? 'تعداد بخش‌ها:' : 'Chunks:'} {kbStatus?.count ?? 0}
+            Chunks: {kbStatus?.count ?? 0}
           </span>
           <span>
-            {fa ? 'آخرین بروزرسانی:' : 'Last updated:'} {kbStatus?.updated_at ? new Date(kbStatus.updated_at).toLocaleString() : '—'}
+            Last updated: {kbStatus?.updated_at ? new Date(kbStatus.updated_at).toLocaleString() : '—'}
           </span>
         </div>
         <div className="ai-kb-actions">
@@ -273,7 +255,7 @@ const AISettingsTab = () => {
             onClick={handleReindexKb}
             disabled={kbIndexing}
           >
-            {kbIndexing ? (fa ? 'در حال ایندکس...' : 'Indexing...') : (fa ? 'به‌روزرسانی ایندکس' : 'Reindex')}
+            {kbIndexing ? 'Indexing...' : 'Reindex'}
           </button>
         </div>
       </div>

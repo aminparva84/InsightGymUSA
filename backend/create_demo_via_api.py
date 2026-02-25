@@ -7,7 +7,7 @@ import requests
 import json
 
 def create_demo_user():
-    url = "http://localhost:5000/api/register"
+    url = "http://localhost:5001/api/register"
     
     data = {
         "username": "demo",

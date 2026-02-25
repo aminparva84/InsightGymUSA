@@ -25,7 +25,7 @@ def create_admin_user():
         # Create admin user
         admin_user = User(
             username='admin',
-            email='admin@insightgym.com',
+            email='admin@insightgymusa.com',
             password_hash=generate_password_hash('admin123'),
             role='admin',
             language='fa',
@@ -40,7 +40,7 @@ def create_admin_user():
         print("=" * 70)
         print(f"Username: admin")
         print(f"Password: admin123")
-        print(f"Email: admin@insightgym.com")
+        print(f"Email: admin@insightgymusa.com")
         print(f"Role: admin")
         print("=" * 70)
         print("\nPlease change the password after first login!")

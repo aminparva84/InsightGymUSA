@@ -6,9 +6,8 @@ import { useAuth } from '../../context/AuthContext';
 import './TrainingProgramTab.css';
 
 const TrainingProgramTab = () => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const API_BASE = getApiBase();
-  const fa = i18n.language === 'fa';
   const { user, loading: authLoading } = useAuth();
   const [programs, setPrograms] = useState([]);
   const [weeklyGoals, setWeeklyGoals] = useState([]);
@@ -80,7 +79,7 @@ const TrainingProgramTab = () => {
     if (!token) return;
     try {
       const config = getAxiosConfig();
-      const response = await axios.get(`${API_BASE}/api/member/action-notes?program_id=${programId}&language=${i18n.language || 'fa'}`, config);
+      const response = await axios.get(`${API_BASE}/api/member/action-notes?program_id=${programId}&language=en`, config);
       const list = Array.isArray(response.data) ? response.data : [];
       const map = {};
       list.forEach((item) => {
@@ -91,7 +90,7 @@ const TrainingProgramTab = () => {
     } catch (err) {
       console.error('Error loading action notes:', err);
     }
-  }, [API_BASE, getAuthToken, getAxiosConfig, i18n.language]);
+  }, [API_BASE, getAuthToken, getAxiosConfig]);
 
   const progressKey = (programId, sessionIdx, exIdx) => `${programId}-${sessionIdx}-${exIdx}`;
 
@@ -135,7 +134,7 @@ const TrainingProgramTab = () => {
     if (!key || key === '|' || exerciseInfoCache[key]) return;
     try {
       const config = getAxiosConfig();
-      const params = new URLSearchParams({ language: i18n.language || 'fa' });
+      const params = new URLSearchParams({ language: 'en' });
       if (nameFa) params.set('name_fa', nameFa);
       if (nameEn) params.set('name_en', nameEn);
       const res = await axios.get(`${API_BASE}/api/member/exercise-info?${params}`, config);
@@ -144,7 +143,7 @@ const TrainingProgramTab = () => {
     } catch (err) {
       console.error('Error loading exercise info:', err);
     }
-  }, [API_BASE, exerciseInfoCache, getAxiosConfig, i18n.language]);
+  }, [API_BASE, exerciseInfoCache, getAxiosConfig]);
 
   useEffect(() => {
     if (!programs.length) return;
@@ -177,7 +176,7 @@ const TrainingProgramTab = () => {
     if (!token) return;
     try {
       const config = getAxiosConfig();
-      const response = await axios.get(`${API_BASE}/api/member/weekly-goals?language=${i18n.language || 'fa'}`, config);
+      const response = await axios.get(`${API_BASE}/api/member/weekly-goals?language=en`, config);
       const list = Array.isArray(response.data) ? response.data : [];
       setWeeklyGoals(list);
       if (list.length > 0) {
@@ -198,7 +197,7 @@ const TrainingProgramTab = () => {
       console.error('Error loading weekly goals:', err);
       setWeeklyGoals([]);
     }
-  }, [API_BASE, getAuthToken, getAxiosConfig, i18n.language]);
+  }, [API_BASE, getAuthToken, getAxiosConfig]);
 
   const toggleGoalWeek = (weekNum) => {
     setExpandedGoalWeeks((prev) => {
@@ -238,7 +237,7 @@ const TrainingProgramTab = () => {
       await loadPrograms();
     } catch (err) {
       console.error('Error cancelling plan:', err);
-      const msg = err.response?.data?.error || err.message || (i18n.language === 'fa' ? 'خطا در لغو برنامه' : 'Error cancelling plan');
+      const msg = err.response?.data?.error || err.message || 'Error cancelling plan';
       alert(msg);
     } finally {
       setCancellingProgramId(null);
@@ -368,7 +367,7 @@ const TrainingProgramTab = () => {
         program_id: programId,
         session_index: sessionIndex,
         mood_or_message: moodOrMessage,
-        language: i18n.language || 'fa',
+        language: 'en',
       }, { ...config, headers: { ...config.headers, 'Content-Type': 'application/json' } });
       const sessionObj = program.sessions[sessionIndex];
       setActiveSessionStart({
@@ -387,7 +386,7 @@ const TrainingProgramTab = () => {
         if (nextIdx === sessions.length) {
           axios.post(
             `${API_BASE}/api/member/programs/${programId}/generate-sessions`,
-            { start_session_index: sessions.length, count: 1, language: i18n.language || 'fa' },
+            { start_session_index: sessions.length, count: 1, language: 'en' },
             { ...config, headers: { ...config.headers, 'Content-Type': 'application/json' } }
           ).then((r) => {
             if (r.data?.program) {
@@ -424,11 +423,11 @@ const TrainingProgramTab = () => {
     try {
       const config = getAxiosConfig();
       const res = await axios.post(`${API_BASE}/api/member/post-set-feedback`, {
-        exercise_name_fa: postSetModal.exercise.name_fa || postSetModal.exercise.name,
+        exercise_name_fa: postSetModal.exercise.name_fa || '',
         exercise_name_en: postSetModal.exercise.name_en || postSetModal.exercise.name,
         target_muscle: postSetModal.targetMuscle,
         answers: postSetAnswers,
-        language: i18n.language || 'fa',
+        language: 'en',
       }, { ...config, headers: { ...config.headers, 'Content-Type': 'application/json' } });
       setPostSetFeedback(res.data?.feedback || '');
       const { programId, sessionIdx, exIdx, setNumber } = postSetModal;
@@ -463,7 +462,7 @@ const TrainingProgramTab = () => {
     try {
       const config = getAxiosConfig();
       const res = await axios.post(`${API_BASE}/api/member/session-end-message`, {
-        language: i18n.language || 'fa',
+        language: 'en',
         session_name: name,
       }, { ...config, headers: { ...config.headers, 'Content-Type': 'application/json' } });
       setEndMessageModal({ open: true, text: res.data?.message || '' });
@@ -504,14 +503,13 @@ const TrainingProgramTab = () => {
 
   if (activeSessionStart) {
     const { programId, sessionIndex, session, extraAdvice } = activeSessionStart;
-    const fa = i18n.language === 'fa';
     // Prefer warming/cooldown from session (AI-generated), else from sessionPhases
-    const warming = session?.warming && (session.warming.steps?.length > 0 || session.warming.title_fa || session.warming.title_en)
+    const warming = session?.warming && (session.warming.steps?.length > 0 || session.warming.title_en)
       ? session.warming : (sessionPhases.warming || {});
-    const cooldown = session?.cooldown && (session.cooldown.steps?.length > 0 || session.cooldown.title_fa || session.cooldown.title_en)
+    const cooldown = session?.cooldown && (session.cooldown.steps?.length > 0 || session.cooldown.title_en)
       ? session.cooldown : (sessionPhases.cooldown || {});
-    const warmingTitle = fa ? (warming.title_fa || 'گرم کردن') : (warming.title_en || 'Warming');
-    const cooldownTitle = fa ? (cooldown.title_fa || 'سرد کردن و تنفس') : (cooldown.title_en || 'Cooldown & Breathing');
+    const warmingTitle = warming.title_en || 'Warming';
+    const cooldownTitle = cooldown.title_en || 'Cooldown & Breathing';
     const exercises = session?.exercises || [];
     const allDone = isActiveSessionFullyCompleted();
 
@@ -530,8 +528,8 @@ const TrainingProgramTab = () => {
             {(warming.steps || []).length > 0 ? (
               <ul className="session-phase-steps">
                 {(warming.steps || []).map((step, i) => (
-                  <li key={i}><strong>{fa ? (step.title_fa || step.title_en) : (step.title_en || step.title_fa)}</strong>
-                    {(fa ? step.body_fa : step.body_en) && <p>{(fa ? step.body_fa : step.body_en)}</p>}
+                  <li key={i}><strong>{step.title_en || step.title_fa}</strong>
+                    {step.body_en && <p>{step.body_en}</p>}
                   </li>
                 ))}
               </ul>
@@ -578,7 +576,7 @@ const TrainingProgramTab = () => {
                     )}
                   </div>
                   <div className={`current-movement-info ${exerciseCompleted ? 'exercise-item-done' : ''}`}>
-                    <h4 className="current-set-exercise-name">{exercise.name || (fa ? exercise.name_fa : exercise.name_en)}</h4>
+                    <h4 className="current-set-exercise-name">{exercise.name || exercise.name_en || exercise.name_fa}</h4>
                     <p className="current-set-meta">
                       {sets} {t('tpSets')} × {exercise.reps || '?'} {t('tpReps')}
                       {exercise.rest && ` (${t('tpRest')}: ${exercise.rest})`}
@@ -603,8 +601,8 @@ const TrainingProgramTab = () => {
             {(cooldown.steps || []).length > 0 ? (
               <ul className="session-phase-steps">
                 {(cooldown.steps || []).map((step, i) => (
-                  <li key={i}><strong>{fa ? (step.title_fa || step.title_en) : (step.title_en || step.title_fa)}</strong>
-                    {(fa ? step.body_fa : step.body_en) && <p>{(fa ? step.body_fa : step.body_en)}</p>}
+                  <li key={i}><strong>{step.title_en || step.title_fa}</strong>
+                    {step.body_en && <p>{step.body_en}</p>}
                   </li>
                 ))}
               </ul>
@@ -623,7 +621,7 @@ const TrainingProgramTab = () => {
           <div className="training-modal-overlay" onClick={closePostSetModal}>
             <div className="training-modal post-set-modal" onClick={(e) => e.stopPropagation()}>
               <h3>{t('tpAfterSet')} {postSetModal.setNumber}</h3>
-              <p>{postSetModal.exercise.name_fa || postSetModal.exercise.name_en || postSetModal.exercise.name}</p>
+              <p>{postSetModal.exercise.name_en || postSetModal.exercise.name_fa || postSetModal.exercise.name}</p>
               <div className="post-set-form">
                 <label>
                   <span>{t('tpHowWasIt')}</span>
@@ -768,7 +766,7 @@ const TrainingProgramTab = () => {
                 <h3>{program.name || program.name_fa || program.name_en || t('tpTrainingProgram')}</h3>
                 {(program.description || program.description_fa || program.description_en) && (
                   <p className="program-description">
-                    {program.description || (fa ? program.description_fa : program.description_en)}
+                    {program.description || program.description_en || program.description_fa}
                   </p>
                 )}
                 {program.duration_weeks && (
@@ -832,7 +830,7 @@ const TrainingProgramTab = () => {
                                 onClick={() => toggleSession(pid, sessionIdx)}
                               >
                                 <div className="session-header-text">
-                                  <h5>{session.name || (fa ? session.name_fa : session.name_en) || `${t('tpSession')} ${sessionIdx + 1}`}</h5>
+                                  <h5>{session.name || session.name_en || session.name_fa || `${t('tpSession')} ${sessionIdx + 1}`}</h5>
                                   {session.week && session.day && (
                                     <p className="session-info">
                                       {t('tpWeek')} {session.week}, {t('tpDay')} {session.day}
@@ -853,13 +851,12 @@ const TrainingProgramTab = () => {
                               {isExpanded && (
                                 <div className="session-exercises">
                                   {(() => {
-                                    const fa = i18n.language === 'fa';
-                                    const warming = session?.warming && (session.warming.steps?.length > 0 || session.warming.title_fa || session.warming.title_en)
+                                    const warming = session?.warming && (session.warming.steps?.length > 0 || session.warming.title_en)
                                       ? session.warming : (sessionPhases.warming || {});
-                                    const cooldown = session?.cooldown && (session.cooldown.steps?.length > 0 || session.cooldown.title_fa || session.cooldown.title_en)
+                                    const cooldown = session?.cooldown && (session.cooldown.steps?.length > 0 || session.cooldown.title_en)
                                       ? session.cooldown : (sessionPhases.cooldown || {});
-                                    const warmingTitle = fa ? (warming.title_fa || t('tpWarming')) : (warming.title_en || t('tpWarming'));
-                                    const cooldownTitle = fa ? (cooldown.title_fa || t('tpCooldown')) : (cooldown.title_en || t('tpCooldown'));
+                                    const warmingTitle = warming.title_en || t('tpWarming');
+                                    const cooldownTitle = cooldown.title_en || t('tpCooldown');
                                     return (
                                       <>
                                         <div className="session-step-block session-step-warming">
@@ -868,8 +865,8 @@ const TrainingProgramTab = () => {
                                             <ul className="session-phase-steps">
                                               {(warming.steps || []).map((step, i) => (
                                                 <li key={i}>
-                                                  <strong>{fa ? (step.title_fa || step.title_en) : (step.title_en || step.title_fa)}</strong>
-                                                  {(fa ? step.body_fa : step.body_en) && <p>{(fa ? step.body_fa : step.body_en)}</p>}
+                                                  <strong>{step.title_en || step.title_fa}</strong>
+                                                  {step.body_en && <p>{step.body_en}</p>}
                                                 </li>
                                               ))}
                                             </ul>
@@ -905,7 +902,7 @@ const TrainingProgramTab = () => {
                                               {toggling ? '…' : (completed ? '✓' : '○')}
                                             </button>
                                             <div className="exercise-item-body">
-                                              <strong>{exercise.name || (fa ? exercise.name_fa : exercise.name_en)}</strong>
+                                              <strong>{exercise.name || exercise.name_en || exercise.name_fa}</strong>
                                               {exercise.sets && (
                                                 <span> - {exercise.sets} {t('tpSets')}</span>
                                               )}
@@ -917,7 +914,7 @@ const TrainingProgramTab = () => {
                                               )}
                                               {exercise.instructions && (
                                                 <p className="exercise-instructions">
-                                                  {exercise.instructions || (fa ? exercise.instructions_fa : exercise.instructions_en)}
+                                                  {exercise.instructions || exercise.instructions_en || exercise.instructions_fa}
                                                 </p>
                                               )}
                                               {movementInfo && (movementInfo.video_url || movementInfo.voice_url || movementInfo.trainer_notes) && (
@@ -967,8 +964,8 @@ const TrainingProgramTab = () => {
                                             <ul className="session-phase-steps">
                                               {(cooldown.steps || []).map((step, i) => (
                                                 <li key={i}>
-                                                  <strong>{fa ? (step.title_fa || step.title_en) : (step.title_en || step.title_fa)}</strong>
-                                                  {(fa ? step.body_fa : step.body_en) && <p>{(fa ? step.body_fa : step.body_en)}</p>}
+                                                  <strong>{step.title_en || step.title_fa}</strong>
+                                                  {step.body_en && <p>{step.body_en}</p>}
                                                 </li>
                                               ))}
                                             </ul>
@@ -995,7 +992,7 @@ const TrainingProgramTab = () => {
                                   className="other-days-toggle-btn"
                                   onClick={() => toggleOtherDays(pid)}
                                 >
-                                  {showOtherDays ? (fa ? 'بستن روزهای دیگر' : 'Hide other days') : (fa ? 'مشاهده روزهای دیگر' : 'See other days')}
+                                  {showOtherDays ? 'Hide other days' : 'See other days'}
                                 </button>
                               </div>
                             )}

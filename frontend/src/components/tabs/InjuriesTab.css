@@ -5,21 +5,21 @@
   min-width: 0;
   margin: 0;
   padding: 0 0 1rem 0;
-  background-color: #ffffff;
+  background-color: var(--bg-card);
 }
 
 .injuries-tab h2 {
-  color: #000000;
+  color: var(--text-primary);
   margin-bottom: 2rem;
-  background-color: #ffffff;
+  background-color: transparent;
 }
 
 .no-data {
   text-align: center;
   padding: 3rem;
-  color: #000000;
+  color: var(--text-secondary);
   font-size: 1.1rem;
-  background-color: #ffffff;
+  background-color: transparent;
 }
 
 .injuries-container {
@@ -37,46 +37,46 @@
 }
 
 .injury-item {
-  background-color: #ffffff;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
+  background-color: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
   padding: 1rem;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all var(--transition);
   min-height: 100px;
 }
 
 .injury-item * {
-  color: #000000 !important;
+  color: var(--text-primary) !important;
 }
 
 .injury-item:hover {
-  border-color: #F6F3C2;
+  border-color: var(--accent-muted);
   transform: translateX(-5px);
 }
 
 .injury-item.active {
-  border-color: #F6F3C2;
-  background-color: #C2E2FA;
+  border-color: var(--accent);
+  background-color: var(--accent-muted);
 }
 
 .injury-item h3 {
-  color: #000000;
+  color: var(--text-primary);
   margin: 0 0 0.5rem 0;
   font-size: 1.1rem;
 }
 
 .injury-preview {
-  color: #000000;
+  color: var(--text-secondary);
   font-size: 0.9rem;
   margin: 0;
   line-height: 1.5;
 }
 
 .injury-details {
-  background-color: #ffffff;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
+  background-color: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
   padding: 2rem;
   position: sticky;
   top: 20px;
@@ -86,15 +86,15 @@
 }
 
 .injury-details * {
-  color: #000000 !important;
+  color: var(--text-primary) !important;
 }
 
 .injury-details h3 {
-  color: #000000;
+  color: var(--text-primary);
   margin: 0 0 1.5rem 0;
   font-size: 1.5rem;
   padding-bottom: 1rem;
-  border-bottom: 2px solid #e0e0e0;
+  border-bottom: 2px solid var(--border);
 }
 
 .detail-section {
@@ -102,13 +102,13 @@
 }
 
 .detail-section h4 {
-  color: #000000;
+  color: var(--text-primary);
   margin: 0 0 0.75rem 0;
   font-size: 1.1rem;
 }
 
 .detail-section p {
-  color: #000000;
+  color: var(--text-secondary);
   line-height: 1.8;
   margin: 0;
 }
@@ -116,8 +116,8 @@
 .loading {
   text-align: center;
   padding: 3rem;
-  color: #000000;
-  background-color: #ffffff;
+  color: var(--text-secondary);
+  background-color: transparent;
 }
 
 @media (max-width: 1024px) {
@@ -130,6 +130,3 @@
     max-height: none;
   }
 }
-
-
-

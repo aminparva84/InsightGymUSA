@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import RegistrationForm from './RegistrationForm';
 import './AuthModal.css';
 
 const AuthModal = ({ isOpen, onClose }) => {
-  const { t, i18n } = useTranslation();
   const { login } = useAuth();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('login'); // 'login' or 'signup'
+  const [activeTab, setActiveTab] = useState('login');
+  const [signupType, setSignupType] = useState('member');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -21,39 +20,27 @@ const AuthModal = ({ isOpen, onClose }) => {
     e.preventDefault();
     setError('');
     setLoading(true);
-
     const result = await login(username, password);
-
     setLoading(false);
-    if (!result.success) {
-      setError(result.error);
-    } else {
-      // Login successful, close modal
+    if (!result.success) setError(result.error);
+    else {
       onClose();
       setUsername('');
       setPassword('');
       setError('');
-      
-      // Check if user is admin and redirect to dashboard
-      if (result.user && result.user.role === 'admin') {
-        navigate('/dashboard');
-      }
-      // If not admin, stay on landing page (default behavior)
+      if (result.user?.role === 'admin') navigate('/dashboard');
     }
   };
 
   const handleRegistrationComplete = () => {
-    // Registration successful, user is automatically logged in
     onClose();
   };
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
     setError('');
-    if (tab === 'login') {
-      setUsername('');
-      setPassword('');
-    }
+    if (tab === 'login') setUsername('');
+    setPassword('');
   };
 
   const handleClose = () => {
@@ -65,79 +52,44 @@ const AuthModal = ({ isOpen, onClose }) => {
   };
 
   return (
-    <div className="auth-modal-overlay" onClick={handleClose}>
-      <div className="auth-modal" onClick={(e) => e.stopPropagation()}>
-        <button className="auth-modal-close" onClick={handleClose}>
-          ×
-        </button>
+    <div className="am-overlay" onClick={handleClose}>
+      <div className="am-modal" onClick={(e) => e.stopPropagation()}>
+        <button className="am-close" onClick={handleClose} aria-label="Close">×</button>
+        <h2 className="am-title">Welcome to Insight GYM USA</h2>
 
-        <div className="auth-modal-header">
-          <h2 className="auth-modal-title">
-            {"Let's Start"}
-          </h2>
-        </div>
-
-        <div className="auth-modal-tabs">
-          <button
-            className={`auth-modal-tab ${activeTab === 'login' ? 'active' : ''}`}
-            onClick={() => handleTabChange('login')}
-          >
-            {t('login')}
+        <div className="am-tabs">
+          <button className={`am-tab ${activeTab === 'login' ? 'active' : ''}`} onClick={() => handleTabChange('login')}>
+            Login
           </button>
-          <button
-            className={`auth-modal-tab ${activeTab === 'signup' ? 'active' : ''}`}
-            onClick={() => handleTabChange('signup')}
-          >
-            {t('register')}
+          <button className={`am-tab ${activeTab === 'signup' ? 'active' : ''}`} onClick={() => handleTabChange('signup')}>
+            Sign Up
           </button>
         </div>
 
-        <div className="auth-modal-content">
+        <div className="am-body">
           {activeTab === 'login' ? (
-            <form className="auth-modal-form" onSubmit={handleLoginSubmit}>
-              {error && <div className="error-message">{error}</div>}
-              
-              <div className="form-group">
-                <label>{t('username')}</label>
-                <input
-                  type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  required
-                  autoFocus
-                />
+            <form className="am-form" onSubmit={handleLoginSubmit}>
+              {error && <div className="am-error">{error}</div>}
+              <div className="am-field">
+                <label>Username</label>
+                <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} required autoFocus />
               </div>
-
-              <div className="form-group">
-                <label>{t('password')}</label>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
+              <div className="am-field">
+                <label>Password</label>
+                <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
               </div>
-
-              <button type="submit" className="submit-btn" disabled={loading}>
-                {loading ? t('loading') : t('login')}
+              <button type="submit" className="am-submit" disabled={loading}>
+                {loading ? 'Loading...' : 'Login'}
               </button>
             </form>
           ) : (
-            <div className="auth-modal-signup">
-              <div className="signup-type-toggle">
-                <button
-                  type="button"
-                  className={`signup-type-btn ${signupType === 'member' ? 'active' : ''}`}
-                  onClick={() => handleSignupTypeChange('member')}
-                >
-                  {t('registerAsMember')}
+            <div className="am-signup">
+              <div className="am-signup-type">
+                <button type="button" className={`am-type-btn ${signupType === 'member' ? 'active' : ''}`} onClick={() => setSignupType('member')}>
+                  Join as Member
                 </button>
-                <button
-                  type="button"
-                  className={`signup-type-btn ${signupType === 'coach' ? 'active' : ''}`}
-                  onClick={() => handleSignupTypeChange('coach')}
-                >
-                  {t('registerAsCoach')}
+                <button type="button" className={`am-type-btn ${signupType === 'coach' ? 'active' : ''}`} onClick={() => setSignupType('coach')}>
+                  Apply as Coach
                 </button>
               </div>
               <RegistrationForm onComplete={handleRegistrationComplete} accountType={signupType} />
@@ -150,4 +102,3 @@ const AuthModal = ({ isOpen, onClose }) => {
 };
 
 export default AuthModal;
-

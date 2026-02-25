@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { getApiBase } from '../../services/apiBase';
 import './SiteSettingsTab.css';
@@ -7,7 +6,6 @@ import './SiteSettingsTab.css';
 const API_BASE = getApiBase();
 
 const SiteSettingsTab = () => {
-  const { i18n } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState({
@@ -60,11 +58,11 @@ const SiteSettingsTab = () => {
       });
     } catch (error) {
       console.error('Error fetching site settings:', error);
-      alert(i18n.language === 'fa' ? 'خطا در دریافت تنظیمات سایت' : 'Error fetching site settings');
+      alert('Error fetching site settings');
     } finally {
       setLoading(false);
     }
-  }, [getAxiosConfig, i18n.language]);
+  }, [getAxiosConfig]);
 
   useEffect(() => {
     fetchSettings();
@@ -78,36 +76,34 @@ const SiteSettingsTab = () => {
     try {
       setSaving(true);
       await axios.put(`${API_BASE}/api/admin/site-settings`, formData, getAxiosConfig());
-      alert(i18n.language === 'fa' ? 'تنظیمات سایت ذخیره شد' : 'Site settings saved');
+      alert('Site settings saved');
     } catch (error) {
       console.error('Error saving site settings:', error);
-      alert(i18n.language === 'fa'
-        ? `خطا در ذخیره: ${error.response?.data?.error || error.message}`
-        : `Error saving: ${error.response?.data?.error || error.message}`);
+      alert(`Error saving: ${error.response?.data?.error || error.message}`);
     } finally {
       setSaving(false);
     }
   };
 
   if (loading) {
-    return <div className="site-settings-loading">{i18n.language === 'fa' ? 'در حال بارگذاری...' : 'Loading...'}</div>;
+    return <div className="site-settings-loading">Loading...</div>;
   }
 
   return (
     <div className="site-settings-tab" dir="ltr">
       <div className="site-settings-header">
-        <h2>{i18n.language === 'fa' ? 'تنظیمات سایت و فوتر' : 'Website & Footer Settings'}</h2>
+        <h2>Website & Footer Settings</h2>
         <button type="button" className="btn-primary" onClick={handleSave} disabled={saving}>
-          {saving ? (i18n.language === 'fa' ? 'در حال ذخیره...' : 'Saving...') : (i18n.language === 'fa' ? 'ذخیره' : 'Save')}
+          {saving ? 'Saving...' : 'Save'}
         </button>
       </div>
 
       <div className="site-settings-form">
         <section className="site-settings-section">
-          <h3>{i18n.language === 'fa' ? 'اطلاعات تماس' : 'Contact Info'}</h3>
+          <h3>Contact Info</h3>
           <div className="form-row">
             <div className="form-group">
-              <label>{i18n.language === 'fa' ? 'ایمیل تماس' : 'Contact Email'}</label>
+              <label>Contact Email</label>
               <input
                 type="email"
                 value={formData.contact_email}
@@ -116,7 +112,7 @@ const SiteSettingsTab = () => {
               />
             </div>
             <div className="form-group">
-              <label>{i18n.language === 'fa' ? 'شماره تماس' : 'Contact Phone'}</label>
+              <label>Contact Phone</label>
               <input
                 type="text"
                 value={formData.contact_phone}
@@ -126,16 +122,16 @@ const SiteSettingsTab = () => {
             </div>
           </div>
           <div className="form-group">
-            <label>{i18n.language === 'fa' ? 'آدرس (فارسی)' : 'Address (FA)'}</label>
+            <label>Address (Primary)</label>
             <input
               type="text"
               value={formData.address_fa}
               onChange={(e) => handleChange('address_fa', e.target.value)}
-              placeholder={i18n.language === 'fa' ? 'تهران، خیابان...' : 'Tehran, ...'}
+              placeholder="123 Main St, City, State"
             />
           </div>
           <div className="form-group">
-            <label>{i18n.language === 'fa' ? 'آدرس (انگلیسی)' : 'Address (EN)'}</label>
+            <label>Address (Secondary)</label>
             <input
               type="text"
               value={formData.address_en}
@@ -146,18 +142,18 @@ const SiteSettingsTab = () => {
         </section>
 
         <section className="site-settings-section">
-          <h3>{i18n.language === 'fa' ? 'توضیحات اپ (فوتر)' : 'App Description (Footer)'}</h3>
+          <h3>App Description (Footer)</h3>
           <div className="form-group">
-            <label>{i18n.language === 'fa' ? 'توضیحات (فارسی)' : 'Description (FA)'}</label>
+            <label>Description (Primary)</label>
             <textarea
               value={formData.app_description_fa}
               onChange={(e) => handleChange('app_description_fa', e.target.value)}
               rows="2"
-              placeholder={i18n.language === 'fa' ? 'پلتفرم جامع تناسب اندام با هوش مصنوعی' : 'Comprehensive fitness platform powered by AI'}
+              placeholder="Comprehensive fitness platform powered by AI"
             />
           </div>
           <div className="form-group">
-            <label>{i18n.language === 'fa' ? 'توضیحات (انگلیسی)' : 'Description (EN)'}</label>
+            <label>Description (Secondary)</label>
             <textarea
               value={formData.app_description_en}
               onChange={(e) => handleChange('app_description_en', e.target.value)}
@@ -168,8 +164,8 @@ const SiteSettingsTab = () => {
         </section>
 
         <section className="site-settings-section">
-          <h3>{i18n.language === 'fa' ? 'شبکه‌های اجتماعی' : 'Social Media'}</h3>
-          <p className="section-hint">{i18n.language === 'fa' ? 'لینک کامل صفحه (مثال: https://instagram.com/...) را وارد کنید.' : 'Enter full profile URL (e.g. https://instagram.com/...).'}</p>
+          <h3>Social Media</h3>
+          <p className="section-hint">Enter full profile URL (e.g. https://instagram.com/...).</p>
           <div className="form-row">
             <div className="form-group">
               <label>Instagram</label>
@@ -242,21 +238,21 @@ const SiteSettingsTab = () => {
         </section>
 
         <section className="site-settings-section">
-          <h3>{i18n.language === 'fa' ? 'کپی‌رایت' : 'Copyright'}</h3>
+          <h3>Copyright</h3>
           <div className="form-group">
-            <label>{i18n.language === 'fa' ? 'متن کپی‌رایت (اختیاری)' : 'Copyright text (optional)'}</label>
+            <label>Copyright text (optional)</label>
             <input
               type="text"
               value={formData.copyright_text}
               onChange={(e) => handleChange('copyright_text', e.target.value)}
-              placeholder={i18n.language === 'fa' ? 'تمامی حقوق محفوظ است' : 'All rights reserved'}
+              placeholder="All rights reserved"
             />
           </div>
         </section>
 
         <div className="form-actions">
           <button type="button" className="btn-primary" onClick={handleSave} disabled={saving}>
-            {saving ? (i18n.language === 'fa' ? 'در حال ذخیره...' : 'Saving...') : (i18n.language === 'fa' ? 'ذخیره تنظیمات' : 'Save Settings')}
+            {saving ? 'Saving...' : 'Save Settings'}
           </button>
         </div>
       </div>

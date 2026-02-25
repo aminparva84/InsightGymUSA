@@ -1,4 +1,4 @@
-# InsightGYM Knowledge Base
+# Insight GYM USA Knowledge Base
 
 Use this file to store website knowledge that the AI can reference.
 Add FAQs, policies, training program explanations, and any site-specific info here.

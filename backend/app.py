@@ -10,6 +10,7 @@ from datetime import datetime, timedelta
 import os
 import uuid
 import base64
+import json
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -32,7 +33,7 @@ FRONTEND_BUILD_DIR = os.path.join(os.path.dirname(__file__), '..', 'frontend', '
 app = Flask(__name__, static_folder=FRONTEND_BUILD_DIR, static_url_path='')
 # Database: PostgreSQL by default. Set DATABASE_URL in .env (see .env.example).
 # Normalize postgres:// to postgresql:// (required by SQLAlchemy 1.4+ and many hosts like Heroku).
-_db_url = os.getenv('DATABASE_URL', '').strip() or 'postgresql://postgres:postgres@localhost:5432/raha_fitness'
+_db_url = os.getenv('DATABASE_URL', '').strip() or 'postgresql://postgres:postgres@localhost:5432/insight_gym_usa'
 if _db_url.startswith('postgres://'):
     _db_url = _db_url.replace('postgres://', 'postgresql://', 1)
 # If PostgreSQL is configured but not reachable, fall back to SQLite so the app can run
@@ -44,7 +45,7 @@ if _db_url.startswith('postgresql'):
             pass
     except Exception:
         print("\n[INFO] PostgreSQL not reachable - using SQLite for this run. Start PostgreSQL and set DATABASE_URL for production.\n")
-        _db_url = 'sqlite:///raha_fitness.db'
+        _db_url = 'sqlite:///insight_gym_usa.db'
 app.config['SQLALCHEMY_DATABASE_URI'] = _db_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # Get JWT_SECRET_KEY from environment or use default
@@ -176,7 +177,7 @@ def ensure_default_admin():
             return
 
         username = os.getenv('DEFAULT_ADMIN_USERNAME', 'admin')
-        email = os.getenv('DEFAULT_ADMIN_EMAIL', 'admin@insightgym.com')
+        email = os.getenv('DEFAULT_ADMIN_EMAIL', 'admin@insightgymusa.com')
         password = os.getenv('DEFAULT_ADMIN_PASSWORD', 'admin123')
 
         admin_user = User(
@@ -300,12 +301,22 @@ def register():
         # Force role to 'member' regardless of account_type in registration
         role = 'member'
         
+        # Coach selection: member chooses coach at registration (profile.coach_id)
+        coach_id = profile_data.get('coach_id') if profile_data else None
+        if coach_id:
+            coach = User.query.filter_by(id=coach_id, role='coach').first()
+            if coach and getattr(coach, 'coach_approval_status', None) == 'approved':
+                pass  # Valid coach, will set assigned_to below
+            else:
+                coach_id = None  # Invalid coach, ignore
+
         user = User(
             username=username,
             email=email,
             password_hash=generate_password_hash(password),
             language=language,
             role=role,
+            assigned_to=coach_id,
             trial_ends_at=datetime.utcnow() + timedelta(days=7),  # 7-day free trial for new members
         )
         db.session.add(user)
@@ -1420,7 +1431,7 @@ def generate_ai_response(message, user_id, language, local_time=None):
         try:
             from services.ai_provider import chat_completion
             system_parts = [
-                "You are a helpful fitness coach assistant for InsightGYM. You help with workout plans, nutrition, exercise form, and motivation.",
+                "You are a helpful fitness coach assistant for Insight GYM USA. You help with workout plans, nutrition, exercise form, and motivation.",
                 "Respond in the same language the user writes in. If the user writes in English, respond in English. If the user writes in Persian (Farsi), respond in Persian.",
                 f"User's name: {user_name}.",
             ]
@@ -2038,57 +2049,79 @@ def get_site_settings_public():
     try:
         from models import SiteSettings
         row = db.session.query(SiteSettings).first()
+        default = {
+            'contact_email': '', 'contact_phone': '', 'address_fa': '', 'address_en': '',
+            'app_description_fa': '', 'app_description_en': '',
+            'instagram_url': '', 'telegram_url': '', 'whatsapp_url': '', 'twitter_url': '',
+            'facebook_url': '', 'linkedin_url': '', 'youtube_url': '', 'copyright_text': '',
+            'operating_hours_json': '', 'map_url': '',
+            'class_schedule_json': '', 'testimonials_json': '', 'pricing_tiers_json': '', 'faq_json': ''
+        }
         if not row:
-            return jsonify({
-                'contact_email': '',
-                'contact_phone': '',
-                'address_fa': '',
-                'address_en': '',
-                'app_description_fa': '',
-                'app_description_en': '',
-                'instagram_url': '',
-                'telegram_url': '',
-                'whatsapp_url': '',
-                'twitter_url': '',
-                'facebook_url': '',
-                'linkedin_url': '',
-                'youtube_url': '',
-                'copyright_text': ''
-            }), 200
-        return jsonify({
+            return jsonify(default), 200
+        out = {
             'contact_email': row.contact_email or '',
             'contact_phone': row.contact_phone or '',
-            'address_fa': row.address_fa or '',
-            'address_en': row.address_en or '',
-            'app_description_fa': row.app_description_fa or '',
-            'app_description_en': row.app_description_en or '',
-            'instagram_url': row.instagram_url or '',
-            'telegram_url': row.telegram_url or '',
-            'whatsapp_url': row.whatsapp_url or '',
-            'twitter_url': row.twitter_url or '',
-            'facebook_url': row.facebook_url or '',
-            'linkedin_url': row.linkedin_url or '',
-            'youtube_url': row.youtube_url or '',
-            'copyright_text': row.copyright_text or ''
-        }), 200
+            'address_fa': row.address_fa or '', 'address_en': row.address_en or '',
+            'app_description_fa': row.app_description_fa or '', 'app_description_en': row.app_description_en or '',
+            'instagram_url': row.instagram_url or '', 'telegram_url': row.telegram_url or '',
+            'whatsapp_url': row.whatsapp_url or '', 'twitter_url': row.twitter_url or '',
+            'facebook_url': row.facebook_url or '', 'linkedin_url': row.linkedin_url or '',
+            'youtube_url': row.youtube_url or '', 'copyright_text': row.copyright_text or '',
+            'operating_hours_json': getattr(row, 'operating_hours_json', None) or '',
+            'map_url': getattr(row, 'map_url', None) or '',
+            'class_schedule_json': getattr(row, 'class_schedule_json', None) or '',
+            'testimonials_json': getattr(row, 'testimonials_json', None) or '',
+            'pricing_tiers_json': getattr(row, 'pricing_tiers_json', None) or '',
+            'faq_json': getattr(row, 'faq_json', None) or ''
+        }
+        return jsonify(out), 200
     except Exception as e:
         print(f"Error get_site_settings_public: {e}")
         return jsonify({
-            'contact_email': '',
-            'contact_phone': '',
-            'address_fa': '',
-            'address_en': '',
-            'app_description_fa': '',
-            'app_description_en': '',
-            'instagram_url': '',
-            'telegram_url': '',
-            'whatsapp_url': '',
-            'twitter_url': '',
-            'facebook_url': '',
-            'linkedin_url': '',
-            'youtube_url': '',
-            'copyright_text': ''
+            'contact_email': '', 'contact_phone': '', 'address_fa': '', 'address_en': '',
+            'app_description_fa': '', 'app_description_en': '',
+            'instagram_url': '', 'telegram_url': '', 'whatsapp_url': '', 'twitter_url': '',
+            'facebook_url': '', 'linkedin_url': '', 'youtube_url': '', 'copyright_text': '',
+            'operating_hours_json': '', 'map_url': '',
+            'class_schedule_json': '', 'testimonials_json': '', 'pricing_tiers_json': '', 'faq_json': ''
         }), 200
+
+
+@app.route('/api/coaches/public', methods=['GET'])
+def get_public_coaches():
+    """Public endpoint: list approved coaches for trainer/team page and registration (no auth)."""
+    try:
+        from models import UserProfile
+        coaches = db.session.query(User).filter(
+            User.role == 'coach',
+            User.coach_approval_status == 'approved'
+        ).all()
+        out = []
+        for c in coaches:
+            profile = db.session.query(UserProfile).filter_by(user_id=c.id).first()
+            certs = (profile.certifications or '').strip() if profile else ''
+            licenses_raw = profile.licenses if profile and hasattr(profile, 'licenses') else None
+            licenses = []
+            if licenses_raw:
+                try:
+                    licenses = json.loads(licenses_raw) if isinstance(licenses_raw, str) else (licenses_raw or [])
+                except Exception:
+                    licenses = [licenses_raw] if licenses_raw else []
+            out.append({
+                'id': c.id,
+                'username': c.username,
+                'bio': (profile.bio or '') if profile else '',
+                'certifications': certs,
+                'licenses': licenses if isinstance(licenses, list) else [],
+                'years_of_experience': (profile.years_of_experience or 0) if profile else 0,
+                'specialization': (profile.specialization or '') if profile else '',
+                'education': (profile.education or '') if profile else ''
+            })
+        return jsonify(out), 200
+    except Exception as e:
+        print(f"Error get_public_coaches: {e}")
+        return jsonify([]), 200
 
 
 # Register blueprints
@@ -2329,7 +2362,7 @@ if __name__ == '__main__':
     with app.app_context():
         # Ensure all models are registered before create_all
         try:
-            from models import SiteSettings, WebsiteKBSource, WebsiteKBChunk  # noqa: F401
+            from models import SiteSettings, WebsiteKBSource, WebsiteKBChunk, CoachTrainingInfo  # noqa: F401
         except ImportError:
             pass
         db.create_all()
@@ -2338,5 +2371,6 @@ if __name__ == '__main__':
             from models_workout_log import WorkoutLog, ProgressEntry, WeeklyGoal, WorkoutReminder
         except ImportError:
             pass
-    app.run(debug=True, port=5000)
+    port = int(os.getenv('PORT', 5001))
+    app.run(debug=True, port=port)
 

@@ -1,11 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { getApiBase } from '../../services/apiBase';
 import './AdminTab.css';
 
 const AdminTab = () => {
-  const { i18n } = useTranslation();
   const API_BASE = getApiBase();
   
   // Members state
@@ -59,9 +57,9 @@ const AdminTab = () => {
       setAssistants(response.data);
     } catch (error) {
       console.error('Error fetching assistants:', error);
-      alert(i18n.language === 'fa' ? 'خطا در دریافت لیست دستیاران' : 'Error fetching assistants');
+      alert('Error fetching assistants');
     }
-  }, [API_BASE, getAxiosConfig, i18n.language]);
+  }, [API_BASE, getAxiosConfig]);
 
   useEffect(() => {
     fetchAssistants();
@@ -86,7 +84,7 @@ const AdminTab = () => {
         username: full.username || '',
         email: full.email || '',
         password: '',
-        language: full.language || 'fa',
+        language: full.language || 'en',
         age: profile.age ?? '',
         weight: profile.weight ?? '',
         height: profile.height ?? '',
@@ -141,15 +139,13 @@ const AdminTab = () => {
         bio: assistantEditFormData.bio || ''
       };
       await axios.put(`${API_BASE}/api/admin/coaches/${editingAssistant.id}`, payload, getAxiosConfig());
-      alert(i18n.language === 'fa' ? 'دستیار به‌روزرسانی شد' : 'Assistant updated');
+      alert('Assistant updated');
       setEditingAssistant(null);
       setAssistantEditFormData(null);
       fetchAssistants();
     } catch (error) {
       console.error('Error updating assistant:', error);
-      alert(i18n.language === 'fa'
-        ? `خطا در به‌روزرسانی: ${error.response?.data?.error || error.message}`
-        : `Error updating: ${error.response?.data?.error || error.message}`);
+      alert(`Error updating: ${error.response?.data?.error || error.message}`);
     }
   };
 
@@ -201,22 +197,18 @@ const AdminTab = () => {
       setShowCredentialsModal(true);
     } catch (error) {
       console.error('Error creating assistant:', error);
-      alert(i18n.language === 'fa' 
-        ? `خطا در ایجاد دستیار: ${error.response?.data?.error || error.message}`
-        : `Error creating assistant: ${error.response?.data?.error || error.message}`);
+      alert(`Error creating assistant: ${error.response?.data?.error || error.message}`);
     }
   };
 
   const handleDeleteAssistant = async (assistantId) => {
     try {
       await axios.delete(`${API_BASE}/api/admin/coaches/${assistantId}`, getAxiosConfig());
-      alert(i18n.language === 'fa' ? 'دستیار با موفقیت حذف شد' : 'Assistant deleted successfully');
+      alert('Assistant deleted successfully');
       fetchAssistants();
     } catch (error) {
       console.error('Error deleting assistant:', error);
-      alert(i18n.language === 'fa' 
-        ? `خطا در حذف دستیار: ${error.response?.data?.error || error.message}`
-        : `Error deleting assistant: ${error.response?.data?.error || error.message}`);
+      alert(`Error deleting assistant: ${error.response?.data?.error || error.message}`);
     }
   };
 
@@ -251,14 +243,14 @@ const AdminTab = () => {
   return (
     <div className="admin-tab" dir="ltr">
       <div className="admin-tab-header">
-        <h2>{i18n.language === 'fa' ? 'مدیریت دستیاران' : 'Assistants Management'}</h2>
+        <h2>Assistants Management</h2>
       </div>
 
       <div className="admin-tab-content">
         <div className="admin-section-content">
           <div className="section-header">
             <button className="btn-primary" onClick={() => setShowAssistantForm(true)}>
-              {i18n.language === 'fa' ? '+ افزودن دستیار' : '+ Add Assistant'}
+              + Add Assistant
             </button>
           </div>
 
@@ -266,7 +258,7 @@ const AdminTab = () => {
               <div className="admin-form-overlay">
                 <div className="admin-form-container">
                   <div className="form-header-with-close">
-                    <h3>{i18n.language === 'fa' ? 'ایجاد دستیار جدید' : 'Create New Assistant'}</h3>
+                    <h3>Create New Assistant</h3>
                     <button 
                       type="button" 
                       className="close-form-btn"
@@ -274,14 +266,14 @@ const AdminTab = () => {
                         setShowAssistantForm(false);
                         resetAssistantForm();
                       }}
-                      aria-label={i18n.language === 'fa' ? 'بستن' : 'Close'}
+                      aria-label="Close"
                     >
                       ×
                     </button>
                   </div>
                   <form onSubmit={handleCreateAssistant}>
                     <div className="form-group">
-                      <label>{i18n.language === 'fa' ? 'نام کاربری *' : 'Username *'}</label>
+                      <label>Username *</label>
                       <input
                         type="text"
                         value={assistantFormData.username}
@@ -290,7 +282,7 @@ const AdminTab = () => {
                       />
                     </div>
                     <div className="form-group">
-                      <label>{i18n.language === 'fa' ? 'ایمیل *' : 'Email *'}</label>
+                      <label>Email *</label>
                       <input
                         type="email"
                         value={assistantFormData.email}
@@ -299,7 +291,7 @@ const AdminTab = () => {
                       />
                     </div>
                     <div className="form-group">
-                      <label>{i18n.language === 'fa' ? 'رمز عبور *' : 'Password *'}</label>
+                      <label>Password *</label>
                       <input
                         type="password"
                         value={assistantFormData.password}
@@ -315,21 +307,18 @@ const AdminTab = () => {
                           checked={assistantFormData.fillProfileNow}
                           onChange={(e) => setAssistantFormData({...assistantFormData, fillProfileNow: e.target.checked})}
                         />
-                        <span>{i18n.language === 'fa' 
-                          ? 'تکمیل پروفایل اکنون (در غیر این صورت دستیار باید بعد از اولین ورود تکمیل کند)'
-                          : 'Fill profile now (otherwise assistant must complete after first login)'}
-                        </span>
+                        <span>Fill profile now (otherwise assistant must complete after first login)</span>
                       </label>
                     </div>
 
                     {assistantFormData.fillProfileNow && (
                       <>
-                        <h4 style={{ marginTop: '1.5rem', marginBottom: '1rem', color: 'var(--color-primary-800)', fontSize: '1.1rem', fontWeight: '600' }}>
-                          {i18n.language === 'fa' ? 'اطلاعات شخصی' : 'Personal Information'}
+                        <h4 style={{ marginTop: '1.5rem', marginBottom: '1rem', color: 'var(--text-primary)', fontSize: '1.1rem', fontWeight: '600' }}>
+                          Personal Information
                         </h4>
                         <div className="form-row">
                           <div className="form-group">
-                            <label>{i18n.language === 'fa' ? 'سن' : 'Age'}</label>
+                            <label>Age</label>
                             <input
                               type="number"
                               value={assistantFormData.age}
@@ -339,43 +328,43 @@ const AdminTab = () => {
                             />
                           </div>
                           <div className="form-group">
-                            <label>{i18n.language === 'fa' ? 'جنسیت' : 'Gender'}</label>
+                            <label>Gender</label>
                             <select
                               value={assistantFormData.gender}
                               onChange={(e) => setAssistantFormData({...assistantFormData, gender: e.target.value})}
                             >
-                              <option value="">{i18n.language === 'fa' ? 'انتخاب کنید' : 'Select'}</option>
-                              <option value="male">{i18n.language === 'fa' ? 'مرد' : 'Male'}</option>
-                              <option value="female">{i18n.language === 'fa' ? 'زن' : 'Female'}</option>
-                              <option value="other">{i18n.language === 'fa' ? 'سایر' : 'Other'}</option>
+                              <option value="">Select</option>
+                              <option value="male">Male</option>
+                              <option value="female">Female</option>
+                              <option value="other">Other</option>
                             </select>
                           </div>
                         </div>
                         
-                        <h4 style={{ marginTop: '2rem', marginBottom: '1rem', color: 'var(--color-primary-800)', fontSize: '1.1rem', fontWeight: '600' }}>
-                          {i18n.language === 'fa' ? 'اطلاعات حرفه‌ای مربی' : 'Trainer Professional Details'}
+                        <h4 style={{ marginTop: '2rem', marginBottom: '1rem', color: 'var(--text-primary)', fontSize: '1.1rem', fontWeight: '600' }}>
+                          Trainer Professional Details
                         </h4>
                         <div className="form-group">
-                          <label>{i18n.language === 'fa' ? 'گواهینامه‌ها' : 'Certifications'}</label>
+                          <label>Certifications</label>
                           <textarea
                             value={assistantFormData.certifications}
                             onChange={(e) => setAssistantFormData({...assistantFormData, certifications: e.target.value})}
-                            placeholder={i18n.language === 'fa' ? 'مثال: NASM-CPT, ACE-CPT, ISSA...' : 'Example: NASM-CPT, ACE-CPT, ISSA...'}
+                            placeholder="Example: NASM-CPT, ACE-CPT, ISSA..."
                             rows="2"
                           />
                         </div>
                         <div className="form-group">
-                          <label>{i18n.language === 'fa' ? 'مدارک و صلاحیت‌ها' : 'Qualifications'}</label>
+                          <label>Qualifications</label>
                           <textarea
                             value={assistantFormData.qualifications}
                             onChange={(e) => setAssistantFormData({...assistantFormData, qualifications: e.target.value})}
-                            placeholder={i18n.language === 'fa' ? 'مثال: کارشناسی تربیت بدنی، کارشناسی ارشد فیزیولوژی ورزش...' : 'Example: BS in Physical Education, MS in Exercise Physiology...'}
+                            placeholder="Example: BS in Physical Education, MS in Exercise Physiology..."
                             rows="2"
                           />
                         </div>
                         <div className="form-row">
                           <div className="form-group">
-                            <label>{i18n.language === 'fa' ? 'سال‌های تجربه' : 'Years of Experience'}</label>
+                            <label>Years of Experience</label>
                             <input
                               type="number"
                               value={assistantFormData.years_of_experience}
@@ -385,40 +374,40 @@ const AdminTab = () => {
                             />
                           </div>
                           <div className="form-group">
-                            <label>{i18n.language === 'fa' ? 'تخصص' : 'Specialization'}</label>
+                            <label>Specialization</label>
                             <input
                               type="text"
                               value={assistantFormData.specialization}
                               onChange={(e) => setAssistantFormData({...assistantFormData, specialization: e.target.value})}
-                              placeholder={i18n.language === 'fa' ? 'مثال: بدنسازی، کاهش وزن، قدرت...' : 'Example: Bodybuilding, Weight Loss, Strength...'}
+                              placeholder="Example: Bodybuilding, Weight Loss, Strength..."
                             />
                           </div>
                         </div>
                         <div className="form-group">
-                          <label>{i18n.language === 'fa' ? 'تحصیلات' : 'Education'}</label>
+                          <label>Education</label>
                           <input
                             type="text"
                             value={assistantFormData.education}
                             onChange={(e) => setAssistantFormData({...assistantFormData, education: e.target.value})}
-                            placeholder={i18n.language === 'fa' ? 'مثال: کارشناسی ارشد فیزیولوژی ورزش از دانشگاه تهران' : 'Example: MS in Exercise Physiology from University of Tehran'}
+                            placeholder="Example: MS in Exercise Physiology from University of Tehran"
                           />
                         </div>
                         <div className="form-group">
-                          <label>{i18n.language === 'fa' ? 'بیوگرافی' : 'Bio'}</label>
+                          <label>Bio</label>
                           <textarea
                             value={assistantFormData.bio}
                             onChange={(e) => setAssistantFormData({...assistantFormData, bio: e.target.value})}
-                            placeholder={i18n.language === 'fa' ? 'توضیحات درباره مربی...' : 'Description about the trainer...'}
+                            placeholder="Description about the trainer..."
                             rows="4"
                           />
                         </div>
                         
-                        <h4 style={{ marginTop: '2rem', marginBottom: '1rem', color: 'var(--color-primary-800)', fontSize: '1.1rem', fontWeight: '600' }}>
-                          {i18n.language === 'fa' ? 'اندازه‌گیری بدن (سانتی‌متر)' : 'Body Measurements (cm)'}
+                        <h4 style={{ marginTop: '2rem', marginBottom: '1rem', color: 'var(--text-primary)', fontSize: '1.1rem', fontWeight: '600' }}>
+                          Body Measurements (cm)
                         </h4>
                         <div className="form-row">
                           <div className="form-group">
-                            <label>{i18n.language === 'fa' ? 'دور سینه' : 'Chest'}</label>
+                            <label>Chest</label>
                             <input
                               type="number"
                               value={assistantFormData.chest_circumference}
@@ -427,7 +416,7 @@ const AdminTab = () => {
                             />
                           </div>
                           <div className="form-group">
-                            <label>{i18n.language === 'fa' ? 'دور کمر' : 'Waist'}</label>
+                            <label>Waist</label>
                             <input
                               type="number"
                               value={assistantFormData.waist_circumference}
@@ -438,7 +427,7 @@ const AdminTab = () => {
                         </div>
                         <div className="form-row">
                           <div className="form-group">
-                            <label>{i18n.language === 'fa' ? 'دور شکم' : 'Abdomen'}</label>
+                            <label>Abdomen</label>
                             <input
                               type="number"
                               value={assistantFormData.abdomen_circumference}
@@ -447,7 +436,7 @@ const AdminTab = () => {
                             />
                           </div>
                           <div className="form-group">
-                            <label>{i18n.language === 'fa' ? 'دور بازو' : 'Arm'}</label>
+                            <label>Arm</label>
                             <input
                               type="number"
                               value={assistantFormData.arm_circumference}
@@ -458,7 +447,7 @@ const AdminTab = () => {
                         </div>
                         <div className="form-row">
                           <div className="form-group">
-                            <label>{i18n.language === 'fa' ? 'دور باسن' : 'Hip'}</label>
+                            <label>Hip</label>
                             <input
                               type="number"
                               value={assistantFormData.hip_circumference}
@@ -467,7 +456,7 @@ const AdminTab = () => {
                             />
                           </div>
                           <div className="form-group">
-                            <label>{i18n.language === 'fa' ? 'دور ران' : 'Thigh'}</label>
+                            <label>Thigh</label>
                             <input
                               type="number"
                               value={assistantFormData.thigh_circumference}
@@ -481,13 +470,13 @@ const AdminTab = () => {
 
                     <div className="form-actions">
                       <button type="submit" className="btn-primary">
-                        {i18n.language === 'fa' ? 'ایجاد دستیار' : 'Create Assistant'}
+                        Create Assistant
                       </button>
                       <button type="button" className="btn-secondary" onClick={() => {
                         setShowAssistantForm(false);
                         resetAssistantForm();
                       }}>
-                        {i18n.language === 'fa' ? 'لغو' : 'Cancel'}
+                        Cancel
                       </button>
                     </div>
                   </form>
@@ -499,12 +488,12 @@ const AdminTab = () => {
               <table>
                 <thead>
                   <tr>
-                    <th>{i18n.language === 'fa' ? 'نام کاربری' : 'Username'}</th>
-                    <th>{i18n.language === 'fa' ? 'ایمیل' : 'Email'}</th>
-                    <th>{i18n.language === 'fa' ? 'تعداد اعضای تخصیص یافته' : 'Assigned Members'}</th>
-                    <th>{i18n.language === 'fa' ? 'وضعیت پروفایل' : 'Profile Status'}</th>
-                    <th>{i18n.language === 'fa' ? 'ویرایش' : 'Edit'}</th>
-                    <th>{i18n.language === 'fa' ? 'حذف' : 'Delete'}</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Assigned Members</th>
+                    <th>Profile Status</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -514,8 +503,8 @@ const AdminTab = () => {
                       <td>{assistant.email}</td>
                       <td>{assistant.assigned_members_count || 0}</td>
                       <td>{assistant.profile_complete 
-                        ? (i18n.language === 'fa' ? 'تکمیل شده' : 'Complete')
-                        : (i18n.language === 'fa' ? 'ناقص' : 'Incomplete')}
+                        ? 'Complete'
+                        : 'Incomplete'}
                       </td>
                       <td>
                         <button 
@@ -523,7 +512,7 @@ const AdminTab = () => {
                           className="btn-edit"
                           onClick={() => handleEditAssistant(assistant)}
                         >
-                          {i18n.language === 'fa' ? 'ویرایش' : 'Edit'}
+                          Edit
                         </button>
                       </td>
                       <td>
@@ -531,15 +520,13 @@ const AdminTab = () => {
                           className="btn-delete"
                           onClick={() => {
                             if (window.confirm(
-                              i18n.language === 'fa' 
-                                ? `آیا مطمئن هستید که می‌خواهید دستیار "${assistant.username}" را حذف کنید؟ این عمل غیرقابل بازگشت است.`
-                                : `Are you sure you want to delete assistant "${assistant.username}"? This action cannot be undone.`
+                              `Are you sure you want to delete assistant "${assistant.username}"? This action cannot be undone.`
                             )) {
                               handleDeleteAssistant(assistant.id);
                             }
                           }}
                         >
-                          {i18n.language === 'fa' ? 'حذف' : 'Delete'}
+                          Delete
                         </button>
                       </td>
                     </tr>
@@ -552,43 +539,40 @@ const AdminTab = () => {
             {showCredentialsModal && createdCredentials && (
               <div className="admin-form-overlay">
                 <div className="admin-form-container" style={{ maxWidth: '500px' }}>
-                  <h3>{i18n.language === 'fa' ? 'اطلاعات ورود دستیار' : 'Assistant Login Credentials'}</h3>
+                  <h3>Assistant Login Credentials</h3>
                   <div className="credentials-display">
                     <div className="credential-item">
-                      <label>{i18n.language === 'fa' ? 'نام کاربری:' : 'Username:'}</label>
+                      <label>Username:</label>
                       <div className="credential-value">
                         <code>{createdCredentials.username}</code>
                         <button 
                           className="copy-btn"
                           onClick={() => {
                             navigator.clipboard.writeText(createdCredentials.username);
-                            alert(i18n.language === 'fa' ? 'کپی شد' : 'Copied!');
+                            alert('Copied!');
                           }}
                         >
-                          {i18n.language === 'fa' ? 'کپی' : 'Copy'}
+                          Copy
                         </button>
                       </div>
                     </div>
                     <div className="credential-item">
-                      <label>{i18n.language === 'fa' ? 'رمز عبور:' : 'Password:'}</label>
+                      <label>Password:</label>
                       <div className="credential-value">
                         <code>{createdCredentials.password}</code>
                         <button 
                           className="copy-btn"
                           onClick={() => {
                             navigator.clipboard.writeText(createdCredentials.password);
-                            alert(i18n.language === 'fa' ? 'کپی شد' : 'Copied!');
+                            alert('Copied!');
                           }}
                         >
-                          {i18n.language === 'fa' ? 'کپی' : 'Copy'}
+                          Copy
                         </button>
                       </div>
                     </div>
                     <div className="credential-warning">
-                      <p>{i18n.language === 'fa' 
-                        ? '⚠️ لطفاً این اطلاعات را ذخیره کنید. این اطلاعات فقط یک بار نمایش داده می‌شود.'
-                        : '⚠️ Please save these credentials. They will only be shown once.'}
-                      </p>
+                      <p>⚠️ Please save these credentials. They will only be shown once.</p>
                     </div>
                   </div>
                   <div className="form-actions">
@@ -600,7 +584,7 @@ const AdminTab = () => {
                         setCreatedCredentials(null);
                       }}
                     >
-                      {i18n.language === 'fa' ? 'بستن' : 'Close'}
+                      Close
                     </button>
                   </div>
                 </div>
@@ -612,18 +596,18 @@ const AdminTab = () => {
               <div className="admin-form-overlay">
                 <div className="admin-form-container" style={{ maxHeight: '90vh', overflowY: 'auto' }}>
                   <div className="form-header-with-close">
-                    <h3>{i18n.language === 'fa' ? `ویرایش دستیار: ${editingAssistant.username}` : `Edit Assistant: ${editingAssistant.username}`}</h3>
+                    <h3>Edit Assistant: {editingAssistant.username}</h3>
                     <button
                       type="button"
                       className="close-form-btn"
                       onClick={() => { setEditingAssistant(null); setAssistantEditFormData(null); }}
-                      aria-label={i18n.language === 'fa' ? 'بستن' : 'Close'}
+                      aria-label="Close"
                     >
                       ×
                     </button>
                   </div>
                   <div className="form-group">
-                    <label>{i18n.language === 'fa' ? 'نام کاربری *' : 'Username *'}</label>
+                    <label>Username *</label>
                     <input
                       type="text"
                       value={assistantEditFormData.username}
@@ -632,7 +616,7 @@ const AdminTab = () => {
                     />
                   </div>
                   <div className="form-group">
-                    <label>{i18n.language === 'fa' ? 'ایمیل *' : 'Email *'}</label>
+                    <label>Email *</label>
                     <input
                       type="email"
                       value={assistantEditFormData.email}
@@ -641,31 +625,30 @@ const AdminTab = () => {
                     />
                   </div>
                   <div className="form-group">
-                    <label>{i18n.language === 'fa' ? 'رمز عبور جدید (خالی = بدون تغییر)' : 'New password (leave blank to keep)'}</label>
+                    <label>New password (leave blank to keep)</label>
                     <input
                       type="password"
                       value={assistantEditFormData.password}
                       onChange={(e) => setAssistantEditFormData({ ...assistantEditFormData, password: e.target.value })}
                       minLength={6}
-                      placeholder={i18n.language === 'fa' ? 'خالی بگذارید تا تغییر نکند' : 'Leave blank to keep current'}
+                      placeholder="Leave blank to keep current"
                     />
                   </div>
                   <div className="form-group">
-                    <label>{i18n.language === 'fa' ? 'زبان' : 'Language'}</label>
+                    <label>Language</label>
                     <select
                       value={assistantEditFormData.language}
                       onChange={(e) => setAssistantEditFormData({ ...assistantEditFormData, language: e.target.value })}
                     >
-                      <option value="fa">فارسی</option>
                       <option value="en">English</option>
                     </select>
                   </div>
-                  <h4 style={{ marginTop: '1.5rem', marginBottom: '1rem', color: 'var(--color-primary-800)', fontSize: '1.1rem', fontWeight: '600' }}>
-                    {i18n.language === 'fa' ? 'اطلاعات شخصی' : 'Personal Information'}
+                  <h4 style={{ marginTop: '1.5rem', marginBottom: '1rem', color: 'var(--text-primary)', fontSize: '1.1rem', fontWeight: '600' }}>
+                    Personal Information
                   </h4>
                   <div className="form-row">
                     <div className="form-group">
-                      <label>{i18n.language === 'fa' ? 'سن' : 'Age'}</label>
+                      <label>Age</label>
                       <input
                         type="number"
                         value={assistantEditFormData.age}
@@ -675,23 +658,23 @@ const AdminTab = () => {
                       />
                     </div>
                     <div className="form-group">
-                      <label>{i18n.language === 'fa' ? 'جنسیت' : 'Gender'}</label>
+                      <label>Gender</label>
                       <select
                         value={assistantEditFormData.gender}
                         onChange={(e) => setAssistantEditFormData({ ...assistantEditFormData, gender: e.target.value })}
                       >
-                        <option value="">{i18n.language === 'fa' ? 'انتخاب کنید' : 'Select'}</option>
-                        <option value="male">{i18n.language === 'fa' ? 'مرد' : 'Male'}</option>
-                        <option value="female">{i18n.language === 'fa' ? 'زن' : 'Female'}</option>
-                        <option value="other">{i18n.language === 'fa' ? 'سایر' : 'Other'}</option>
+                        <option value="">Select</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
                       </select>
                     </div>
                   </div>
-                  <h4 style={{ marginTop: '2rem', marginBottom: '1rem', color: 'var(--color-primary-800)', fontSize: '1.1rem', fontWeight: '600' }}>
-                    {i18n.language === 'fa' ? 'اطلاعات حرفه‌ای مربی' : 'Trainer Professional Details'}
+                  <h4 style={{ marginTop: '2rem', marginBottom: '1rem', color: 'var(--text-primary)', fontSize: '1.1rem', fontWeight: '600' }}>
+                    Trainer Professional Details
                   </h4>
                   <div className="form-group">
-                    <label>{i18n.language === 'fa' ? 'گواهینامه‌ها' : 'Certifications'}</label>
+                    <label>Certifications</label>
                     <textarea
                       value={assistantEditFormData.certifications}
                       onChange={(e) => setAssistantEditFormData({ ...assistantEditFormData, certifications: e.target.value })}
@@ -699,7 +682,7 @@ const AdminTab = () => {
                     />
                   </div>
                   <div className="form-group">
-                    <label>{i18n.language === 'fa' ? 'مدارک و صلاحیت‌ها' : 'Qualifications'}</label>
+                    <label>Qualifications</label>
                     <textarea
                       value={assistantEditFormData.qualifications}
                       onChange={(e) => setAssistantEditFormData({ ...assistantEditFormData, qualifications: e.target.value })}
@@ -708,7 +691,7 @@ const AdminTab = () => {
                   </div>
                   <div className="form-row">
                     <div className="form-group">
-                      <label>{i18n.language === 'fa' ? 'سال‌های تجربه' : 'Years of Experience'}</label>
+                      <label>Years of Experience</label>
                       <input
                         type="number"
                         value={assistantEditFormData.years_of_experience}
@@ -718,7 +701,7 @@ const AdminTab = () => {
                       />
                     </div>
                     <div className="form-group">
-                      <label>{i18n.language === 'fa' ? 'تخصص' : 'Specialization'}</label>
+                      <label>Specialization</label>
                       <input
                         type="text"
                         value={assistantEditFormData.specialization}
@@ -727,7 +710,7 @@ const AdminTab = () => {
                     </div>
                   </div>
                   <div className="form-group">
-                    <label>{i18n.language === 'fa' ? 'تحصیلات' : 'Education'}</label>
+                    <label>Education</label>
                     <input
                       type="text"
                       value={assistantEditFormData.education}
@@ -735,19 +718,19 @@ const AdminTab = () => {
                     />
                   </div>
                   <div className="form-group">
-                    <label>{i18n.language === 'fa' ? 'بیوگرافی' : 'Bio'}</label>
+                    <label>Bio</label>
                     <textarea
                       value={assistantEditFormData.bio}
                       onChange={(e) => setAssistantEditFormData({ ...assistantEditFormData, bio: e.target.value })}
                       rows="4"
                     />
                   </div>
-                  <h4 style={{ marginTop: '2rem', marginBottom: '1rem', color: 'var(--color-primary-800)', fontSize: '1.1rem', fontWeight: '600' }}>
-                    {i18n.language === 'fa' ? 'اندازه‌گیری بدن (سانتی‌متر)' : 'Body Measurements (cm)'}
+                  <h4 style={{ marginTop: '2rem', marginBottom: '1rem', color: 'var(--text-primary)', fontSize: '1.1rem', fontWeight: '600' }}>
+                    Body Measurements (cm)
                   </h4>
                   <div className="form-row">
                     <div className="form-group">
-                      <label>{i18n.language === 'fa' ? 'وزن' : 'Weight'}</label>
+                      <label>Weight</label>
                       <input
                         type="number"
                         value={assistantEditFormData.weight}
@@ -756,7 +739,7 @@ const AdminTab = () => {
                       />
                     </div>
                     <div className="form-group">
-                      <label>{i18n.language === 'fa' ? 'قد' : 'Height'}</label>
+                      <label>Height</label>
                       <input
                         type="number"
                         value={assistantEditFormData.height}
@@ -767,7 +750,7 @@ const AdminTab = () => {
                   </div>
                   <div className="form-row">
                     <div className="form-group">
-                      <label>{i18n.language === 'fa' ? 'دور سینه' : 'Chest'}</label>
+                      <label>Chest</label>
                       <input
                         type="number"
                         value={assistantEditFormData.chest_circumference}
@@ -776,7 +759,7 @@ const AdminTab = () => {
                       />
                     </div>
                     <div className="form-group">
-                      <label>{i18n.language === 'fa' ? 'دور کمر' : 'Waist'}</label>
+                      <label>Waist</label>
                       <input
                         type="number"
                         value={assistantEditFormData.waist_circumference}
@@ -787,7 +770,7 @@ const AdminTab = () => {
                   </div>
                   <div className="form-row">
                     <div className="form-group">
-                      <label>{i18n.language === 'fa' ? 'دور شکم' : 'Abdomen'}</label>
+                      <label>Abdomen</label>
                       <input
                         type="number"
                         value={assistantEditFormData.abdomen_circumference}
@@ -796,7 +779,7 @@ const AdminTab = () => {
                       />
                     </div>
                     <div className="form-group">
-                      <label>{i18n.language === 'fa' ? 'دور بازو' : 'Arm'}</label>
+                      <label>Arm</label>
                       <input
                         type="number"
                         value={assistantEditFormData.arm_circumference}
@@ -807,7 +790,7 @@ const AdminTab = () => {
                   </div>
                   <div className="form-row">
                     <div className="form-group">
-                      <label>{i18n.language === 'fa' ? 'دور باسن' : 'Hip'}</label>
+                      <label>Hip</label>
                       <input
                         type="number"
                         value={assistantEditFormData.hip_circumference}
@@ -816,7 +799,7 @@ const AdminTab = () => {
                       />
                     </div>
                     <div className="form-group">
-                      <label>{i18n.language === 'fa' ? 'دور ران' : 'Thigh'}</label>
+                      <label>Thigh</label>
                       <input
                         type="number"
                         value={assistantEditFormData.thigh_circumference}
@@ -827,10 +810,10 @@ const AdminTab = () => {
                   </div>
                   <div className="form-actions">
                     <button type="button" className="btn-primary" onClick={handleSaveAssistantEdit}>
-                      {i18n.language === 'fa' ? 'ذخیره' : 'Save'}
+                      Save
                     </button>
                     <button type="button" className="btn-secondary" onClick={() => { setEditingAssistant(null); setAssistantEditFormData(null); }}>
-                      {i18n.language === 'fa' ? 'لغو' : 'Cancel'}
+                      Cancel
                     </button>
                   </div>
                 </div>

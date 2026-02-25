@@ -123,7 +123,7 @@ export REGION=me-south-1
 export RDS_ENDPOINT=insightgym-db.xxxx.me-south-1.rds.amazonaws.com   # from stack output
 
 aws ssm put-parameter --name /insightgym/DATABASE_URL \
-  --value "postgresql://postgres:YOUR_DB_PASSWORD@$RDS_ENDPOINT:5432/raha_fitness" \
+  --value "postgresql://postgres:YOUR_DB_PASSWORD@$RDS_ENDPOINT:5432/insight_gym_usa" \
   --type SecureString --region $REGION --overwrite
 
 aws ssm put-parameter --name /insightgym/JWT_SECRET_KEY \

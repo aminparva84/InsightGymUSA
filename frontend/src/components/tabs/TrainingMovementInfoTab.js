@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { getApiBase } from '../../services/apiBase';
 import './TrainingMovementInfoTab.css';
@@ -7,7 +6,6 @@ import './TrainingMovementInfoTab.css';
 const API_BASE = getApiBase();
 
 const TrainingMovementInfoTab = () => {
-  const { i18n } = useTranslation();
   const [exercises, setExercises] = useState([]);
   const [selectedExercise, setSelectedExercise] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -100,10 +98,10 @@ const TrainingMovementInfoTab = () => {
       );
       setSelectedExercise((prev) => (prev ? { ...prev, ...form } : null));
       await loadExercises();
-      alert(i18n.language === 'fa' ? 'ذخیره شد' : 'Saved');
+      alert('Saved');
     } catch (err) {
       console.error('Error saving:', err);
-      alert(i18n.language === 'fa' ? 'خطا در ذخیره' : 'Error saving');
+      alert('Error saving');
     } finally {
       setSaving(false);
     }
@@ -127,7 +125,7 @@ const TrainingMovementInfoTab = () => {
       e.target.value = '';
     } catch (err) {
       console.error('Video upload failed:', err);
-      alert(i18n.language === 'fa' ? 'آپلود ویدیو ناموفق بود' : 'Video upload failed');
+      alert('Video upload failed');
     } finally {
       setVideoUploading(false);
     }
@@ -143,10 +141,10 @@ const TrainingMovementInfoTab = () => {
         getAxiosConfig()
       );
       const count = res.data?.updated_count ?? 0;
-      alert(i18n.language === 'fa' ? `یادداشت‌ها به ${count} مورد در برنامه‌ها اضافه شد.` : `Notes added to ${count} program slot(s).`);
+      alert(`Notes added to ${count} program slot(s).`);
     } catch (err) {
       console.error('Error propagating notes:', err);
-      alert(i18n.language === 'fa' ? 'خطا در اعمال به برنامه‌ها' : 'Error propagating to programs');
+      alert('Error propagating to programs');
     } finally {
       setPropagating(false);
     }
@@ -170,7 +168,7 @@ const TrainingMovementInfoTab = () => {
       e.target.value = '';
     } catch (err) {
       console.error('Voice upload failed:', err);
-      alert(i18n.language === 'fa' ? 'آپلود صدا ناموفق بود' : 'Voice upload failed');
+      alert('Voice upload failed');
     } finally {
       setVoiceUploading(false);
     }
@@ -179,19 +177,17 @@ const TrainingMovementInfoTab = () => {
   const filteredList = search.trim()
     ? exercises.filter(
         (ex) =>
-          (ex.name_fa && ex.name_fa.toLowerCase().includes(search.toLowerCase())) ||
-          (ex.name_en && ex.name_en.toLowerCase().includes(search.toLowerCase()))
+          (ex.name_en && ex.name_en.toLowerCase().includes(search.toLowerCase())) ||
+          (ex.name && ex.name.toLowerCase().includes(search.toLowerCase()))
       )
     : exercises;
 
   return (
     <div className="training-movement-info-tab" dir="ltr">
       <div className="movement-info-header">
-        <h2>{i18n.language === 'fa' ? 'اطلاعات حرکات تمرینی' : 'Training Movement Info'}</h2>
+        <h2>Training Movement Info</h2>
         <p className="movement-info-desc">
-          {i18n.language === 'fa'
-            ? 'صدای مربی یا متن یادداشت را یک‌بار برای هر حرکت تنظیم کنید؛ سپس با «اضافه به برنامه‌های اعضا» آن را به برنامه تمرینی همه اعضا اضافه کنید. در چت با AI هم می‌توانید بگویید: «یادداشت برای حرکت [نام حرکت]: [متن]» تا یادداشت ذخیره شود.'
-            : 'Set trainer voice or text once per movement; then use «Add to members\' programs» to add it to all members\' training programs. In Chat with AI you can also say: «Add note to movement [name]: [text]» to save a note.'}
+          Set trainer voice or text once per movement; then use «Add to members&apos; programs» to add it to all members&apos; training programs. In Chat with AI you can also say: «Add note to movement [name]: [text]» to save a note.
         </p>
       </div>
 
@@ -200,13 +196,13 @@ const TrainingMovementInfoTab = () => {
           <div className="movement-info-search">
             <input
               type="text"
-              placeholder={i18n.language === 'fa' ? 'جستجو حرکت...' : 'Search movement...'}
+              placeholder="Search movement..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
           {loading ? (
-            <div className="movement-info-loading">{i18n.language === 'fa' ? 'در حال بارگذاری...' : 'Loading...'}</div>
+            <div className="movement-info-loading">Loading...</div>
           ) : (
             <div className="movement-info-list">
               {filteredList.map((ex) => (
@@ -215,7 +211,7 @@ const TrainingMovementInfoTab = () => {
                   className={`movement-info-item ${selectedExercise?.id === ex.id ? 'active' : ''}`}
                   onClick={() => setSelectedExercise(ex)}
                 >
-                  <span className="movement-name">{ex.name_fa || ex.name_en || ex.name}</span>
+                  <span className="movement-name">{ex.name_en || ex.name || ex.name_fa}</span>
                 </div>
               ))}
             </div>
@@ -225,12 +221,12 @@ const TrainingMovementInfoTab = () => {
         <div className="movement-info-main">
           {!selectedExercise ? (
             <div className="movement-info-empty">
-              <p>{i18n.language === 'fa' ? 'یک حرکت را انتخاب کنید' : 'Select a movement'}</p>
+              <p>Select a movement</p>
             </div>
           ) : (
             <>
               <div className="movement-info-form-header">
-                <h3>{selectedExercise.name_fa || selectedExercise.name_en || selectedExercise.name}</h3>
+                <h3>{selectedExercise.name_en || selectedExercise.name || selectedExercise.name_fa}</h3>
                 <div className="movement-info-form-actions">
                   <button
                     type="button"
@@ -238,27 +234,27 @@ const TrainingMovementInfoTab = () => {
                     onClick={handleSave}
                     disabled={saving}
                   >
-                    {saving ? '…' : i18n.language === 'fa' ? 'ذخیره' : 'Save'}
+                    {saving ? '…' : 'Save'}
                   </button>
                   <button
                     type="button"
                     className="movement-info-propagate-btn"
                     onClick={handlePropagate}
                     disabled={propagating || saving}
-                    title={i18n.language === 'fa' ? 'این یادداشت و صدا را به همه برنامه‌هایی که این حرکت را دارند اضافه کن' : 'Add this note/voice to all programs that contain this movement'}
+                    title="Add this note/voice to all programs that contain this movement"
                   >
-                    {propagating ? '…' : i18n.language === 'fa' ? 'اضافه به برنامه‌های اعضا' : 'Add to members\' programs'}
+                    {propagating ? '…' : "Add to members' programs"}
                   </button>
                 </div>
               </div>
 
               <div className="movement-info-form">
                 <div className="movement-info-field">
-                  <label>{i18n.language === 'fa' ? 'ویدیو' : 'Video'}</label>
+                  <label>Video</label>
                   <div className="movement-info-media-row">
                     <input
                       type="text"
-                      placeholder={i18n.language === 'fa' ? 'آدرس ویدیو یا آپلود' : 'Video URL or upload'}
+                      placeholder="Video URL or upload"
                       value={form.video_url}
                       onChange={(e) => setForm((f) => ({ ...f, video_url: e.target.value }))}
                     />
@@ -269,7 +265,7 @@ const TrainingMovementInfoTab = () => {
                         onChange={handleVideoUpload}
                         disabled={videoUploading}
                       />
-                      {videoUploading ? '…' : i18n.language === 'fa' ? 'آپلود' : 'Upload'}
+                      {videoUploading ? '…' : 'Upload'}
                     </label>
                   </div>
                   {form.video_url && (
@@ -278,7 +274,7 @@ const TrainingMovementInfoTab = () => {
                         <video controls src={`${API_BASE}${form.video_url}`} preload="metadata" />
                       ) : (
                         <a href={form.video_url.startsWith('/') ? `${API_BASE}${form.video_url}` : form.video_url} target="_blank" rel="noopener noreferrer">
-                          {i18n.language === 'fa' ? 'باز کردن ویدیو' : 'Open video'}
+                          Open video
                         </a>
                       )}
                     </div>
@@ -286,7 +282,7 @@ const TrainingMovementInfoTab = () => {
                 </div>
 
                 <div className="movement-info-field">
-                  <label>{i18n.language === 'fa' ? 'صدای مربی' : 'Trainer voice'}</label>
+                  <label>Trainer voice</label>
                   <div className="movement-info-media-row">
                     <label className="movement-info-upload-btn">
                       <input
@@ -295,7 +291,7 @@ const TrainingMovementInfoTab = () => {
                         onChange={handleVoiceUpload}
                         disabled={voiceUploading}
                       />
-                      {voiceUploading ? '…' : i18n.language === 'fa' ? 'آپلود صدا' : 'Upload voice'}
+                      {voiceUploading ? '…' : 'Upload voice'}
                     </label>
                   </div>
                   {form.voice_url && (
@@ -306,40 +302,40 @@ const TrainingMovementInfoTab = () => {
                 </div>
 
                 <div className="movement-info-field">
-                  <label>{i18n.language === 'fa' ? 'یادداشت مربی (فارسی)' : 'Trainer note (Persian)'}</label>
+                  <label>Trainer note (Persian)</label>
                   <textarea
                     rows={4}
                     value={form.trainer_notes_fa}
                     onChange={(e) => setForm((f) => ({ ...f, trainer_notes_fa: e.target.value }))}
-                    placeholder={i18n.language === 'fa' ? 'متن یادداشت برای این حرکت' : 'Note text for this movement'}
+                    placeholder="Note text for this movement"
                   />
                 </div>
 
                 <div className="movement-info-field">
-                  <label>{i18n.language === 'fa' ? 'یادداشت مربی (انگلیسی)' : 'Trainer note (English)'}</label>
+                  <label>Trainer note (English)</label>
                   <textarea
                     rows={4}
                     value={form.trainer_notes_en}
                     onChange={(e) => setForm((f) => ({ ...f, trainer_notes_en: e.target.value }))}
-                    placeholder={i18n.language === 'fa' ? 'متن یادداشت انگلیسی' : 'English note text'}
+                    placeholder="English note text"
                   />
                 </div>
 
                 <div className="movement-info-field">
-                  <label>{i18n.language === 'fa' ? 'اعلان یادداشت/صدا بعد از کدام ست' : 'Notify note/voice after which set'}</label>
+                  <label>Notify note/voice after which set</label>
                   <select
                     value={form.note_notify_at_seconds}
                     onChange={(e) => setForm((f) => ({ ...f, note_notify_at_seconds: e.target.value }))}
                   >
-                    <option value="">{i18n.language === 'fa' ? 'در شروع حرکت (قبل از ست‌ها)' : 'At start of movement (before sets)'}</option>
+                    <option value="">At start of movement (before sets)</option>
                     {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
                       <option key={n} value={String(n)}>
-                        {i18n.language === 'fa' ? `بعد از ست ${n}` : `After set ${n}`}
+                        {`After set ${n}`}
                       </option>
                     ))}
                   </select>
                   <p className="movement-info-hint">
-                    {i18n.language === 'fa' ? 'یادداشت یا صدای مربی در زمان انتخاب‌شده به عضو نشان داده می‌شود.' : 'Note or trainer voice is shown to the member at the chosen point.'}
+                    Note or trainer voice is shown to the member at the chosen point.
                   </p>
                 </div>
 
@@ -350,7 +346,7 @@ const TrainingMovementInfoTab = () => {
                       checked={!!form.ask_post_set_questions}
                       onChange={(e) => setForm((f) => ({ ...f, ask_post_set_questions: e.target.checked }))}
                     />
-                    <span>{i18n.language === 'fa' ? 'بعد از هر ست از عضو سوال بپرس (احساس ست، عضله درگیر) و بازخورد AI بده' : 'Ask member questions after each set (how it felt, which muscle) and show AI feedback'}</span>
+                    <span>Ask member questions after each set (how it felt, which muscle) and show AI feedback</span>
                   </label>
                 </div>
               </div>

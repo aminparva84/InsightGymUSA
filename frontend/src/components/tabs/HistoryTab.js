@@ -7,7 +7,7 @@ import ProgressTrend from './ProgressTrend';
 import './HistoryTab.css';
 
 const HistoryTab = ({ showOnlyMessages = false }) => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const API_BASE = getApiBase();
   const { user, loading: authLoading } = useAuth();
   const [exercises, setExercises] = useState([]);
@@ -97,7 +97,7 @@ const HistoryTab = ({ showOnlyMessages = false }) => {
               setActiveView('progress');
             }}
           >
-            {i18n.language === 'fa' ? 'روند تغییرات' : 'Progress Trend'}
+            Progress Trend
           </button>
         </div>
       )}
@@ -123,7 +123,7 @@ const HistoryTab = ({ showOnlyMessages = false }) => {
                 <tbody>
                   {exercises.map(ex => (
                     <tr key={ex.id}>
-                      <td>{new Date(ex.date).toLocaleDateString(i18n.language === 'fa' ? 'fa-IR' : 'en-US')}</td>
+                      <td>{new Date(ex.date).toLocaleDateString('en-US')}</td>
                       <td>{ex.exercise_name}</td>
                       <td>{ex.exercise_type || '-'}</td>
                       <td>{ex.duration || '-'}</td>
@@ -148,13 +148,13 @@ const HistoryTab = ({ showOnlyMessages = false }) => {
               {chatHistory.map(chat => (
                 <div key={chat.id} className="chat-history-item">
                   <div className="chat-message">
-                    <strong>{i18n.language === 'fa' ? 'شما:' : 'You:'}</strong> {chat.message}
+                    <strong>You:</strong> {chat.message}
                   </div>
                   <div className="chat-response">
-                    <strong>{i18n.language === 'fa' ? 'دستیار:' : 'Assistant:'}</strong> {chat.response}
+                    <strong>Assistant:</strong> {chat.response}
                   </div>
                   <div className="chat-timestamp">
-                    {new Date(chat.timestamp).toLocaleString(i18n.language === 'fa' ? 'fa-IR' : 'en-US')}
+                    {new Date(chat.timestamp).toLocaleString('en-US')}
                   </div>
                 </div>
               ))}

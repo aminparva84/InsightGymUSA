@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { getApiBase } from '../services/apiBase';
 import './TrainerInbox.css';
@@ -8,7 +7,6 @@ const API_BASE = `${getApiBase()}/api/messages`;
 const ADMIN_BASE = `${getApiBase()}/api/admin`;
 
 const TrainerInbox = () => {
-  const { i18n } = useTranslation();
   const [threads, setThreads] = useState([]);
   const [selectedMember, setSelectedMember] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -130,30 +128,29 @@ const TrainerInbox = () => {
     }
   };
 
-  const fa = i18n.language === 'fa';
   return (
     <div className="trainer-inbox-container" dir="ltr">
       <div className="trainer-inbox-header">
-        <h3>{fa ? 'پیام‌ها و درخواست‌ها' : 'Messages & requests'}</h3>
+        <h3>Messages & requests</h3>
       </div>
       <div className="trainer-inbox-progress-requests">
-        <h4>{fa ? 'درخواست‌های بررسی پیشرفت' : 'Progress check requests'}</h4>
+        <h4>Progress check requests</h4>
         {loadingProgressRequests ? (
-          <div className="trainer-inbox-loading">{fa ? 'در حال بارگذاری...' : 'Loading...'}</div>
+          <div className="trainer-inbox-loading">Loading...</div>
         ) : progressCheckRequests.length === 0 ? (
-          <p className="trainer-inbox-empty-progress">{fa ? 'درخواستی در انتظار نیست.' : 'No pending requests.'}</p>
+          <p className="trainer-inbox-empty-progress">No pending requests.</p>
         ) : (
           <ul className="progress-check-request-list">
             {progressCheckRequests.map((req) => (
               <li key={req.id} className="progress-check-request-item">
                 <span className="progress-check-member">{req.member_username || `Member #${req.member_id}`}</span>
-                <span className="progress-check-date">{req.requested_at ? new Date(req.requested_at).toLocaleString(fa ? 'fa-IR' : 'en-US', { dateStyle: 'short', timeStyle: 'short' }) : ''}</span>
+                <span className="progress-check-date">{req.requested_at ? new Date(req.requested_at).toLocaleString('en-US', { dateStyle: 'short', timeStyle: 'short' }) : ''}</span>
                 <div className="progress-check-actions">
                   <button type="button" className="progress-check-accept" onClick={() => respondProgressCheck(req.id, 'accept')} disabled={respondingId === req.id}>
-                    {respondingId === req.id ? '…' : (fa ? 'پذیرش' : 'Accept')}
+                    {respondingId === req.id ? '…' : 'Accept'}
                   </button>
                   <button type="button" className="progress-check-deny" onClick={() => respondProgressCheck(req.id, 'deny')} disabled={respondingId === req.id}>
-                    {respondingId === req.id ? '…' : (fa ? 'رد' : 'Deny')}
+                    {respondingId === req.id ? '…' : 'Deny'}
                   </button>
                 </div>
               </li>
@@ -164,10 +161,10 @@ const TrainerInbox = () => {
       <div className="trainer-inbox-body">
         <div className="trainer-inbox-list">
           {loadingThreads ? (
-            <div className="trainer-inbox-loading">{i18n.language === 'fa' ? 'در حال بارگذاری...' : 'Loading...'}</div>
+            <div className="trainer-inbox-loading">Loading...</div>
           ) : threads.length === 0 ? (
             <div className="trainer-inbox-empty-list">
-              <p>{i18n.language === 'fa' ? 'هنوز پیامی از اعضا ندارید.' : 'No messages from members yet.'}</p>
+              <p>No messages from members yet.</p>
             </div>
           ) : (
             threads.map((thread) => (
@@ -188,7 +185,7 @@ const TrainerInbox = () => {
         <div className="trainer-inbox-chat">
           {!selectedMember ? (
             <div className="trainer-inbox-select-prompt">
-              <p>{i18n.language === 'fa' ? 'یک عضو را انتخاب کنید تا گفتگو را ببینید.' : 'Select a member to view the conversation.'}</p>
+              <p>Select a member to view the conversation.</p>
             </div>
           ) : (
             <>
@@ -197,17 +194,17 @@ const TrainerInbox = () => {
               </div>
               <div className="trainer-inbox-messages" ref={messagesContainerRef}>
                 {loadingThread ? (
-                  <div className="trainer-inbox-loading">{i18n.language === 'fa' ? 'در حال بارگذاری...' : 'Loading...'}</div>
+                  <div className="trainer-inbox-loading">Loading...</div>
                 ) : messages.length === 0 ? (
                   <div className="trainer-inbox-empty-msgs">
-                    <p>{i18n.language === 'fa' ? 'هنوز پیامی رد و بدل نشده است.' : 'No messages yet.'}</p>
+                    <p>No messages yet.</p>
                   </div>
                 ) : (
                   messages.map((msg) => (
                     <div key={msg.id} className={`trainer-msg ${msg.is_mine ? 'mine' : 'theirs'}`}>
                       <div className="trainer-msg-content">{msg.body}</div>
                       <div className="trainer-msg-time">
-                        {msg.created_at ? new Date(msg.created_at).toLocaleString(i18n.language === 'fa' ? 'fa-IR' : 'en-US') : ''}
+                        {msg.created_at ? new Date(msg.created_at).toLocaleString('en-US') : ''}
                       </div>
                     </div>
                   ))
@@ -220,11 +217,11 @@ const TrainerInbox = () => {
                   className="trainer-chat-input"
                   value={body}
                   onChange={(e) => setBody(e.target.value)}
-                  placeholder={i18n.language === 'fa' ? 'پاسخ به عضو...' : 'Reply to member...'}
+                  placeholder="Reply to member..."
                   disabled={loading}
                 />
                 <button type="submit" className="trainer-chat-send" disabled={loading || !body.trim()}>
-                  {i18n.language === 'fa' ? 'ارسال' : 'Send'}
+                  Send
                 </button>
               </form>
             </>

@@ -72,8 +72,8 @@
 }
 
 .training-programs-modal-close:hover {
-  background: var(--color-accent-50);
-  border-color: var(--color-accent-200);
+  background: var(--accent-muted);
+  border-color: var(--border);
   color: var(--accent);
   transform: rotate(90deg) scale(1.1);
 }
@@ -203,22 +203,22 @@
 .ems-form-fields textarea {
   width: 100%;
   padding: 0.5rem;
-  border: 1px solid var(--color-primary-200, #ddd);
+  border: 1px solid var(--border);
   border-radius: 8px;
 }
 
 .training-programs-footer .program-buy-btn.secondary {
-  background: var(--color-primary-200, #e0e0e0);
-  color: var(--color-primary-800, #333);
+  background: var(--bg-muted);
+  color: var(--text-primary);
 }
 
 .training-programs-footer .program-buy-btn.secondary:hover {
-  background: var(--color-primary-300, #ccc);
+  background: var(--border-strong);
 }
 
 .training-program-card {
-  background: var(--color-white);
-  border: 2px solid var(--color-primary-200);
+  background: var(--bg-card);
+  border: 2px solid var(--border);
   border-radius: 16px;
   padding: 1.25rem 1rem;
   text-align: center;
@@ -233,8 +233,8 @@
 }
 
 .training-program-card.selected {
-  border-color: var(--color-accent-500);
-  background: var(--color-primary-50);
+  border-color: var(--accent);
+  background: var(--bg-elevated);
   box-shadow: var(--shadow-accent);
 }
 
@@ -257,7 +257,7 @@
 
 .training-program-card:hover {
   transform: translateY(-8px) scale(1.02);
-  border-color: var(--color-accent-400);
+  border-color: var(--accent);
   box-shadow: var(--shadow-accent);
 }
 
@@ -280,18 +280,18 @@
 .program-name {
   font-size: 1.1rem;
   font-weight: 700;
-  color: var(--color-primary-800);
+  color: var(--text-primary);
   margin: 0 0 0.5rem 0;
   transition: color 0.3s ease;
 }
 
 .training-program-card:hover .program-name {
-  color: var(--color-accent-600);
+  color: var(--accent-hover);
 }
 
 .program-description {
   font-size: 0.8rem;
-  color: var(--color-primary-600);
+  color: var(--text-secondary);
   line-height: 1.4;
   margin: 0 0 0.75rem 0;
   flex: 1;
@@ -311,7 +311,7 @@
 
 .program-features li {
   font-size: 0.75rem;
-  color: var(--color-primary-600);
+  color: var(--text-secondary);
   padding-left: 1.25rem;
   position: relative;
   line-height: 1.3;
@@ -321,7 +321,7 @@
   content: '✓';
   position: absolute;
   left: 0;
-  color: var(--color-accent-500);
+  color: var(--accent);
   font-weight: bold;
   font-size: 1rem;
 }
@@ -341,7 +341,7 @@
   background: var(--gradient-accent);
   border: none;
   border-radius: 50px;
-  color: var(--color-white);
+  color: var(--text-primary);
   font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
@@ -355,7 +355,7 @@
 .program-buy-btn:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-accent);
-  background: linear-gradient(135deg, var(--color-accent-600) 0%, var(--color-accent-500) 100%);
+  background: linear-gradient(135deg, var(--accent-hover) 0%, var(--accent) 100%);
 }
 
 .program-buy-btn:active {
@@ -386,34 +386,34 @@
   gap: 0.5rem 0.75rem;
   padding: 0.6rem 0.75rem;
   border-radius: 12px;
-  border: 2px solid var(--color-primary-200);
+  border: 2px solid var(--border);
   cursor: pointer;
   transition: all 0.2s ease;
-  background: var(--color-white);
+  background: var(--bg-card);
 }
 
 .training-programs-package-label:hover {
-  border-color: var(--color-accent-300);
-  background: var(--color-primary-50);
+  border-color: var(--border-strong);
+  background: var(--bg-elevated);
 }
 
 .training-programs-package-checkbox {
   width: 1.1rem;
   height: 1.1rem;
-  accent-color: var(--color-accent-500);
+  accent-color: var(--accent);
   flex-shrink: 0;
 }
 
 .training-programs-package-name {
   flex: 1;
   font-size: 0.9rem;
-  color: var(--color-primary-800);
+  color: var(--text-primary);
 }
 
 .training-programs-package-price {
   font-size: 0.85rem;
   font-weight: 700;
-  color: var(--color-accent-600);
+  color: var(--accent-hover);
 }
 
 .training-programs-footer {
@@ -423,7 +423,7 @@
   justify-content: space-between;
   gap: 1rem;
   padding: 1rem 0 0;
-  border-top: 2px solid var(--color-primary-200);
+  border-top: 2px solid var(--border);
   margin-top: 0.5rem;
 }
 
@@ -436,7 +436,7 @@
 .training-programs-total-label {
   font-size: 1rem;
   font-weight: 600;
-  color: var(--color-primary-700);
+  color: var(--text-secondary);
 }
 
 .training-programs-total-value {
@@ -473,7 +473,7 @@
   height: 64px;
   border-radius: 50%;
   background: var(--gradient-accent);
-  color: var(--color-white);
+  color: var(--text-primary);
   font-size: 2rem;
   font-weight: 700;
   display: flex;
@@ -484,7 +484,7 @@
 
 .training-programs-success-text {
   font-size: 1.1rem;
-  color: var(--color-primary-700);
+  color: var(--text-secondary);
   margin: 0;
   max-width: 360px;
 }

@@ -1,8 +1,8 @@
 .training-with-agent {
   display: flex;
   flex-direction: column;
-  background-color: var(--color-white);
-  border: 1px solid var(--color-primary-200);
+  background-color: var(--text-primary);
+  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 1.5rem;
   height: calc(100vh - 590px);
@@ -17,12 +17,12 @@
   align-items: center;
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid var(--color-primary-200);
+  border-bottom: 1px solid var(--border);
 }
 
 .training-with-agent-header h3 {
   margin: 0;
-  color: var(--color-primary-800);
+  color: var(--text-primary);
   font-size: 1.2rem;
   font-weight: 600;
 }
@@ -32,7 +32,7 @@
   background: var(--gradient-accent);
   border: none;
   border-radius: 8px;
-  color: var(--color-white);
+  color: var(--text-primary);
   font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
@@ -41,7 +41,7 @@
 }
 
 .new-meeting-btn:hover {
-  background: linear-gradient(135deg, var(--color-accent-600) 0%, var(--color-accent-500) 100%);
+  background: linear-gradient(135deg, var(--accent-hover) 0%, var(--accent) 100%);
   transform: translateY(-1px);
   box-shadow: var(--shadow-accent);
 }
@@ -63,8 +63,8 @@
 }
 
 .meeting-modal-content {
-  background: var(--color-white);
-  border: 1px solid var(--color-primary-200);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
   border-radius: 12px;
   width: 100%;
   max-width: 600px;
@@ -80,14 +80,14 @@
   justify-content: space-between;
   align-items: center;
   padding: 1.5rem;
-  background: var(--color-primary-50);
-  border-bottom: 2px solid var(--color-accent-500);
+  background: var(--bg-elevated);
+  border-bottom: 2px solid var(--accent);
   border-radius: 12px 12px 0 0;
 }
 
 .meeting-modal-header h3 {
   margin: 0;
-  color: var(--color-primary-800);
+  color: var(--text-primary);
   font-size: 1.3rem;
   font-weight: 600;
 }
@@ -96,7 +96,7 @@
   background: none;
   border: none;
   font-size: 2rem;
-  color: var(--color-primary-800);
+  color: var(--text-primary);
   cursor: pointer;
   padding: 0;
   width: 32px;
@@ -111,11 +111,11 @@
 
 .modal-close-btn:hover {
   background-color: rgba(30, 41, 59, 0.1);
-  color: var(--color-error);
+  color: var(--error);
 }
 
 .meeting-form {
-  background: var(--color-white);
+  background: var(--bg-card);
   padding: 1.5rem;
   border-radius: 0 0 12px 12px;
   overflow: visible;
@@ -138,7 +138,7 @@
 .meeting-form label {
   display: block;
   margin-bottom: 0.5rem;
-  color: var(--color-primary-800);
+  color: var(--text-primary);
   font-weight: 500;
   font-size: 0.9rem;
 }
@@ -147,18 +147,18 @@
 .meeting-form textarea {
   width: 100%;
   padding: 0.75rem;
-  border: 1px solid var(--color-primary-200);
+  border: 1px solid var(--border);
   border-radius: 8px;
   font-size: 1rem;
-  background-color: var(--color-white);
-  color: var(--color-primary-800);
+  background-color: var(--text-primary);
+  color: var(--text-primary);
   box-sizing: border-box;
 }
 
 .meeting-form input:focus,
 .meeting-form textarea:focus {
   outline: none;
-  border-color: var(--color-secondary-500);
+  border-color: var(--accent);
   box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.2);
 }
 
@@ -181,25 +181,25 @@
 
 .submit-btn {
   background: var(--gradient-accent);
-  color: var(--color-white);
+  color: var(--text-primary);
   box-shadow: var(--shadow-accent);
 }
 
 .submit-btn:hover {
-  background: linear-gradient(135deg, var(--color-accent-600) 0%, var(--color-accent-500) 100%);
+  background: linear-gradient(135deg, var(--accent-hover) 0%, var(--accent) 100%);
   transform: translateY(-1px);
   box-shadow: var(--shadow-accent);
 }
 
 .cancel-btn {
-  background-color: var(--color-white);
-  color: var(--color-primary-800);
-  border: 1px solid var(--color-primary-200);
+  background-color: var(--text-primary);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
 }
 
 .cancel-btn:hover {
-  background-color: var(--color-primary-50);
-  border-color: var(--color-primary-300);
+  background-color: var(--bg-elevated);
+  border-color: var(--border-strong);
 }
 
 .meetings-list {
@@ -215,12 +215,12 @@
 .no-meetings {
   text-align: center;
   padding: 2rem;
-  color: var(--color-primary-600);
+  color: var(--text-secondary);
 }
 
 .meeting-card {
-  background-color: var(--color-white);
-  border: 1px solid var(--color-primary-200);
+  background-color: var(--text-primary);
+  border: 1px solid var(--border);
   border-radius: 8px;
   padding: 1rem;
   transition: all 0.3s ease;
@@ -228,7 +228,7 @@
 
 .meeting-card:hover {
   box-shadow: var(--shadow-md);
-  border-color: var(--color-secondary-500);
+  border-color: var(--accent);
 }
 
 .meeting-header {
@@ -246,12 +246,12 @@
 
 .meeting-date {
   font-weight: 600;
-  color: var(--color-primary-800);
+  color: var(--text-primary);
   font-size: 1rem;
 }
 
 .meeting-time {
-  color: var(--color-primary-600);
+  color: var(--text-secondary);
   font-size: 0.9rem;
 }
 
@@ -263,36 +263,36 @@
 }
 
 .status-pending {
-  background-color: #fff3cd;
-  color: #856404;
+  background-color: var(--warning-muted);
+  color: var(--warning);
 }
 
 .status-accepted {
-  background-color: #d4edda;
-  color: #155724;
+  background-color: var(--success-muted);
+  color: var(--success);
 }
 
 .status-denied {
-  background-color: #f8d7da;
-  color: #721c24;
+  background-color: var(--error-muted);
+  color: var(--error);
 }
 
 .status-completed {
-  background-color: #d1ecf1;
-  color: #0c5460;
+  background-color: var(--accent-muted);
+  color: var(--accent);
 }
 
 .meeting-duration {
-  color: var(--color-primary-600);
+  color: var(--text-secondary);
   font-size: 0.9rem;
   margin: 0.5rem 0;
 }
 
 .meeting-notes {
-  color: var(--color-primary-800);
+  color: var(--text-primary);
   margin: 0.5rem 0;
   padding: 0.5rem;
-  background-color: var(--color-primary-50);
+  background-color: var(--bg-elevated);
   border-radius: 4px;
   font-size: 0.9rem;
 }
@@ -318,44 +318,46 @@
 }
 
 .accept-btn {
-  background-color: #28a745;
-  color: #ffffff;
+  background-color: var(--success);
+  color: var(--text-primary);
 }
 
 .accept-btn:hover {
-  background-color: #218838;
+  background-color: #16a34a;
+  opacity: 0.9;
 }
 
 .deny-btn {
-  background-color: #dc3545;
-  color: #ffffff;
+  background-color: var(--error);
+  color: var(--text-primary);
 }
 
 .deny-btn:hover {
-  background-color: #c82333;
+  background-color: #dc2626;
+  opacity: 0.9;
 }
 
 .edit-btn {
   background: var(--gradient-accent);
-  color: var(--color-white);
+  color: var(--text-primary);
   box-shadow: var(--shadow-accent);
 }
 
 .edit-btn:hover {
-  background: linear-gradient(135deg, var(--color-accent-600) 0%, var(--color-accent-500) 100%);
+  background: linear-gradient(135deg, var(--accent-hover) 0%, var(--accent) 100%);
   transform: translateY(-1px);
   box-shadow: 0 6px 16px rgba(249, 115, 22, 0.4);
 }
 
 .delete-btn {
-  background-color: #ffffff;
-  color: #dc3545;
-  border: 1px solid #dc3545;
+  background-color: transparent;
+  color: var(--error);
+  border: 1px solid var(--error);
 }
 
 .delete-btn:hover {
-  background-color: #dc3545;
-  color: #ffffff;
+  background-color: var(--error);
+  color: var(--text-primary);
 }
 
 /* RTL Support */

@@ -12,28 +12,28 @@ To push your code to GitHub, follow these steps:
 
 1. **Create a new repository on GitHub:**
    - Go to https://github.com/new
-   - Repository name: `InsightGym` or `raha-fitness`
-   - Description: "Raha Fitness - AI-powered fitness platform with Flask backend and React frontend"
+   - Repository name: `InsightGymUSA`
+   - Description: "Insight GYM USA - AI-powered fitness platform with Flask backend and React frontend"
    - Choose **Public** or **Private**
    - **DO NOT** initialize with README, .gitignore, or license (we already have these)
    - Click "Create repository"
 
 2. **Connect and push:**
    ```bash
-   git remote add origin https://github.com/YOUR_USERNAME/InsightGym.git
+   git remote add origin https://github.com/YOUR_USERNAME/InsightGymUSA.git
    git push -u origin main
    ```
 
 ### Option 2: Using GitHub CLI (if installed)
 
 ```bash
-gh repo create InsightGym --public --source=. --remote=origin --push
+gh repo create InsightGymUSA --public --source=. --remote=origin --push
 ```
 
 ### Option 3: Using SSH (if you have SSH keys set up)
 
 ```bash
-git remote add origin git@github.com:YOUR_USERNAME/InsightGym.git
+git remote add origin git@github.com:YOUR_USERNAME/InsightGymUSA.git
 git push -u origin main
 ```
 

@@ -1,4 +1,4 @@
--- PostgreSQL DDL for Raha Fitness / InsightGYM
+-- PostgreSQL DDL for Insight GYM USA
 -- Use for manual setup or backup. Prefer SQLAlchemy db.create_all() or Prisma in normal use.
 -- Table "user" is quoted because user is a reserved word in PostgreSQL.
 

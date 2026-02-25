@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { getApiBase } from '../services/apiBase';
 import './TrainerChat.css';
@@ -7,7 +6,6 @@ import './TrainerChat.css';
 const API_BASE = `${getApiBase()}/api/messages`;
 
 const TrainerChat = () => {
-  const { i18n } = useTranslation();
   const [trainer, setTrainer] = useState(null);
   const [messages, setMessages] = useState([]);
   const [body, setBody] = useState('');
@@ -26,7 +24,7 @@ const TrainerChat = () => {
     try {
       const config = getAxiosConfig();
       if (!config.headers?.Authorization) {
-        setError(i18n.language === 'fa' ? 'لطفاً وارد شوید.' : 'Please log in.');
+        setError('Please log in.');
         setLoadingThread(false);
         return null;
       }
@@ -38,7 +36,7 @@ const TrainerChat = () => {
     } catch (err) {
       const isNetworkError = !err.response && (err.message === 'Network Error' || err.code === 'ERR_NETWORK');
       setError(isNetworkError
-        ? (i18n.language === 'fa' ? 'اتصال برقرار نشد. لطفاً اتصال سرور (backend) را بررسی کنید.' : 'Cannot connect to server. Please verify the backend is reachable.')
+        ? 'Cannot connect to server. Please verify the backend is reachable.'
         : (err.response?.data?.error || err.message));
       setTrainer(null);
       return null;
@@ -99,32 +97,32 @@ const TrainerChat = () => {
   return (
     <div className="trainer-chat-container" dir="ltr">
       <div className="trainer-chat-header">
-        <h3>{i18n.language === 'fa' ? 'پیام به مربی' : 'Message your trainer'}</h3>
+        <h3>Message your trainer</h3>
         {trainer && <span className="trainer-name">{trainer.username}</span>}
       </div>
       {loadingThread && !trainer ? (
         <div className="trainer-chat-empty">
-          <p>{i18n.language === 'fa' ? 'در حال بارگذاری...' : 'Loading...'}</p>
+          <p>Loading...</p>
         </div>
       ) : !trainer ? (
         <div className="trainer-chat-empty">
-          <p>{error || (i18n.language === 'fa' ? 'هنوز مربی به شما اختصاص داده نشده است.' : 'No trainer assigned yet.')}</p>
+          <p>{error || 'No trainer assigned yet.'}</p>
         </div>
       ) : (
         <>
           <div className="trainer-chat-messages" ref={messagesContainerRef}>
             {loadingThread ? (
-              <div className="trainer-chat-loading">{i18n.language === 'fa' ? 'در حال بارگذاری...' : 'Loading...'}</div>
+              <div className="trainer-chat-loading">Loading...</div>
             ) : messages.length === 0 ? (
               <div className="trainer-chat-empty">
-                <p>{i18n.language === 'fa' ? 'هنوز پیامی رد و بدل نشده است.' : 'No messages yet.'}</p>
+                <p>No messages yet.</p>
               </div>
             ) : (
               messages.map((msg) => (
                 <div key={msg.id} className={`trainer-msg ${msg.is_mine ? 'mine' : 'theirs'}`}>
                   <div className="trainer-msg-content">{msg.body}</div>
                   <div className="trainer-msg-time">
-                    {msg.created_at ? new Date(msg.created_at).toLocaleString(i18n.language === 'fa' ? 'fa-IR' : 'en-US') : ''}
+                    {msg.created_at ? new Date(msg.created_at).toLocaleString('en-US') : ''}
                   </div>
                 </div>
               ))
@@ -137,11 +135,11 @@ const TrainerChat = () => {
               className="trainer-chat-input"
               value={body}
               onChange={(e) => setBody(e.target.value)}
-              placeholder={i18n.language === 'fa' ? 'پیام به مربی...' : 'Message your trainer...'}
+              placeholder="Message your trainer..."
               disabled={loading}
             />
             <button type="submit" className="trainer-chat-send" disabled={loading || !body.trim()}>
-              {i18n.language === 'fa' ? 'ارسال' : 'Send'}
+              Send
             </button>
           </form>
         </>

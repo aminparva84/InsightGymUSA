@@ -82,7 +82,7 @@
 
 .trainer-msg.mine .trainer-msg-content {
   background: var(--gradient-accent);
-  color: var(--color-white);
+  color: var(--text-primary);
   border-bottom-right-radius: 4px;
 }
 
@@ -126,7 +126,7 @@
   background: var(--gradient-accent);
   border: none;
   border-radius: 10px;
-  color: var(--color-white);
+  color: var(--text-primary);
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;

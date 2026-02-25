@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { getApiBase } from '../services/apiBase';
 import './BreakRequestModal.css';
@@ -12,18 +11,15 @@ const getAuthConfig = () => {
 };
 
 const BreakRequestModal = ({ isOpen, onClose, onSuccess }) => {
-  const { i18n } = useTranslation();
   const [message, setMessage] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
-
-  const fa = i18n.language === 'fa';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const trimmed = (message || '').trim();
     if (!trimmed) {
-      setError(fa ? 'لطفاً پیام را وارد کنید.' : 'Please enter a message.');
+      setError('Please enter a message.');
       return;
     }
     setError(null);
@@ -34,7 +30,7 @@ const BreakRequestModal = ({ isOpen, onClose, onSuccess }) => {
       onSuccess && onSuccess();
       onClose();
     } catch (err) {
-      setError(err.response?.data?.error || (fa ? 'خطا در ارسال.' : 'Failed to send.'));
+      setError(err.response?.data?.error || 'Failed to send.');
     } finally {
       setSubmitting(false);
     }
@@ -46,30 +42,30 @@ const BreakRequestModal = ({ isOpen, onClose, onSuccess }) => {
     <div className="break-request-modal-overlay" onClick={onClose} role="dialog" aria-modal="true">
       <div className="break-request-modal" onClick={(e) => e.stopPropagation()} dir="ltr">
         <div className="break-request-modal-header">
-          <h3>{fa ? 'درخواست استراحت' : 'Request a break'}</h3>
+          <h3>Request a break</h3>
           <button type="button" className="break-request-modal-close" onClick={onClose} aria-label="Close">
             ×
           </button>
         </div>
         <p className="break-request-modal-desc">
-          {fa ? 'پیام شما به ادمین یا مربی که با شما کار می‌کند ارسال می‌شود.' : 'Your message will be sent to the admin or assistant who works with you.'}
+          Your message will be sent to the admin or assistant who works with you.
         </p>
         <form onSubmit={handleSubmit}>
-          <label htmlFor="break-request-message">{fa ? 'پیام' : 'Message'}</label>
+          <label htmlFor="break-request-message">Message</label>
           <textarea
             id="break-request-message"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            placeholder={fa ? 'دلیل یا مدت استراحت را بنویسید...' : 'Write your reason or break duration...'}
+            placeholder="Write your reason or break duration..."
             rows={4}
           />
           {error && <p className="break-request-modal-error">{error}</p>}
           <div className="break-request-modal-actions">
             <button type="button" onClick={onClose}>
-              {fa ? 'انصراف' : 'Cancel'}
+              Cancel
             </button>
             <button type="submit" disabled={submitting}>
-              {submitting ? (fa ? 'در حال ارسال...' : 'Sending...') : (fa ? 'ارسال' : 'Send')}
+              {submitting ? 'Sending...' : 'Send'}
             </button>
           </div>
         </form>

@@ -2,27 +2,18 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import MembersListTab from './MembersListTab';
 import AdminTab from './AdminTab';
-import BreakRequestsTab from './BreakRequestsTab';
 import './MembersAndAssistantsManagementTab.css';
 
 const SUB_TABS = [
   { id: 'member-list', labelKey: 'memberList', icon: '👥' },
-  { id: 'coaches', labelKey: 'coaches', icon: '👤' },
-  { id: 'break-request', labelKey: 'breakRequest', icon: '⏸️' }
+  { id: 'coaches', labelKey: 'coaches', icon: '👤' }
 ];
 
 const MembersAndAssistantsManagementTab = () => {
-  const { i18n } = useTranslation();
+  const { t } = useTranslation();
   const [activeSubTab, setActiveSubTab] = useState('member-list');
 
-  const getSubTabLabel = (labelKey) => {
-    const labels = {
-      memberList: i18n.language === 'fa' ? 'لیست اعضا' : 'Member List',
-      assistants: i18n.language === 'fa' ? 'دستیاران' : 'Assistants',
-      breakRequest: i18n.language === 'fa' ? 'درخواست استراحت' : 'Break Request'
-    };
-    return labels[labelKey] || labelKey;
-  };
+  const getSubTabLabel = (labelKey) => t(labelKey);
 
   return (
     <div className="members-assistants-management">
@@ -42,7 +33,6 @@ const MembersAndAssistantsManagementTab = () => {
       <div className="sub-tab-content">
         {activeSubTab === 'member-list' && <MembersListTab />}
         {activeSubTab === 'coaches' && <AdminTab />}
-        {activeSubTab === 'break-request' && <BreakRequestsTab />}
       </div>
     </div>
   );

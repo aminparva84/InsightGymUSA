@@ -39,7 +39,7 @@
 
 .view-controls button.active {
   background-color: var(--accent);
-  color: #fff;
+  color: var(--text-primary);
   border-color: var(--accent);
 }
 
@@ -69,7 +69,7 @@
 .month-selector button.active {
   background-color: var(--accent);
   border-color: var(--accent);
-  color: #fff;
+  color: var(--text-primary);
 }
 
 .month-selector button small {
@@ -103,7 +103,7 @@
 
 .week-selector button.active {
   background-color: var(--accent);
-  color: #fff;
+  color: var(--text-primary);
   border-color: var(--accent);
 }
 
@@ -249,7 +249,7 @@
   margin-top: 1rem;
   padding: 0.75rem 1.5rem;
   background-color: var(--accent);
-  color: #fff;
+  color: var(--text-primary);
   border: none;
   border-radius: 6px;
   cursor: pointer;

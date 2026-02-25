@@ -17,8 +17,8 @@
   gap: 0.5rem;
   padding: 0.75rem 0 1rem;
   margin-bottom: 0.5rem;
-  border-bottom: 2px solid var(--color-primary-200);
-  background: var(--color-primary-50);
+  border-bottom: 2px solid var(--border);
+  background: var(--bg-elevated);
   border-radius: 8px 8px 0 0;
   padding: 0.75rem 1rem 1rem;
 }
@@ -31,7 +31,7 @@
   background: transparent;
   border: none;
   border-bottom: 2px solid transparent;
-  color: var(--color-primary-700);
+  color: var(--text-secondary);
   cursor: pointer;
   font-size: 0.9rem;
   transition: all 0.2s;
@@ -42,15 +42,15 @@
 }
 
 .training-info-subtab-btn:hover {
-  color: var(--color-accent-600);
-  background: var(--color-primary-200);
+  color: var(--accent-hover);
+  background: var(--border);
 }
 
 .training-info-subtab-btn.active {
-  color: var(--color-accent-600);
-  border-bottom-color: var(--color-accent-500);
+  color: var(--accent-hover);
+  border-bottom-color: var(--accent);
   font-weight: 600;
-  background: var(--color-primary-200);
+  background: var(--border);
 }
 
 .training-info-subtab-icon {

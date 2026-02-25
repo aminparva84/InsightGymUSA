@@ -44,8 +44,8 @@ The new `Exercise` model includes:
 ### Option 2: Migrate Existing Data
 
 1. **Backup your database**
-   - **PostgreSQL:** `pg_dump raha_fitness > raha_fitness_backup.sql`
-   - **SQLite:** `cp raha_fitness.db raha_fitness_backup.db`
+   - **PostgreSQL:** `pg_dump insight_gym_usa > insight_gym_usa_backup.sql`
+   - **SQLite:** `cp insight_gym_usa.db insight_gym_usa_backup.db`
 
 2. **Update app.py to use new models**
    - Replace inline model definitions with imports from `models.py`
@@ -165,8 +165,8 @@ And remove the old inline model definitions.
 If migration fails:
 
 1. Restore from backup:
-   - **PostgreSQL:** `psql -d raha_fitness < raha_fitness_backup.sql`
-   - **SQLite:** `cp raha_fitness_backup.db raha_fitness.db`
+   - **PostgreSQL:** `psql -d insight_gym_usa < insight_gym_usa_backup.sql`
+   - **SQLite:** `cp insight_gym_usa_backup.db insight_gym_usa.db`
 
 2. Revert `app.py` changes
 

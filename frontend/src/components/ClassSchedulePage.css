@@ -1,0 +1,152 @@
+.class-schedule-page {
+  min-height: 100vh;
+  background: var(--bg-dark);
+}
+
+.csp-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  background: rgba(10, 14, 26, 0.95);
+  border-bottom: 1px solid var(--border);
+}
+
+.csp-logo {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.csp-nav {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.csp-nav-btn {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.csp-nav-btn:hover {
+  color: var(--text-primary);
+  background: var(--bg-elevated);
+}
+
+.csp-main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+}
+
+.csp-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.csp-subtitle {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  margin-bottom: 2.5rem;
+}
+
+.csp-loading {
+  color: var(--text-secondary);
+  text-align: center;
+  padding: 3rem;
+}
+
+.csp-schedule {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.csp-day {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.csp-day-name {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--accent);
+  padding: 1rem 1.25rem;
+  background: var(--bg-elevated);
+  margin: 0;
+}
+
+.csp-classes {
+  padding: 0.5rem 1.25rem 1rem;
+}
+
+.csp-class {
+  display: grid;
+  grid-template-columns: 1fr 100px 80px 1fr;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.95rem;
+}
+
+.csp-class:last-child {
+  border-bottom: none;
+}
+
+.csp-class-name {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.csp-class-time {
+  color: var(--accent);
+}
+
+.csp-class-duration,
+.csp-class-instructor {
+  color: var(--text-secondary);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .csp-header {
+    padding: 0.75rem 1rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .csp-nav {
+    flex-wrap: wrap;
+  }
+
+  .csp-main {
+    padding: 2rem 1rem;
+  }
+
+  .csp-title {
+    font-size: 1.75rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .csp-class {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.25rem;
+  }
+  .csp-class-duration { display: none; }
+  .csp-day-name {
+    font-size: 1rem;
+  }
+}

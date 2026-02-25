@@ -18,7 +18,7 @@ interface VectorSearchExampleProps {
 
 const VectorSearchExample: React.FC<VectorSearchExampleProps> = ({ 
   userId, 
-  language = 'fa' 
+  language = 'en' 
 }) => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
@@ -111,7 +111,7 @@ const VectorSearchExample: React.FC<VectorSearchExampleProps> = ({
 
   return (
     <div className="vector-search-example">
-      <h2>{language === 'fa' ? 'جستجوی هوشمند تمرینات' : 'Smart Exercise Search'}</h2>
+      <h2>Smart Exercise Search</h2>
       
       {/* Search Type Selector */}
       <div className="search-type-selector">
@@ -119,25 +119,25 @@ const VectorSearchExample: React.FC<VectorSearchExampleProps> = ({
           className={searchType === 'search' ? 'active' : ''}
           onClick={() => setSearchType('search')}
         >
-          {language === 'fa' ? 'جستجو' : 'Search'}
+          Search
         </button>
         <button 
           className={searchType === 'recommendations' ? 'active' : ''}
           onClick={() => setSearchType('recommendations')}
         >
-          {language === 'fa' ? 'پیشنهادات' : 'Recommendations'}
+          Recommendations
         </button>
         <button 
           className={searchType === 'safe' ? 'active' : ''}
           onClick={() => setSearchType('safe')}
         >
-          {language === 'fa' ? 'تمرینات ایمن' : 'Safe Exercises'}
+          Safe Exercises
         </button>
         <button 
           className={searchType === 'muscle' ? 'active' : ''}
           onClick={() => setSearchType('muscle')}
         >
-          {language === 'fa' ? 'بر اساس عضله' : 'By Muscle'}
+          By Muscle
         </button>
       </div>
 
@@ -148,15 +148,11 @@ const VectorSearchExample: React.FC<VectorSearchExampleProps> = ({
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder={language === 'fa' 
-              ? 'جستجوی تمرینات... (مثال: تمرینات سینه)' 
-              : 'Search exercises... (e.g., chest exercises)'}
+            placeholder="Search exercises... (e.g., chest exercises)"
             onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
           />
           <button onClick={handleSearch} disabled={loading}>
-            {loading 
-              ? (language === 'fa' ? 'در حال جستجو...' : 'Searching...')
-              : (language === 'fa' ? 'جستجو' : 'Search')}
+            {loading ? 'Searching...' : 'Search'}
           </button>
         </div>
       )}
@@ -164,17 +160,13 @@ const VectorSearchExample: React.FC<VectorSearchExampleProps> = ({
       {/* Quick Actions */}
       {searchType === 'recommendations' && (
         <button onClick={handleGetRecommendations} disabled={loading} className="action-btn">
-          {loading 
-            ? (language === 'fa' ? 'در حال بارگذاری...' : 'Loading...')
-            : (language === 'fa' ? 'دریافت پیشنهادات' : 'Get Recommendations')}
+          {loading ? 'Loading...' : 'Get Recommendations'}
         </button>
       )}
 
       {searchType === 'safe' && (
         <button onClick={handleGetSafeExercises} disabled={loading} className="action-btn">
-          {loading 
-            ? (language === 'fa' ? 'در حال بارگذاری...' : 'Loading...')
-            : (language === 'fa' ? 'نمایش تمرینات ایمن' : 'Show Safe Exercises')}
+          {loading ? 'Loading...' : 'Show Safe Exercises'}
         </button>
       )}
 
@@ -189,17 +181,15 @@ const VectorSearchExample: React.FC<VectorSearchExampleProps> = ({
       {results.length > 0 && (
         <div className="search-results">
           <h3>
-            {language === 'fa' 
-              ? `نتایج (${results.length})` 
-              : `Results (${results.length})`}
+            {`Results (${results.length})`}
           </h3>
           <div className="results-list">
             {results.map((result, index) => (
               <div key={result.exercise_id} className="result-item">
                 <div className="result-header">
-                  <h4>{language === 'fa' ? result.name_fa : result.name_en}</h4>
+                  <h4>{result.name_en || result.name_fa}</h4>
                   <span className="similarity-score">
-                    {Math.round(result.score * 100)}% {language === 'fa' ? 'شباهت' : 'similarity'}
+                    {Math.round(result.score * 100)}% similarity
                   </span>
                 </div>
                 <div className="result-metadata">
@@ -207,12 +197,12 @@ const VectorSearchExample: React.FC<VectorSearchExampleProps> = ({
                   <span className="badge">{result.metadata.intensity}</span>
                   <span className="badge">{result.metadata.equipment}</span>
                   <span className="badge">
-                    {language === 'fa' ? result.metadata.muscle_fa : result.metadata.muscle}
+                    {result.metadata.muscle || result.metadata.muscle_fa}
                   </span>
                 </div>
                 {result.metadata.injury_tags && result.metadata.injury_tags.length > 0 && (
                   <div className="injury-warning">
-                    {language === 'fa' ? 'هشدار آسیب:' : 'Injury Warning:'} {result.metadata.injury_tags.join(', ')}
+                    Injury Warning: {result.metadata.injury_tags.join(', ')}
                   </div>
                 )}
               </div>
@@ -223,9 +213,7 @@ const VectorSearchExample: React.FC<VectorSearchExampleProps> = ({
 
       {!loading && results.length === 0 && !error && (
         <div className="no-results">
-          {language === 'fa' 
-            ? 'نتیجه‌ای یافت نشد' 
-            : 'No results found'}
+          No results found
         </div>
       )}
     </div>

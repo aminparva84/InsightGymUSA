@@ -7,7 +7,7 @@ import requests
 import json
 
 def test_login():
-    url = "http://localhost:5000/api/login"
+    url = "http://localhost:5001/api/login"
     
     # Test with demo credentials
     data = {
@@ -40,7 +40,7 @@ def test_login():
             
     except requests.exceptions.ConnectionError:
         print("\n❌ ERROR: Cannot connect to backend server!")
-        print("Make sure the backend server is running on http://localhost:5000")
+        print("Make sure the backend server is running on http://localhost:5001")
         return False
     except Exception as e:
         print(f"\n❌ ERROR: {e}")

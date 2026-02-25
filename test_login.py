@@ -5,7 +5,7 @@ Test login functionality with testuser_complete account
 import requests
 import json
 
-BASE_URL = "http://localhost:5000"
+BASE_URL = "http://localhost:5001"
 
 def test_login():
     print("=" * 70)

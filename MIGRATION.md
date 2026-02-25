@@ -2,13 +2,13 @@
 
 ## SQLite to PostgreSQL (one-time data migration)
 
-If you have an existing SQLite database (e.g. `raha_fitness.db`) and want to move to PostgreSQL while keeping your data:
+If you have an existing SQLite database (e.g. `insight_gym_usa.db`) and want to move to PostgreSQL while keeping your data:
 
-1. **Create the PostgreSQL database** (e.g. `createdb raha_fitness`).
+1. **Create the PostgreSQL database** (e.g. `createdb insight_gym_usa`).
 
 2. **Set environment variables** (e.g. in `.env` in project root or `backend/`):
-   - `DATABASE_URL=postgresql://user:password@localhost:5432/raha_fitness` (target)
-   - Optionally `SOURCE_SQLITE_URL=sqlite:///instance/raha_fitness.db` (default: SQLite file under `backend/instance/`)
+   - `DATABASE_URL=postgresql://user:password@localhost:5432/insight_gym_usa` (target)
+   - Optionally `SOURCE_SQLITE_URL=sqlite:///instance/insight_gym_usa.db` (default: SQLite file under `backend/instance/`)
 
 3. **Run the migration script** from the backend directory:
    ```bash
@@ -23,4 +23,4 @@ If you have no existing SQLite data, skip this and set `DATABASE_URL` to Postgre
 ## Schema creation (PostgreSQL)
 
 - **Recommended:** Use the Flask app: set `DATABASE_URL` and run `python init_database.py` (or start the app so `db.create_all()` runs). This keeps the schema in sync with SQLAlchemy models.
-- **Optional manual/backup:** Use `database_schema_postgresql.sql` for a standalone PostgreSQL DDL (e.g. `psql -d raha_fitness -f database_schema_postgresql.sql`).
+- **Optional manual/backup:** Use `database_schema_postgresql.sql` for a standalone PostgreSQL DDL (e.g. `psql -d insight_gym_usa -f database_schema_postgresql.sql`).

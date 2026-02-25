@@ -2,7 +2,7 @@
 
 ## ✅ What Was Created
 
-A complete RAG (Retrieval-Augmented Generation) system for the Raha Fitness AI agent with vector database support, semantic search in Persian, and intelligent filtering.
+A complete RAG (Retrieval-Augmented Generation) system for the Insight GYM USA AI agent with vector database support, semantic search in Persian, and intelligent filtering.
 
 ## 📁 Files Created
 

@@ -6,7 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import './ChatPanel.css';
 
 const ChatPanel = ({ onClose }) => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const API_BASE = getApiBase();
   const { user, logout, loading: authLoading } = useAuth();
   const [messages, setMessages] = useState([]);
@@ -80,7 +80,7 @@ const ChatPanel = ({ onClose }) => {
     }
 
     const localTime = new Date().toISOString();
-    const greeting = i18n.language === 'fa' ? 'سلام' : 'Hello';
+    const greeting = 'Hello';
     
     try {
       const response = await axios.post(`${API_BASE}/api/chat`, {
@@ -194,9 +194,7 @@ const ChatPanel = ({ onClose }) => {
 
       const assistantMessage = {
         type: 'assistant',
-        text: response.data.response || (i18n.language === 'fa' 
-          ? 'پاسخ دریافت نشد. لطفاً دوباره تلاش کنید.'
-          : 'No response received. Please try again.'),
+        text: response.data.response || 'No response received. Please try again.',
         timestamp: response.data.timestamp || new Date().toISOString()
       };
       setMessages(prev => [...prev, assistantMessage]);
@@ -212,9 +210,7 @@ const ChatPanel = ({ onClose }) => {
         if (!token) {
           const authErrorMsg = {
             type: 'assistant',
-            text: i18n.language === 'fa' 
-              ? 'لطفاً ابتدا وارد شوید.'
-              : 'Please log in first.',
+            text: 'Please log in first.',
             timestamp: new Date().toISOString()
           };
           setMessages(prev => [...prev, authErrorMsg]);
@@ -223,9 +219,7 @@ const ChatPanel = ({ onClose }) => {
           // Token exists but is invalid/expired
           const authErrorMsg = {
             type: 'assistant',
-            text: i18n.language === 'fa' 
-              ? 'جلسه شما منقضی شده است. لطفاً صفحه را رفرش کنید یا دوباره وارد شوید.'
-              : 'Your session has expired. Please refresh the page or log in again.',
+            text: 'Your session has expired. Please refresh the page or log in again.',
             timestamp: new Date().toISOString()
           };
           setMessages(prev => [...prev, authErrorMsg]);
@@ -235,9 +229,7 @@ const ChatPanel = ({ onClose }) => {
       }
       
       // Try to extract error message from response
-      let errorText = i18n.language === 'fa' 
-        ? 'متأسفانه خطایی رخ داد. لطفاً دوباره تلاش کنید.'
-        : 'Sorry, an error occurred. Please try again.';
+      let errorText = 'Sorry, an error occurred. Please try again.';
       
       if (error.response?.data?.error) {
         errorText = error.response.data.error;
@@ -269,90 +261,46 @@ const ChatPanel = ({ onClose }) => {
         {messages.length === 0 && (
           <div className="welcome-message">
             <div className="action-suggestions" dir="ltr">
-              <h4>{i18n.language === 'fa' ? 'می‌توانم در موارد زیر کمک کنم:' : 'I can help you with:'}</h4>
+              <h4>I can help you with:</h4>
               <div className="action-buttons">
                 <button 
                   className="action-btn"
-                  onClick={() => {
-                    const message = i18n.language === 'fa' 
-                      ? 'یک برنامه تمرینی برای من ایجاد کن'
-                      : 'Create a workout plan for me';
-                    setInputMessage(message);
-                  }}
+                  onClick={() => setInputMessage('Create a workout plan for me')}
                 >
                   <span className="action-icon">💪</span>
                   <div className="action-text">
-                    <div className="action-title">
-                      {i18n.language === 'fa' ? 'برنامه تمرینی' : 'Workout Plan'}
-                    </div>
-                    <div className="action-subtitle">
-                      {i18n.language === 'fa' 
-                        ? 'دریافت برنامه تمرینی شخصی'
-                        : 'Get personalized workout plan'}
-                    </div>
+                    <div className="action-title">Workout Plan</div>
+                    <div className="action-subtitle">Get personalized workout plan</div>
                   </div>
                 </button>
                 <button 
                   className="action-btn"
-                  onClick={() => {
-                    const message = i18n.language === 'fa' 
-                      ? 'یک برنامه تغذیه برای من پیشنهاد بده'
-                      : 'Suggest a nutrition plan for me';
-                    setInputMessage(message);
-                  }}
+                  onClick={() => setInputMessage('Suggest a nutrition plan for me')}
                 >
                   <span className="action-icon">🥗</span>
                   <div className="action-text">
-                    <div className="action-title">
-                      {i18n.language === 'fa' ? 'برنامه تغذیه' : 'Nutrition Plan'}
-                    </div>
-                    <div className="action-subtitle">
-                      {i18n.language === 'fa' 
-                        ? 'برنامه غذایی ۲ یا ۴ هفته‌ای'
-                        : '2 or 4 week meal plan'}
-                    </div>
+                    <div className="action-title">Nutrition Plan</div>
+                    <div className="action-subtitle">2 or 4 week meal plan</div>
                   </div>
                 </button>
                 <button 
                   className="action-btn"
-                  onClick={() => {
-                    const message = i18n.language === 'fa' 
-                      ? 'تمرینات مناسب برای من را پیشنهاد بده'
-                      : 'Suggest exercises suitable for me';
-                    setInputMessage(message);
-                  }}
+                  onClick={() => setInputMessage('Suggest exercises suitable for me')}
                 >
                   <span className="action-icon">🏋️</span>
                   <div className="action-text">
-                    <div className="action-title">
-                      {i18n.language === 'fa' ? 'تمرینات پیشنهادی' : 'Exercise Suggestions'}
-                    </div>
-                    <div className="action-subtitle">
-                      {i18n.language === 'fa' 
-                        ? 'تمرینات متناسب با شرایط شما'
-                        : 'Exercises tailored to your needs'}
-                    </div>
+                    <div className="action-title">Exercise Suggestions</div>
+                    <div className="action-subtitle">Exercises tailored to your needs</div>
                   </div>
                 </button>
                 <button 
                   className="action-btn"
-                  onClick={() => {
-                    const message = i18n.language === 'fa' 
-                      ? 'در مورد تغذیه سالم راهنمایی بده'
-                      : 'Guide me about healthy nutrition';
-                    setInputMessage(message);
-                  }}
+                  onClick={() => setInputMessage('Guide me about healthy nutrition')}
                 >
                   <span className="action-icon">🍎</span>
                   <div className="action-text">
-                    <div className="action-title">
-                      {i18n.language === 'fa' ? 'راهنمایی تغذیه' : 'Nutrition Guidance'}
-                    </div>
-                    <div className="action-subtitle">
-                      {i18n.language === 'fa' 
-                        ? 'نکات تغذیه‌ای و رژیم غذایی'
-                        : 'Nutrition tips and diet advice'}
-                    </div>
+                    <div className="action-title">Nutrition Guidance</div>
+                    <div className="action-subtitle">Nutrition tips and diet advice</div>
                   </div>
                 </button>
               </div>
@@ -365,7 +313,7 @@ const ChatPanel = ({ onClose }) => {
               {msg.text}
             </div>
             <div className="message-time">
-              {new Date(msg.timestamp).toLocaleTimeString(i18n.language === 'fa' ? 'fa-IR' : 'en-US', {
+              {new Date(msg.timestamp).toLocaleTimeString('en-US', {
                 hour: '2-digit',
                 minute: '2-digit'
               })}
@@ -375,7 +323,7 @@ const ChatPanel = ({ onClose }) => {
         {loading && (
           <div className="message assistant">
             <div className="message-content loading">
-              {i18n.language === 'fa' ? 'در حال تایپ...' : 'Typing...'}
+              Typing...
             </div>
           </div>
         )}

@@ -1,4 +1,4 @@
-# AI Workflow (InsightGYM)
+# AI Workflow (Insight GYM USA)
 
 This document defines the AI workflow for the fitness platform. The flow follows the Real_State pattern: unified chat endpoint with action planner as primary flow.
 

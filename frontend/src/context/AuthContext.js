@@ -299,7 +299,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const register = async (username, email, password, language = 'fa', profileData = null) => {
+  const register = async (username, email, password, language = 'en', profileData = null) => {
     try {
       console.log('Registration attempt for username:', username);
       const requestData = {

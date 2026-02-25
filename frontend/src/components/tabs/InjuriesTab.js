@@ -5,7 +5,7 @@ import { getApiBase } from '../../services/apiBase';
 import './InjuriesTab.css';
 
 const InjuriesTab = () => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const API_BASE = getApiBase();
   const [injuries, setInjuries] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -13,12 +13,12 @@ const InjuriesTab = () => {
 
   useEffect(() => {
     loadInjuries();
-  }, [i18n.language]);
+  }, []);
 
   const loadInjuries = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`${API_BASE}/api/injuries?language=${i18n.language}`);
+      const response = await axios.get(`${API_BASE}/api/injuries?language=en`);
       setInjuries(response.data);
     } catch (error) {
       console.error('Error loading injuries:', error);
@@ -56,18 +56,18 @@ const InjuriesTab = () => {
             <div className="injury-details">
               <h3>{selectedInjury.title}</h3>
               <div className="detail-section">
-                <h4>{i18n.language === 'fa' ? 'توضیحات' : 'Description'}</h4>
+                <h4>Description</h4>
                 <p>{selectedInjury.description}</p>
               </div>
               {selectedInjury.prevention && (
                 <div className="detail-section">
-                  <h4>{i18n.language === 'fa' ? 'پیشگیری' : 'Prevention'}</h4>
+                  <h4>Prevention</h4>
                   <p>{selectedInjury.prevention}</p>
                 </div>
               )}
               {selectedInjury.treatment && (
                 <div className="detail-section">
-                  <h4>{i18n.language === 'fa' ? 'درمان' : 'Treatment'}</h4>
+                  <h4>Treatment</h4>
                   <p>{selectedInjury.treatment}</p>
                 </div>
               )}

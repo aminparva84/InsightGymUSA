@@ -5,19 +5,19 @@ import { getApiBase } from '../../services/apiBase';
 import './TipsTab.css';
 
 const TipsTab = () => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const API_BASE = getApiBase();
   const [tips, setTips] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     loadTips();
-  }, [i18n.language]);
+  }, []);
 
   const loadTips = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`${API_BASE}/api/tips?language=${i18n.language}`);
+      const response = await axios.get(`${API_BASE}/api/tips?language=en`);
       setTips(response.data);
     } catch (error) {
       console.error('Error loading tips:', error);
@@ -50,7 +50,7 @@ const TipsTab = () => {
               </div>
               {tip.created_at && (
                 <div className="tip-date">
-                  {new Date(tip.created_at).toLocaleDateString(i18n.language === 'fa' ? 'fa-IR' : 'en-US')}
+                  {new Date(tip.created_at).toLocaleDateString('en-US')}
                 </div>
               )}
             </div>

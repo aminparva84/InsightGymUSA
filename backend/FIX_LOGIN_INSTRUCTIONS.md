@@ -35,7 +35,7 @@ A demo user has been created with these credentials:
 
 ### Option 3: Create New User
 
-Register a new user through the web interface at `http://localhost:3000`
+Register a new user through the web interface at `http://localhost:3001`
 
 ## Current Users in Database
 
@@ -62,9 +62,9 @@ Register a new user through the web interface at `http://localhost:3000`
 
 If you still can't login:
 
-1. Make sure the backend server is running on port 5000
+1. Make sure the backend server is running on port 5001
 2. Check browser console for errors
-3. Verify the database: ensure `DATABASE_URL` in `.env` is correct. The database must exist (e.g. `createdb raha_fitness`). The app uses PostgreSQL; see `.env.example` for the expected format.
+3. Verify the database: ensure `DATABASE_URL` in `.env` is correct. The database must exist (e.g. `createdb insight_gym_usa`). The app uses PostgreSQL; see `.env.example` for the expected format.
 4. Try resetting the password using the script above
 5. Clear browser localStorage and try again
 

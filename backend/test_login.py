@@ -6,7 +6,7 @@ import requests
 import json
 
 # Test login
-response = requests.post('http://localhost:5000/api/login', json={
+response = requests.post('http://localhost:5001/api/login', json={
     'username': 'demo',
     'password': 'demo123'
 })
@@ -17,7 +17,7 @@ print(f"Response: {response.json()}")
 # If login fails, try registration
 if response.status_code != 200:
     print("\nTrying to register...")
-    reg_response = requests.post('http://localhost:5000/api/register', json={
+    reg_response = requests.post('http://localhost:5001/api/register', json={
         'username': 'demo',
         'email': 'demo@raha-fitness.com',
         'password': 'demo123',

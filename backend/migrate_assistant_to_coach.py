@@ -21,7 +21,7 @@ def run():
         # Add coach_approval_status to user (for coach registration approval)
         if 'coach_approval_status' not in cols:
             print("Adding coach_approval_status to user...")
-            db.session.execute(text("ALTER TABLE user ADD COLUMN coach_approval_status VARCHAR(20) DEFAULT 'approved'"))
+            db.session.execute(text('ALTER TABLE "user" ADD COLUMN coach_approval_status VARCHAR(20) DEFAULT \'approved\''))
             db.session.commit()
             print("[OK] coach_approval_status added")
         else:
@@ -40,7 +40,7 @@ def run():
 
         # Migrate existing assistants to coaches
         try:
-            result = db.session.execute(text("UPDATE user SET role='coach', coach_approval_status='approved' WHERE role='assistant'"))
+            result = db.session.execute(text('UPDATE "user" SET role=\'coach\', coach_approval_status=\'approved\' WHERE role=\'assistant\''))
             db.session.commit()
             print(f"[OK] Migrated {result.rowcount} assistants to coaches")
         except Exception as e:

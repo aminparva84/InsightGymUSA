@@ -62,7 +62,7 @@ def seed_test_data():
             assistants_data = [
                 {
                     'username': 'assistant1',
-                    'email': 'assistant1@insightgym.com',
+                    'email': 'assistant1@insightgymusa.com',
                     'password': 'assistant123',
                     'age': 28,
                     'gender': 'male',
@@ -84,7 +84,7 @@ def seed_test_data():
                 },
                 {
                     'username': 'assistant2',
-                    'email': 'assistant2@insightgym.com',
+                    'email': 'assistant2@insightgymusa.com',
                     'password': 'assistant123',
                     'age': 32,
                     'gender': 'female',
@@ -162,52 +162,52 @@ def seed_test_data():
             print("\n[4] Creating 10 members with complete profiles...")
             members_data = [
                 {
-                    'username': 'member1', 'email': 'member1@insightgym.com', 'password': 'member123',
+                    'username': 'member1', 'email': 'member1@insightgymusa.com', 'password': 'member123',
                     'age': 25, 'gender': 'male', 'weight': 75.0, 'height': 175,
                     'training_level': 'beginner', 'assigned_to': admin.id
                 },
                 {
-                    'username': 'member2', 'email': 'member2@insightgym.com', 'password': 'member123',
+                    'username': 'member2', 'email': 'member2@insightgymusa.com', 'password': 'member123',
                     'age': 30, 'gender': 'female', 'weight': 60.0, 'height': 160,
                     'training_level': 'intermediate', 'assigned_to': admin.id
                 },
                 {
-                    'username': 'member3', 'email': 'member3@insightgym.com', 'password': 'member123',
+                    'username': 'member3', 'email': 'member3@insightgymusa.com', 'password': 'member123',
                     'age': 28, 'gender': 'male', 'weight': 85.0, 'height': 180,
                     'training_level': 'beginner', 'assigned_to': created_assistants[0].id
                 },
                 {
-                    'username': 'member4', 'email': 'member4@insightgym.com', 'password': 'member123',
+                    'username': 'member4', 'email': 'member4@insightgymusa.com', 'password': 'member123',
                     'age': 35, 'gender': 'female', 'weight': 70.0, 'height': 165,
                     'training_level': 'intermediate', 'assigned_to': created_assistants[0].id
                 },
                 {
-                    'username': 'member5', 'email': 'member5@insightgym.com', 'password': 'member123',
+                    'username': 'member5', 'email': 'member5@insightgymusa.com', 'password': 'member123',
                     'age': 22, 'gender': 'male', 'weight': 70.0, 'height': 170,
                     'training_level': 'beginner', 'assigned_to': created_assistants[0].id
                 },
                 {
-                    'username': 'member6', 'email': 'member6@insightgym.com', 'password': 'member123',
+                    'username': 'member6', 'email': 'member6@insightgymusa.com', 'password': 'member123',
                     'age': 27, 'gender': 'female', 'weight': 55.0, 'height': 158,
                     'training_level': 'advanced', 'assigned_to': created_assistants[0].id
                 },
                 {
-                    'username': 'member7', 'email': 'member7@insightgym.com', 'password': 'member123',
+                    'username': 'member7', 'email': 'member7@insightgymusa.com', 'password': 'member123',
                     'age': 33, 'gender': 'male', 'weight': 90.0, 'height': 185,
                     'training_level': 'intermediate', 'assigned_to': created_assistants[1].id
                 },
                 {
-                    'username': 'member8', 'email': 'member8@insightgym.com', 'password': 'member123',
+                    'username': 'member8', 'email': 'member8@insightgymusa.com', 'password': 'member123',
                     'age': 29, 'gender': 'female', 'weight': 65.0, 'height': 162,
                     'training_level': 'beginner', 'assigned_to': created_assistants[1].id
                 },
                 {
-                    'username': 'member9', 'email': 'member9@insightgym.com', 'password': 'member123',
+                    'username': 'member9', 'email': 'member9@insightgymusa.com', 'password': 'member123',
                     'age': 26, 'gender': 'male', 'weight': 78.0, 'height': 178,
                     'training_level': 'intermediate', 'assigned_to': created_assistants[1].id
                 },
                 {
-                    'username': 'member10', 'email': 'member10@insightgym.com', 'password': 'member123',
+                    'username': 'member10', 'email': 'member10@insightgymusa.com', 'password': 'member123',
                     'age': 31, 'gender': 'female', 'weight': 68.0, 'height': 168,
                     'training_level': 'advanced', 'assigned_to': created_assistants[1].id
                 }

@@ -1,21 +1,21 @@
 # Push to GitHub - Quick Guide
 
-## Repository Name: InsightGym
+## Repository Name: InsightGymUSA
 ## GitHub Username: aminparva84
 
 ## Option 1: Create Repository via GitHub Website (Easiest)
 
 1. **Go to GitHub and create the repository:**
    - Visit: https://github.com/new
-   - Repository name: `InsightGym`
-   - Description: "Raha Fitness - AI-powered fitness platform with Flask backend and React frontend"
+   - Repository name: `InsightGymUSA`
+   - Description: "Insight GYM USA - AI-powered fitness platform with Flask backend and React frontend"
    - Choose **Public** or **Private**
    - **DO NOT** check "Initialize this repository with a README"
    - Click "Create repository"
 
 2. **Push your code:**
    ```powershell
-   git remote add origin https://github.com/aminparva84/InsightGym.git
+   git remote add origin https://github.com/aminparva84/InsightGymUSA.git
    git push -u origin main
    ```
 
@@ -37,14 +37,14 @@
 ## Option 3: Use GitHub CLI (if installed)
 
 ```powershell
-gh repo create InsightGym --public --source=. --remote=origin --push
+gh repo create InsightGymUSA --public --source=. --remote=origin --push
 ```
 
 ## Current Status
 
 ✅ Local Git repository initialized
 ✅ All files committed
-✅ Remote configured: `https://github.com/aminparva84/InsightGym.git`
+✅ Remote configured: `https://github.com/aminparva84/InsightGymUSA.git`
 
 **Next step:** Create the repository on GitHub (Option 1) and then run:
 ```powershell

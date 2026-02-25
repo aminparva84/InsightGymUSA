@@ -2,7 +2,7 @@
 import requests
 import sys
 
-BASE_URL = "http://localhost:5000"
+BASE_URL = "http://localhost:5001"
 credentials = {"username": "testuser_complete", "password": "Test123456!"}
 
 print("Testing login with testuser_complete...")

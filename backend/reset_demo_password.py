@@ -4,7 +4,7 @@ Reset demo user password via API
 
 import requests
 
-url = "http://localhost:5000/api/reset-demo-password"
+url = "http://localhost:5001/api/reset-demo-password"
 
 data = {
     "password": "demo123"

@@ -28,7 +28,7 @@ const EMS_FORM_DEFAULTS = {
 };
 
 const TrainingProgramsModal = ({ isOpen, onClose }) => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [selectedProgramId, setSelectedProgramId] = useState(1);
   const [selectedPackages, setSelectedPackages] = useState({});
@@ -87,11 +87,9 @@ const TrainingProgramsModal = ({ isOpen, onClose }) => {
 
   if (!isOpen) return null;
 
-  const isRtl = i18n.language === 'fa';
-
   return (
     <div className="training-programs-modal-overlay" onClick={handleClose}>
-      <div className="training-programs-modal" onClick={(e) => e.stopPropagation()} dir={isRtl ? 'rtl' : 'ltr'}>
+      <div className="training-programs-modal" onClick={(e) => e.stopPropagation()} dir="ltr">
         <button className="training-programs-modal-close" onClick={onClose} aria-label="Close">
           ×
         </button>
@@ -101,7 +99,7 @@ const TrainingProgramsModal = ({ isOpen, onClose }) => {
             {t('buyTrainingProgramme')}
           </h2>
           <p className="training-programs-modal-subtitle">
-            {isRtl ? 'برنامه پایه و بسته‌های مورد نظر را انتخاب کنید' : 'Choose your base program and the packages you want'}
+            Choose your base program and the packages you want
           </p>
         </div>
 
@@ -110,7 +108,7 @@ const TrainingProgramsModal = ({ isOpen, onClose }) => {
             <div className="ems-intro-image">
               <div className="ems-intro-image-placeholder">⚡ EMS</div>
             </div>
-            <h3 className="ems-intro-title">EMS – {i18n.language === 'fa' ? 'تحریک الکتریکی عضله' : 'Electrical Muscle Stimulation'}</h3>
+            <h3 className="ems-intro-title">EMS – Electrical Muscle Stimulation</h3>
             <p className="ems-intro-text">{t('emsWhatIs')}</p>
             <div className="training-programs-footer">
               <button type="button" className="program-buy-btn secondary" onClick={() => setEmsStep(0)}>
@@ -135,23 +133,23 @@ const TrainingProgramsModal = ({ isOpen, onClose }) => {
             <div className="ems-form-fields">
               <div className="form-group">
                 <label>{t('emsMedications')}</label>
-                <input type="text" value={emsForm.medications} onChange={(e) => setEmsForm(prev => ({ ...prev, medications: e.target.value }))} placeholder={isRtl ? 'داروهای فعلی' : 'Current medications'} />
+                <input type="text" value={emsForm.medications} onChange={(e) => setEmsForm(prev => ({ ...prev, medications: e.target.value }))} placeholder="Current medications" />
               </div>
               <div className="form-group">
                 <label>{t('emsAreasFocus')}</label>
-                <input type="text" value={emsForm.areasFocus} onChange={(e) => setEmsForm(prev => ({ ...prev, areasFocus: e.target.value }))} placeholder={isRtl ? 'مناطق تمرین' : 'Body areas'} />
+                <input type="text" value={emsForm.areasFocus} onChange={(e) => setEmsForm(prev => ({ ...prev, areasFocus: e.target.value }))} placeholder="Body areas" />
               </div>
               <div className="form-group">
                 <label>{t('emsFitnessLevel')}</label>
-                <input type="text" value={emsForm.fitnessLevel} onChange={(e) => setEmsForm(prev => ({ ...prev, fitnessLevel: e.target.value }))} placeholder={isRtl ? 'مبتدی / متوسط / پیشرفته' : 'Beginner / Intermediate / Advanced'} />
+                <input type="text" value={emsForm.fitnessLevel} onChange={(e) => setEmsForm(prev => ({ ...prev, fitnessLevel: e.target.value }))} placeholder="Beginner / Intermediate / Advanced" />
               </div>
               <div className="form-group">
                 <label>{t('emsGoals')}</label>
-                <input type="text" value={emsForm.goals} onChange={(e) => setEmsForm(prev => ({ ...prev, goals: e.target.value }))} placeholder={isRtl ? 'اهداف' : 'Goals'} />
+                <input type="text" value={emsForm.goals} onChange={(e) => setEmsForm(prev => ({ ...prev, goals: e.target.value }))} placeholder="Goals" />
               </div>
               <div className="form-group full-width">
                 <label>{t('emsOtherLimits')}</label>
-                <textarea rows={2} value={emsForm.otherLimits} onChange={(e) => setEmsForm(prev => ({ ...prev, otherLimits: e.target.value }))} placeholder={isRtl ? 'سایر محدودیت‌ها' : 'Other limitations'} />
+                <textarea rows={2} value={emsForm.otherLimits} onChange={(e) => setEmsForm(prev => ({ ...prev, otherLimits: e.target.value }))} placeholder="Other limitations" />
               </div>
             </div>
             <div className="training-programs-footer">
@@ -171,7 +169,7 @@ const TrainingProgramsModal = ({ isOpen, onClose }) => {
           <div className="training-programs-modal-body">
             <section className="training-programs-base-section">
               <h3 className="training-programs-section-title">
-                {isRtl ? 'برنامه پایه' : 'Base program'}
+                Base program
               </h3>
               <div className="training-programs-grid training-programs-grid-base">
                 {BASE_PROGRAMS.map((program) => (

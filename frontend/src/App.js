@@ -3,8 +3,10 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { useTranslation } from 'react-i18next';
 import LandingPage from './components/LandingPage';
 import Dashboard from './components/Dashboard';
-import AdminPage from './components/AdminPage';
 import PurchasePage from './components/PurchasePage';
+import ClassSchedulePage from './components/ClassSchedulePage';
+import TrainersPage from './components/TrainersPage';
+import PricingPage from './components/PricingPage';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import './App.css';
 import './themes.css';
@@ -67,8 +69,11 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
+      <Route path="/schedule" element={<ClassSchedulePage />} />
+      <Route path="/trainers" element={<TrainersPage />} />
+      <Route path="/pricing" element={<PricingPage />} />
       <Route path="/dashboard" element={user ? <Dashboard /> : <Navigate to="/" replace />} />
-      <Route path="/admin" element={user?.role === 'admin' ? <AdminPage /> : <Navigate to={user ? '/dashboard' : '/'} replace />} />
+      <Route path="/admin" element={<Navigate to="/dashboard" replace />} />
       <Route path="/purchase" element={user ? <PurchasePage /> : <Navigate to="/" replace />} />
     </Routes>
   );

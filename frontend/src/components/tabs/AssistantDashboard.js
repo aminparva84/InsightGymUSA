@@ -1,11 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { getApiBase } from '../../services/apiBase';
 import './AssistantDashboard.css';
 
 const AssistantDashboard = () => {
-  const { i18n } = useTranslation();
   const API_BASE = getApiBase();
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -37,11 +35,11 @@ const AssistantDashboard = () => {
       setMembers(response.data);
     } catch (error) {
       console.error('Error fetching assigned members:', error);
-      alert(i18n.language === 'fa' ? 'خطا در دریافت لیست اعضا' : 'Error fetching members');
+      alert('Error fetching members');
     } finally {
       setLoading(false);
     }
-  }, [API_BASE, getAxiosConfig, i18n.language]);
+  }, [API_BASE, getAxiosConfig]);
 
   useEffect(() => {
     fetchAssignedMembers();
@@ -54,25 +52,25 @@ const AssistantDashboard = () => {
       setSelectedMember(memberId);
     } catch (error) {
       console.error('Error fetching member details:', error);
-      alert(i18n.language === 'fa' ? 'خطا در دریافت جزئیات عضو' : 'Error fetching member details');
+      alert('Error fetching member details');
     }
   };
 
   return (
     <div className="assistant-dashboard" dir="ltr">
       <div className="assistant-dashboard-header">
-        <h2>{i18n.language === 'fa' ? 'داشبورد دستیار' : 'Assistant Dashboard'}</h2>
-        <p>{i18n.language === 'fa' ? 'اعضای تخصیص یافته به شما' : 'Members Assigned to You'}</p>
+        <h2>Assistant Dashboard</h2>
+        <p>Members Assigned to You</p>
       </div>
 
       <div className="assistant-dashboard-content">
         <div className="members-list-panel">
-          <h3>{i18n.language === 'fa' ? 'لیست اعضا' : 'Members List'}</h3>
+          <h3>Members List</h3>
           {loading ? (
-            <div className="loading">{i18n.language === 'fa' ? 'در حال بارگذاری...' : 'Loading...'}</div>
+            <div className="loading">Loading...</div>
           ) : members.length === 0 ? (
             <div className="no-members">
-              {i18n.language === 'fa' ? 'هیچ عضوی به شما تخصیص داده نشده است' : 'No members assigned to you'}
+              No members assigned to you
             </div>
           ) : (
             <div className="members-list">
@@ -88,18 +86,18 @@ const AssistantDashboard = () => {
                   </div>
                   <div className="member-card-info">
                     <div className="info-item">
-                      <span className="info-label">{i18n.language === 'fa' ? 'سطح تمرین:' : 'Training Level:'}</span>
+                      <span className="info-label">Training Level:</span>
                       <span className="info-value">{member.profile?.training_level || '-'}</span>
                     </div>
                     {member.profile?.age && (
                       <div className="info-item">
-                        <span className="info-label">{i18n.language === 'fa' ? 'سن:' : 'Age:'}</span>
+                        <span className="info-label">Age:</span>
                         <span className="info-value">{member.profile.age}</span>
                       </div>
                     )}
                     {member.profile?.weight && member.profile?.height && (
                       <div className="info-item">
-                        <span className="info-label">{i18n.language === 'fa' ? 'BMI:' : 'BMI:'}</span>
+                        <span className="info-label">BMI:</span>
                         <span className="info-value">
                           {(() => {
                             const heightInMeters = member.profile.height / 100;
@@ -119,66 +117,66 @@ const AssistantDashboard = () => {
         {selectedMember && memberDetails && (
           <div className="member-details-panel">
             <div className="member-details-header">
-              <h3>{i18n.language === 'fa' ? 'جزئیات عضو' : 'Member Details'}</h3>
+              <h3>Member Details</h3>
               <button className="close-btn" onClick={() => {
                 setSelectedMember(null);
                 setMemberDetails(null);
               }}>
-                {i18n.language === 'fa' ? 'بستن' : 'Close'}
+                Close
               </button>
             </div>
 
             <div className="member-details-content">
               <div className="details-section">
-                <h4>{i18n.language === 'fa' ? 'اطلاعات پایه' : 'Basic Information'}</h4>
+                <h4>Basic Information</h4>
                 <div className="details-grid">
                   <div className="detail-item">
-                    <label>{i18n.language === 'fa' ? 'نام کاربری:' : 'Username:'}</label>
+                    <label>Username:</label>
                     <span>{memberDetails.username}</span>
                   </div>
                   <div className="detail-item">
-                    <label>{i18n.language === 'fa' ? 'ایمیل:' : 'Email:'}</label>
+                    <label>Email:</label>
                     <span>{memberDetails.email}</span>
                   </div>
                   {memberDetails.profile?.age && (
                     <div className="detail-item">
-                      <label>{i18n.language === 'fa' ? 'سن:' : 'Age:'}</label>
+                      <label>Age:</label>
                       <span>{memberDetails.profile.age}</span>
                     </div>
                   )}
                   {memberDetails.profile?.gender && (
                     <div className="detail-item">
-                      <label>{i18n.language === 'fa' ? 'جنسیت:' : 'Gender:'}</label>
+                      <label>Gender:</label>
                       <span>
                         {memberDetails.profile.gender === 'male' 
-                          ? (i18n.language === 'fa' ? 'مرد' : 'Male')
+                          ? 'Male'
                           : memberDetails.profile.gender === 'female'
-                          ? (i18n.language === 'fa' ? 'زن' : 'Female')
-                          : (i18n.language === 'fa' ? 'سایر' : 'Other')}
+                          ? 'Female'
+                          : 'Other'}
                       </span>
                     </div>
                   )}
                   {memberDetails.profile?.weight && (
                     <div className="detail-item">
-                      <label>{i18n.language === 'fa' ? 'وزن (کیلوگرم):' : 'Weight (kg):'}</label>
+                      <label>Weight (kg):</label>
                       <span>{memberDetails.profile.weight}</span>
                     </div>
                   )}
                   {memberDetails.profile?.height && (
                     <div className="detail-item">
-                      <label>{i18n.language === 'fa' ? 'قد (سانتی‌متر):' : 'Height (cm):'}</label>
+                      <label>Height (cm):</label>
                       <span>{memberDetails.profile.height}</span>
                     </div>
                   )}
                   {memberDetails.profile?.training_level && (
                     <div className="detail-item">
-                      <label>{i18n.language === 'fa' ? 'سطح تمرین:' : 'Training Level:'}</label>
+                      <label>Training Level:</label>
                       <span>
                         {memberDetails.profile.training_level === 'beginner'
-                          ? (i18n.language === 'fa' ? 'مبتدی' : 'Beginner')
+                          ? 'Beginner'
                           : memberDetails.profile.training_level === 'intermediate'
-                          ? (i18n.language === 'fa' ? 'متوسط' : 'Intermediate')
-                          : (i18n.language === 'fa' ? 'پیشرفته' : 'Advanced')}
+                          ? 'Intermediate'
+                          : 'Advanced'}
                       </span>
                     </div>
                   )}
@@ -194,41 +192,41 @@ const AssistantDashboard = () => {
                     memberDetails.profile.hip_circumference ||
                     memberDetails.profile.thigh_circumference) && (
                     <div className="details-section">
-                      <h4>{i18n.language === 'fa' ? 'اندازه‌گیری بدن (سانتی‌متر)' : 'Body Measurements (cm)'}</h4>
+                      <h4>Body Measurements (cm)</h4>
                       <div className="details-grid">
                         {memberDetails.profile.chest_circumference && (
                           <div className="detail-item">
-                            <label>{i18n.language === 'fa' ? 'دور سینه:' : 'Chest:'}</label>
+                            <label>Chest:</label>
                             <span>{memberDetails.profile.chest_circumference}</span>
                           </div>
                         )}
                         {memberDetails.profile.waist_circumference && (
                           <div className="detail-item">
-                            <label>{i18n.language === 'fa' ? 'دور کمر:' : 'Waist:'}</label>
+                            <label>Waist:</label>
                             <span>{memberDetails.profile.waist_circumference}</span>
                           </div>
                         )}
                         {memberDetails.profile.abdomen_circumference && (
                           <div className="detail-item">
-                            <label>{i18n.language === 'fa' ? 'دور شکم:' : 'Abdomen:'}</label>
+                            <label>Abdomen:</label>
                             <span>{memberDetails.profile.abdomen_circumference}</span>
                           </div>
                         )}
                         {memberDetails.profile.arm_circumference && (
                           <div className="detail-item">
-                            <label>{i18n.language === 'fa' ? 'دور بازو:' : 'Arm:'}</label>
+                            <label>Arm:</label>
                             <span>{memberDetails.profile.arm_circumference}</span>
                           </div>
                         )}
                         {memberDetails.profile.hip_circumference && (
                           <div className="detail-item">
-                            <label>{i18n.language === 'fa' ? 'دور باسن:' : 'Hip:'}</label>
+                            <label>Hip:</label>
                             <span>{memberDetails.profile.hip_circumference}</span>
                           </div>
                         )}
                         {memberDetails.profile.thigh_circumference && (
                           <div className="detail-item">
-                            <label>{i18n.language === 'fa' ? 'دور ران:' : 'Thigh:'}</label>
+                            <label>Thigh:</label>
                             <span>{memberDetails.profile.thigh_circumference}</span>
                           </div>
                         )}
@@ -238,7 +236,7 @@ const AssistantDashboard = () => {
 
                   {memberDetails.profile.injuries && memberDetails.profile.injuries.length > 0 && (
                     <div className="details-section">
-                      <h4>{i18n.language === 'fa' ? 'آسیب‌ها' : 'Injuries'}</h4>
+                      <h4>Injuries</h4>
                       <div className="injuries-list">
                         {memberDetails.profile.injuries.map((injury, index) => (
                           <div key={index} className="injury-item">
@@ -256,7 +254,7 @@ const AssistantDashboard = () => {
 
                   {memberDetails.profile.fitness_goals && memberDetails.profile.fitness_goals.length > 0 && (
                     <div className="details-section">
-                      <h4>{i18n.language === 'fa' ? 'اهداف تناسب اندام' : 'Fitness Goals'}</h4>
+                      <h4>Fitness Goals</h4>
                       <div className="goals-list">
                         {memberDetails.profile.fitness_goals.map((goal, index) => (
                           <div key={index} className="goal-item">
@@ -269,7 +267,7 @@ const AssistantDashboard = () => {
 
                   {memberDetails.profile.medical_conditions && memberDetails.profile.medical_conditions.length > 0 && (
                     <div className="details-section">
-                      <h4>{i18n.language === 'fa' ? 'شرایط پزشکی' : 'Medical Conditions'}</h4>
+                      <h4>Medical Conditions</h4>
                       <div className="conditions-list">
                         {memberDetails.profile.medical_conditions.map((condition, index) => (
                           <div key={index} className="condition-item">

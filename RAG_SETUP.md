@@ -1,4 +1,4 @@
-# RAG System Setup Guide - Raha Fitness
+# RAG System Setup Guide - Insight GYM USA
 
 ## Overview
 

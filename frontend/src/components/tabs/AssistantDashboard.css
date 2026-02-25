@@ -5,7 +5,7 @@
   min-width: 0;
   margin: 0;
   padding: 0 0 1rem 0;
-  background-color: var(--color-white);
+  background-color: var(--bg-card);
   min-height: calc(100vh - 200px);
 }
 
@@ -24,7 +24,7 @@
 }
 
 .assistant-dashboard-header p {
-  color: var(--color-primary-600);
+  color: var(--text-secondary);
   font-size: 1rem;
   margin: 0;
 }
@@ -36,20 +36,20 @@
 }
 
 .members-list-panel {
-  background: var(--color-white);
+  background: var(--bg-card);
   border-radius: 8px;
   padding: 1.5rem;
   box-shadow: var(--shadow-md);
   max-height: calc(100vh - 250px);
   overflow-y: auto;
-  border: 1px solid var(--color-primary-200);
+  border: 1px solid var(--border);
 }
 
 .members-list-panel h3 {
   font-size: 1.25rem;
   font-weight: 600;
   margin-bottom: 1.5rem;
-  color: var(--color-primary-800);
+  color: var(--text-primary);
 }
 
 .members-list {
@@ -60,21 +60,21 @@
 
 .member-card {
   padding: 1.25rem;
-  border: 2px solid var(--color-primary-200);
+  border: 2px solid var(--border);
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
-  background: var(--color-white);
+  background: var(--bg-card);
 }
 
 .member-card:hover {
-  border-color: var(--color-secondary-500);
+  border-color: var(--accent);
   box-shadow: var(--shadow-secondary);
   transform: translateY(-2px);
 }
 
 .member-card.selected {
-  border-color: var(--color-secondary-500);
+  border-color: var(--accent);
   background: linear-gradient(135deg, rgba(6, 182, 212, 0.1) 0%, rgba(249, 115, 22, 0.1) 100%);
   box-shadow: var(--shadow-lg);
 }
@@ -86,13 +86,13 @@
 .member-card-header h4 {
   font-size: 1.1rem;
   font-weight: 600;
-  color: var(--color-primary-800);
+  color: var(--text-primary);
   margin: 0 0 0.25rem 0;
 }
 
 .member-email {
   font-size: 0.9rem;
-  color: var(--color-primary-600);
+  color: var(--text-secondary);
 }
 
 .member-card-info {
@@ -108,39 +108,39 @@
 }
 
 .info-label {
-  color: var(--color-primary-600);
+  color: var(--text-secondary);
   font-weight: 500;
 }
 
 .info-value {
-  color: var(--color-primary-800);
+  color: var(--text-primary);
   font-weight: 600;
 }
 
 .no-members {
   text-align: center;
   padding: 3rem 1rem;
-  color: var(--color-primary-800);
+  color: var(--text-primary);
   font-size: 1rem;
-  background-color: var(--color-white);
+  background-color: var(--bg-card);
 }
 
 .loading {
   text-align: center;
   padding: 3rem;
-  color: var(--color-primary-800);
+  color: var(--text-primary);
   font-size: 1.1rem;
-  background-color: var(--color-white);
+  background-color: var(--bg-card);
 }
 
 .member-details-panel {
-  background: var(--color-white);
+  background: var(--bg-card);
   border-radius: 8px;
   padding: 1.5rem;
   box-shadow: var(--shadow-md);
   max-height: calc(100vh - 250px);
   overflow-y: auto;
-  border: 1px solid var(--color-primary-200);
+  border: 1px solid var(--border);
 }
 
 .member-details-header {
@@ -149,21 +149,21 @@
   align-items: center;
   margin-bottom: 2rem;
   padding-bottom: 1rem;
-  border-bottom: 2px solid #e9ecef;
+  border-bottom: 2px solid var(--border);
 }
 
 .member-details-header h3 {
   font-size: 1.5rem;
   font-weight: 600;
-  color: var(--color-primary-800);
+  color: var(--text-primary);
   margin: 0;
 }
 
 .close-btn {
   padding: 0.5rem 1rem;
-  background: var(--color-primary-100);
-  color: var(--color-primary-700);
-  border: 1px solid var(--color-primary-200);
+  background: var(--bg-elevated);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
   border-radius: 8px;
   cursor: pointer;
   font-size: 0.9rem;
@@ -172,8 +172,8 @@
 }
 
 .close-btn:hover {
-  background: var(--color-primary-200);
-  color: var(--color-primary-800);
+  background: var(--border);
+  color: var(--text-primary);
   transform: translateY(-1px);
 }
 
@@ -185,16 +185,16 @@
 
 .details-section {
   padding: 1.5rem;
-  background: var(--color-primary-50);
+  background: var(--bg-elevated);
   border-radius: 8px;
-  border: 1px solid var(--color-primary-200);
+  border: 1px solid var(--border);
 }
 
 .details-section h4 {
   font-size: 1.25rem;
   font-weight: 600;
   margin-bottom: 1rem;
-  color: var(--color-primary-800);
+  color: var(--text-primary);
 }
 
 .details-grid {
@@ -211,13 +211,13 @@
 
 .detail-item label {
   font-size: 0.9rem;
-  color: var(--color-primary-600);
+  color: var(--text-secondary);
   font-weight: 500;
 }
 
 .detail-item span {
   font-size: 1rem;
-  color: var(--color-primary-800);
+  color: var(--text-primary);
   font-weight: 600;
 }
 
@@ -234,26 +234,26 @@
 .goal-item,
 .condition-item {
   padding: 0.5rem 1rem;
-  background: #fff;
-  border: 1px solid #dee2e6;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
   border-radius: 20px;
   font-size: 0.9rem;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .injury-details,
 .condition-details {
   margin-top: 1rem;
   padding: 1rem;
-  background: #fff;
+  background-color: var(--bg-card);
   border-radius: 4px;
-  border-left: 4px solid #007bff;
+  border-left: 4px solid var(--accent);
 }
 
 .injury-details p,
 .condition-details p {
   margin: 0;
-  color: #333;
+  color: var(--text-primary);
   line-height: 1.6;
 }
 

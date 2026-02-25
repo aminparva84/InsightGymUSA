@@ -1,8 +1,8 @@
 @echo off
-title InsightGym Launcher
+title Insight GYM USA Launcher
 color 0A
 echo ========================================
-echo   InsightGym Application Launcher
+echo   Insight GYM USA - Application Launcher
 echo ========================================
 echo.
 
@@ -27,64 +27,78 @@ if errorlevel 1 (
     exit /b 1
 )
 
-REM Check if backend virtual environment exists
+REM Check if backend virtual environment exists - auto-setup if missing
 if not exist "backend\venv" (
-    echo [ERROR] Backend virtual environment not found.
-    echo Please run setup.bat first or create it manually:
-    echo   cd backend
-    echo   python -m venv venv
-    echo   venv\Scripts\activate
-    echo   pip install -r requirements.txt
+    echo [INFO] Backend virtual environment not found. Running setup...
     echo.
-    pause
-    exit /b 1
+    cd backend
+    python -m venv venv
+    call venv\Scripts\activate
+    pip install -r requirements.txt
+    if not exist .env (
+        echo Creating .env file...
+        if exist "..\.env.example" copy "..\.env.example" .env
+    )
+    cd ..
+    echo.
+    echo [OK] Backend setup complete!
+    echo.
 )
 
-REM Check if frontend node_modules exists
+REM Check if frontend node_modules exists - auto-setup if missing
 if not exist "frontend\node_modules" (
-    echo [ERROR] Frontend dependencies not found.
-    echo Please run setup.bat first or install manually:
-    echo   cd frontend
-    echo   npm install
+    echo [INFO] Frontend dependencies not found. Running npm install...
     echo.
-    pause
-    exit /b 1
+    cd frontend
+    call npm install
+    cd ..
+    echo.
+    echo [OK] Frontend setup complete!
+    echo.
+)
+
+REM Ensure frontend .env exists (sets PORT=3001 to avoid port 3000 conflicts)
+if not exist "frontend\.env" (
+    if exist "frontend\.env.example" (
+        echo [INFO] Creating frontend .env from .env.example...
+        copy "frontend\.env.example" "frontend\.env"
+    )
 )
 
 echo [INFO] All prerequisites found!
 echo.
 
 REM Check if backend is already running
-netstat -ano | findstr ":5000" >nul 2>&1
+netstat -ano | findstr ":5001" >nul 2>&1
 if not errorlevel 1 (
-    echo [WARNING] Backend server may already be running on port 5000
+    echo [WARNING] Backend server may already be running on port 5001
     echo.
 )
 
 REM Check if frontend is already running
-netstat -ano | findstr ":3000" >nul 2>&1
+netstat -ano | findstr ":3001" >nul 2>&1
 if not errorlevel 1 (
-    echo [WARNING] Frontend server may already be running on port 3000
+    echo [WARNING] Frontend server may already be running on port 3001
     echo.
 )
 
 echo [1/2] Starting backend server...
-start "InsightGym Backend" cmd /k "cd /d %~dp0backend && call venv\Scripts\activate && echo Backend Server Starting... && python app.py"
+start "Insight GYM USA Backend" cmd /k "cd /d %~dp0backend && call venv\Scripts\activate && echo Backend Server Starting... && python app.py"
 
 REM Wait a moment for backend to initialize
 echo [INFO] Waiting for backend to initialize...
-timeout /t 4 /nobreak >nul
+timeout /t 2 /nobreak >nul
 
 echo [2/2] Starting frontend server...
-start "InsightGym Frontend" cmd /k "cd /d %~dp0frontend && echo Frontend Server Starting... && npm start"
+start "Insight GYM USA Frontend" cmd /k "cd /d %~dp0frontend && echo Frontend Server Starting... && npm start"
 
 echo.
 echo ========================================
 echo   Servers are starting in new windows
 echo ========================================
 echo.
-echo Backend API:  http://localhost:5000
-echo Frontend UI:  http://localhost:3000
+echo Backend API:  http://localhost:5001
+echo Frontend UI:  http://localhost:3001
 echo.
 echo The application will open automatically in your browser.
 echo You can close this window - servers will continue running.

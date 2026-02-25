@@ -454,23 +454,107 @@ def get_assistants():
         return jsonify({'error': 'Unauthorized'}), 403
     
     User = get_user_model()
-    # Get assistants - for now, all assistants (can be filtered by created_by if needed)
-    assistants = db.session.query(User).filter_by(role='assistant').all()
-    assistants_data = []
-    for assistant in assistants:
-        profile = db.session.query(UserProfile).filter_by(user_id=assistant.id).first()
-        assistants_data.append({
-            'id': assistant.id,
-            'username': assistant.username,
-            'email': assistant.email,
-            'role': assistant.role,
-            'assigned_members_count': db.session.query(User).filter_by(assigned_to=assistant.id).count(),
-            'profile_complete': profile is not None and profile.account_type == 'assistant',
-            # Note: Password cannot be retrieved after hashing, so it's not included
-            # Admin should save credentials when creating assistant
+    # Get coaches/assistants (American gym: role=coach or assistant)
+    coaches = db.session.query(User).filter(User.role.in_(['coach', 'assistant'])).all()
+    coaches_data = []
+    for c in coaches:
+        profile = db.session.query(UserProfile).filter_by(user_id=c.id).first()
+        acct = getattr(profile, 'account_type', None) or 'coach'
+        coaches_data.append({
+            'id': c.id,
+            'username': c.username,
+            'email': c.email,
+            'role': c.role,
+            'coach_approval_status': getattr(c, 'coach_approval_status', None),
+            'assigned_members_count': db.session.query(User).filter_by(assigned_to=c.id).count(),
+            'profile_complete': profile is not None and acct in ('assistant', 'coach'),
         })
-    
-    return jsonify(assistants_data), 200
+    return jsonify(coaches_data), 200
+
+
+@admin_bp.route('/coachs', methods=['GET'])
+@admin_bp.route('/coaches', methods=['GET'])
+@jwt_required()
+def get_coachs():
+    """Get coaches/assistants - supports both /coachs and /coaches."""
+    return get_assistants()
+
+
+@admin_bp.route('/coachs', methods=['POST'])
+@admin_bp.route('/coaches', methods=['POST'])
+@jwt_required()
+def create_coach():
+    """Create coach - supports both /coachs and /coaches."""
+    return create_assistant()
+
+
+@admin_bp.route('/coachs/pending', methods=['GET'])
+@jwt_required()
+def get_pending_coachs():
+    """List coaches pending approval (admin only)."""
+    db = get_db()
+    User = get_user_model()
+    UserProfile = get_userprofile_model()
+    user_id = get_jwt_identity()
+    if not is_admin(user_id):
+        return jsonify({'error': 'Unauthorized'}), 403
+    pending = db.session.query(User).filter(
+        User.role.in_(['coach', 'assistant']),
+        User.coach_approval_status == 'pending'
+    ).all()
+    out = []
+    for c in pending:
+        profile = db.session.query(UserProfile).filter_by(user_id=c.id).first()
+        out.append({
+            'id': c.id,
+            'username': c.username,
+            'email': c.email,
+            'certifications': (profile.certifications or '') if profile else '',
+            'years_of_experience': (profile.years_of_experience or 0) if profile else 0,
+            'bio': (profile.bio or '')[:200] if profile else '',
+        })
+    return jsonify(out), 200
+
+
+@admin_bp.route('/coachs/<int:coach_id>/approve', methods=['PATCH'])
+@jwt_required()
+def approve_coach(coach_id):
+    """Approve a pending coach (admin only)."""
+    db = get_db()
+    User = get_user_model()
+    user_id = get_jwt_identity()
+    if not is_admin(user_id):
+        return jsonify({'error': 'Unauthorized'}), 403
+    coach = db.session.query(User).filter(
+        User.id == coach_id,
+        User.role.in_(['coach', 'assistant'])
+    ).first()
+    if not coach:
+        return jsonify({'error': 'Coach not found'}), 404
+    coach.coach_approval_status = 'approved'
+    db.session.commit()
+    return jsonify({'message': 'Coach approved successfully'}), 200
+
+
+@admin_bp.route('/coachs/<int:coach_id>/reject', methods=['PATCH'])
+@jwt_required()
+def reject_coach(coach_id):
+    """Reject a pending coach (admin only)."""
+    db = get_db()
+    User = get_user_model()
+    user_id = get_jwt_identity()
+    if not is_admin(user_id):
+        return jsonify({'error': 'Unauthorized'}), 403
+    coach = db.session.query(User).filter(
+        User.id == coach_id,
+        User.role.in_(['coach', 'assistant'])
+    ).first()
+    if not coach:
+        return jsonify({'error': 'Coach not found'}), 404
+    coach.coach_approval_status = 'rejected'
+    db.session.commit()
+    return jsonify({'message': 'Coach rejected'}), 200
+
 
 @admin_bp.route('/assistants', methods=['POST'])
 @jwt_required()
@@ -500,13 +584,14 @@ def create_assistant():
         return jsonify({'error': 'Email already exists'}), 400
     
     try:
-        # Create assistant user
+        # Create coach user (American gym: role=coach, auto-approved when created by admin)
         assistant = User(
             username=username,
             email=email,
             password_hash=generate_password_hash(password),
-            role='assistant',
-            language=data.get('language', 'fa')
+            role='coach',
+            language=data.get('language', 'en'),
+            coach_approval_status='approved'
         )
         db.session.add(assistant)
         db.session.flush()  # Get assistant ID
@@ -515,7 +600,7 @@ def create_assistant():
         if profile_data:
             profile = UserProfile(
                 user_id=assistant.id,
-                account_type='assistant',
+                account_type='coach',
                 age=profile_data.get('age'),
                 weight=profile_data.get('weight'),
                 height=profile_data.get('height'),
@@ -578,6 +663,7 @@ def create_assistant():
         return jsonify({'error': str(e)}), 400
 
 @admin_bp.route('/assistants/<int:assistant_id>', methods=['GET'])
+@admin_bp.route('/coaches/<int:assistant_id>', methods=['GET'])
 @jwt_required()
 def get_assistant(assistant_id):
     """Get single assistant with full profile (admin only)"""
@@ -587,7 +673,7 @@ def get_assistant(assistant_id):
         return jsonify({'error': 'Unauthorized'}), 403
     User = get_user_model()
     UserProfile = get_userprofile_model()
-    assistant = db.session.query(User).filter_by(id=assistant_id, role='assistant').first()
+    assistant = db.session.query(User).filter(User.id == assistant_id, User.role.in_(['coach', 'assistant'])).first()
     if not assistant:
         return jsonify({'error': 'Assistant not found'}), 404
     profile = db.session.query(UserProfile).filter_by(user_id=assistant_id).first()
@@ -634,6 +720,7 @@ def get_assistant(assistant_id):
     return jsonify(out), 200
 
 @admin_bp.route('/assistants/<int:assistant_id>', methods=['PUT'])
+@admin_bp.route('/coaches/<int:assistant_id>', methods=['PUT'])
 @jwt_required()
 def update_assistant(assistant_id):
     """Update assistant account and profile (admin only)"""
@@ -643,7 +730,7 @@ def update_assistant(assistant_id):
         return jsonify({'error': 'Unauthorized'}), 403
     User = get_user_model()
     UserProfile = get_userprofile_model()
-    assistant = db.session.query(User).filter_by(id=assistant_id, role='assistant').first()
+    assistant = db.session.query(User).filter(User.id == assistant_id, User.role.in_(['coach', 'assistant'])).first()
     if not assistant:
         return jsonify({'error': 'Assistant not found'}), 404
     data = request.get_json() or {}
@@ -687,6 +774,7 @@ def update_assistant(assistant_id):
         return jsonify({'error': str(e)}), 400
 
 @admin_bp.route('/assistants/<int:assistant_id>', methods=['DELETE'])
+@admin_bp.route('/coaches/<int:assistant_id>', methods=['DELETE'])
 @jwt_required()
 def delete_assistant(assistant_id):
     """Delete an assistant (admin only)"""
@@ -699,7 +787,7 @@ def delete_assistant(assistant_id):
     User = get_user_model()
     UserProfile = get_userprofile_model()
     
-    assistant = db.session.query(User).filter_by(id=assistant_id, role='assistant').first()
+    assistant = db.session.query(User).filter(User.id == assistant_id, User.role.in_(['coach', 'assistant'])).first()
     if not assistant:
         return jsonify({'error': 'Assistant not found'}), 404
     
@@ -746,7 +834,8 @@ def get_members():
     elif user.role == 'coach':
         if getattr(user, 'coach_approval_status', None) != 'approved':
             return jsonify({'error': 'Coach account pending approval'}), 403
-        members = db.session.query(User).filter_by(role='member', assigned_to=user_id).all()
+        user_id_int = int(user_id) if isinstance(user_id, str) else user_id
+        members = db.session.query(User).filter_by(role='member', assigned_to=user_id_int).all()
     else:
         return jsonify({'error': 'Unauthorized'}), 403
     
@@ -782,30 +871,33 @@ def get_members():
 @admin_bp.route('/members/<int:member_id>/assign', methods=['POST'])
 @jwt_required()
 def assign_member(member_id):
-    """Assign a member to an assistant or admin (admin only)"""
+    """Assign a member to a coach only (admin or coach). Admin does not assign - members choose at registration."""
     db = get_db()
     user_id = get_jwt_identity()
-    
-    if not is_admin(user_id):
-        return jsonify({'error': 'Unauthorized'}), 403
-    
-    data = request.get_json()
-    assigned_to_id = data.get('assigned_to_id')  # Assistant or admin ID
-    
     User = get_user_model()
+    user = db.session.get(User, int(user_id))
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+    if user.role not in ['admin', 'coach']:
+        return jsonify({'error': 'Unauthorized'}), 403
+
+    data = request.get_json()
+    assigned_to_id = data.get('assigned_to_id')
+
     member = db.session.query(User).filter_by(id=member_id, role='member').first()
     if not member:
         return jsonify({'error': 'Member not found'}), 404
-    
+
     if assigned_to_id:
         assigned_to = db.session.get(User, assigned_to_id)
-        if not assigned_to or assigned_to.role not in ['admin', 'assistant']:
-            return jsonify({'error': 'Invalid assistant/admin ID'}), 400
+        if not assigned_to or assigned_to.role != 'coach':
+            return jsonify({'error': 'Invalid coach ID - only coaches can be assigned'}), 400
+        if getattr(assigned_to, 'coach_approval_status', None) != 'approved':
+            return jsonify({'error': 'Coach must be approved'}), 400
         member.assigned_to = assigned_to_id
     else:
-        # Unassign
         member.assigned_to = None
-    
+
     try:
         db.session.commit()
         return jsonify({'message': 'Member assignment updated successfully'}), 200
@@ -1114,6 +1206,122 @@ def save_configuration():
         db.session.rollback()
         return jsonify({'error': str(e)}), 400
 
+
+# ==================== Coach Training Info (per-coach config) ====================
+
+def _get_coach_config_defaults():
+    """Default training levels and injuries for coach config."""
+    def _default_purposes():
+        return {
+            'lose_weight': {'sessions_per_week': '', 'sets_per_action': '', 'reps_per_action': '', 'training_focus_fa': '', 'training_focus_en': '', 'break_between_sets': ''},
+            'gain_weight': {'sessions_per_week': '', 'sets_per_action': '', 'reps_per_action': '', 'training_focus_fa': '', 'training_focus_en': '', 'break_between_sets': ''},
+            'gain_muscle': {'sessions_per_week': '', 'sets_per_action': '', 'reps_per_action': '', 'training_focus_fa': '', 'training_focus_en': '', 'break_between_sets': ''},
+            'shape_fitting': {'sessions_per_week': '', 'sets_per_action': '', 'reps_per_action': '', 'training_focus_fa': '', 'training_focus_en': '', 'break_between_sets': ''}
+        }
+    def _default_level():
+        return {'description_fa': '', 'description_en': '', 'goals': [], 'purposes': _default_purposes()}
+    default_training_levels = {
+        'beginner': _default_level(),
+        'intermediate': _default_level(),
+        'advanced': _default_level()
+    }
+    _default_injury = lambda: {
+        'purposes_fa': '', 'purposes_en': '', 'allowed_movements': [], 'forbidden_movements': [],
+        'important_notes_fa': '', 'important_notes_en': ''
+    }
+    default_injuries = {k: _default_injury() for k in ['knee', 'shoulder', 'lower_back', 'neck', 'wrist', 'ankle']}
+    default_injuries['common_injury_note_fa'] = ''
+    default_injuries['common_injury_note_en'] = ''
+    return default_training_levels, default_injuries
+
+
+@admin_bp.route('/coach/config', methods=['GET'])
+@jwt_required()
+def get_coach_config():
+    """Get coach's own training levels and injuries (coach only)"""
+    db = get_db()
+    user_id = get_jwt_identity()
+    User = get_user_model()
+    user = db.session.get(User, int(user_id))
+    if not user or user.role != 'coach':
+        return jsonify({'error': 'Unauthorized'}), 403
+    if getattr(user, 'coach_approval_status', None) != 'approved':
+        return jsonify({'error': 'Coach account pending approval'}), 403
+
+    from models import CoachTrainingInfo
+    default_levels, default_injuries = _get_coach_config_defaults()
+    coach_info = db.session.query(CoachTrainingInfo).filter_by(coach_id=user.id).first()
+    if not coach_info:
+        return jsonify({
+            'training_levels': default_levels,
+            'injuries': default_injuries
+        }), 200
+    raw_levels = json.loads(coach_info.training_levels) if coach_info.training_levels else {}
+    raw_injuries = json.loads(coach_info.injuries) if coach_info.injuries else {}
+    training_levels_out = {}
+    for level_key in ('beginner', 'intermediate', 'advanced'):
+        stored = raw_levels.get(level_key) or {}
+        merged = {
+            'description_fa': stored.get('description_fa', ''),
+            'description_en': stored.get('description_en', ''),
+            'goals': stored.get('goals') if isinstance(stored.get('goals'), list) else [],
+            'purposes': {}
+        }
+        for purpose_key in ('lose_weight', 'gain_weight', 'gain_muscle', 'shape_fitting'):
+            base = {'sessions_per_week': '', 'sets_per_action': '', 'reps_per_action': '', 'training_focus_fa': '', 'training_focus_en': '', 'break_between_sets': ''}
+            stored_p = (stored.get('purposes') or {}).get(purpose_key) or {}
+            merged['purposes'][purpose_key] = {**base, **stored_p}
+        training_levels_out[level_key] = merged
+    injury_keys = ['knee', 'shoulder', 'lower_back', 'neck', 'wrist', 'ankle']
+    injuries_out = {}
+    for key in injury_keys:
+        stored = raw_injuries.get(key) or {}
+        merged = {
+            'purposes_fa': stored.get('purposes_fa', '') or stored.get('description_fa', ''),
+            'purposes_en': stored.get('purposes_en', '') or stored.get('description_en', ''),
+            'allowed_movements': stored.get('allowed_movements') if isinstance(stored.get('allowed_movements'), list) else [],
+            'forbidden_movements': stored.get('forbidden_movements') if isinstance(stored.get('forbidden_movements'), list) else [],
+            'important_notes_fa': stored.get('important_notes_fa', ''),
+            'important_notes_en': stored.get('important_notes_en', '')
+        }
+        injuries_out[key] = merged
+    injuries_out['common_injury_note_fa'] = raw_injuries.get('common_injury_note_fa', '')
+    injuries_out['common_injury_note_en'] = raw_injuries.get('common_injury_note_en', '')
+    return jsonify({'training_levels': training_levels_out, 'injuries': injuries_out}), 200
+
+
+@admin_bp.route('/coach/config', methods=['POST'])
+@jwt_required()
+def save_coach_config():
+    """Save coach's own training levels and injuries (coach only)"""
+    db = get_db()
+    user_id = get_jwt_identity()
+    User = get_user_model()
+    user = db.session.get(User, int(user_id))
+    if not user or user.role != 'coach':
+        return jsonify({'error': 'Unauthorized'}), 403
+    if getattr(user, 'coach_approval_status', None) != 'approved':
+        return jsonify({'error': 'Coach account pending approval'}), 403
+
+    data = request.get_json()
+    training_levels = data.get('training_levels', {})
+    injuries = data.get('injuries', {})
+
+    from models import CoachTrainingInfo
+    coach_info = db.session.query(CoachTrainingInfo).filter_by(coach_id=user.id).first()
+    if not coach_info:
+        coach_info = CoachTrainingInfo(coach_id=user.id)
+        db.session.add(coach_info)
+    coach_info.training_levels = json.dumps(training_levels, ensure_ascii=False)
+    coach_info.injuries = json.dumps(injuries, ensure_ascii=False)
+    try:
+        db.session.commit()
+        return jsonify({'message': 'Configuration saved successfully'}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 400
+
+
 @admin_bp.route('/check-profile-complete', methods=['GET'])
 @jwt_required()
 def check_profile_complete():
@@ -1127,12 +1335,12 @@ def check_profile_complete():
     if not user:
         return jsonify({'error': 'User not found'}), 404
     
-    if user.role != 'assistant':
-        return jsonify({'profile_complete': True, 'message': 'Not an assistant'}), 200
-    
+    if user.role != 'coach':
+        return jsonify({'profile_complete': True, 'message': 'Not a coach'}), 200
+
     profile = db.session.query(UserProfile).filter_by(user_id=user_id).first()
-    
-    if not profile or profile.account_type != 'assistant':
+
+    if not profile or profile.account_type not in ('coach', 'assistant'):
         return jsonify({'profile_complete': False, 'message': 'Profile not complete'}), 200
     
     # Check if essential fields are filled
@@ -1302,7 +1510,9 @@ def get_site_settings():
             'app_description_fa': '', 'app_description_en': '',
             'instagram_url': '', 'telegram_url': '', 'whatsapp_url': '', 'twitter_url': '',
             'facebook_url': '', 'linkedin_url': '', 'youtube_url': '', 'copyright_text': '',
-            'session_phases_json': '', 'training_plans_products_json': ''
+            'session_phases_json': '', 'training_plans_products_json': '',
+            'operating_hours_json': '', 'map_url': '', 'class_schedule_json': '',
+            'testimonials_json': '', 'pricing_tiers_json': '', 'faq_json': ''
         }), 200
     out = {
         'contact_email': row.contact_email or '',
@@ -1315,6 +1525,12 @@ def get_site_settings():
         'youtube_url': row.youtube_url or '', 'copyright_text': row.copyright_text or '',
         'session_phases_json': row.session_phases_json if hasattr(row, 'session_phases_json') and row.session_phases_json else '',
         'training_plans_products_json': row.training_plans_products_json if hasattr(row, 'training_plans_products_json') and row.training_plans_products_json else '',
+        'operating_hours_json': getattr(row, 'operating_hours_json', None) or '',
+        'map_url': getattr(row, 'map_url', None) or '',
+        'class_schedule_json': getattr(row, 'class_schedule_json', None) or '',
+        'testimonials_json': getattr(row, 'testimonials_json', None) or '',
+        'pricing_tiers_json': getattr(row, 'pricing_tiers_json', None) or '',
+        'faq_json': getattr(row, 'faq_json', None) or '',
     }
     return jsonify(out), 200
 
@@ -1336,11 +1552,13 @@ def update_site_settings():
     for key in ('contact_email', 'contact_phone', 'address_fa', 'address_en',
                 'app_description_fa', 'app_description_en',
                 'instagram_url', 'telegram_url', 'whatsapp_url', 'twitter_url',
-                'facebook_url', 'linkedin_url', 'youtube_url', 'copyright_text'):
+                'facebook_url', 'linkedin_url', 'youtube_url', 'copyright_text', 'map_url'):
         if key in data and data[key] is not None and hasattr(row, key):
             val = data[key]
             setattr(row, key, (val.strip() if isinstance(val, str) else val))
-    for key in ('session_phases_json', 'training_plans_products_json'):
+    for key in ('session_phases_json', 'training_plans_products_json',
+                'operating_hours_json', 'class_schedule_json', 'testimonials_json',
+                'pricing_tiers_json', 'faq_json'):
         if key in data and hasattr(row, key):
             val = data[key]
             if val is None:

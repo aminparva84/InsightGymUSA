@@ -1,13 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
-import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { getApiBase } from '../services/apiBase';
 import { useAuth } from '../context/AuthContext';
 import './TrainingWithAgent.css';
 
 const TrainingWithAgent = () => {
-  const { i18n } = useTranslation();
   const API_BASE = getApiBase();
   const { user } = useAuth();
   const [meetings, setMeetings] = useState([]);
@@ -79,9 +77,7 @@ const TrainingWithAgent = () => {
       loadMeetings();
     } catch (error) {
       console.error('Error saving meeting:', error);
-      alert(i18n.language === 'fa' 
-        ? 'خطا در ذخیره جلسه. لطفاً دوباره تلاش کنید.'
-        : 'Error saving meeting. Please try again.');
+      alert('Error saving meeting. Please try again.');
     }
   };
 
@@ -95,9 +91,7 @@ const TrainingWithAgent = () => {
       loadMeetings();
     } catch (error) {
       console.error('Error accepting meeting:', error);
-      alert(i18n.language === 'fa' 
-        ? 'خطا در پذیرش جلسه.'
-        : 'Error accepting meeting.');
+      alert('Error accepting meeting.');
     }
   };
 
@@ -111,9 +105,7 @@ const TrainingWithAgent = () => {
       loadMeetings();
     } catch (error) {
       console.error('Error denying meeting:', error);
-      alert(i18n.language === 'fa' 
-        ? 'خطا در رد جلسه.'
-        : 'Error denying meeting.');
+      alert('Error denying meeting.');
     }
   };
 
@@ -129,9 +121,7 @@ const TrainingWithAgent = () => {
   };
 
   const handleDelete = async (meetingId) => {
-    if (!window.confirm(i18n.language === 'fa' 
-      ? 'آیا مطمئن هستید که می‌خواهید این جلسه را حذف کنید؟'
-      : 'Are you sure you want to delete this meeting?')) {
+    if (!window.confirm('Are you sure you want to delete this meeting?')) {
       return;
     }
 
@@ -143,29 +133,17 @@ const TrainingWithAgent = () => {
       loadMeetings();
     } catch (error) {
       console.error('Error deleting meeting:', error);
-      alert(i18n.language === 'fa' 
-        ? 'خطا در حذف جلسه.'
-        : 'Error deleting meeting.');
+      alert('Error deleting meeting.');
     }
   };
 
   const getStatusLabel = (status) => {
-    if (i18n.language === 'fa') {
-      switch (status) {
-        case 'pending': return 'در انتظار';
-        case 'accepted': return 'پذیرفته شده';
-        case 'denied': return 'رد شده';
-        case 'completed': return 'تکمیل شده';
-        default: return status;
-      }
-    } else {
-      switch (status) {
-        case 'pending': return 'Pending';
-        case 'accepted': return 'Accepted';
-        case 'denied': return 'Denied';
-        case 'completed': return 'Completed';
-        default: return status;
-      }
+    switch (status) {
+      case 'pending': return 'Pending';
+      case 'accepted': return 'Accepted';
+      case 'denied': return 'Denied';
+      case 'completed': return 'Completed';
+      default: return status;
     }
   };
 
@@ -182,7 +160,7 @@ const TrainingWithAgent = () => {
   return (
     <div className="training-with-agent" dir="ltr">
       <div className="training-with-agent-header">
-        <h3>{i18n.language === 'fa' ? 'تمرین با مربی' : 'Training with Agent'}</h3>
+        <h3>Training with Agent</h3>
         <button 
           className="new-meeting-btn"
           onClick={() => {
@@ -191,7 +169,7 @@ const TrainingWithAgent = () => {
             setFormData({ date: '', time: '', duration: 60, notes: '' });
           }}
         >
-          {i18n.language === 'fa' ? '+ جلسه جدید' : '+ New Meeting'}
+          + New Meeting
         </button>
       </div>
 
@@ -203,9 +181,7 @@ const TrainingWithAgent = () => {
         }}>
           <div className="meeting-modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="meeting-modal-header">
-              <h3>{editingMeeting 
-                ? (i18n.language === 'fa' ? 'ویرایش جلسه' : 'Edit Meeting')
-                : (i18n.language === 'fa' ? 'جلسه جدید' : 'New Meeting')}</h3>
+              <h3>{editingMeeting ? 'Edit Meeting' : 'New Meeting'}</h3>
               <button 
                 className="modal-close-btn"
                 onClick={() => {
@@ -220,7 +196,7 @@ const TrainingWithAgent = () => {
             <form className="meeting-form" onSubmit={handleSubmit}>
               <div className="form-row">
                 <div className="form-group">
-                  <label>{i18n.language === 'fa' ? 'تاریخ' : 'Date'}</label>
+                  <label>Date</label>
                   <input
                     type="date"
                     value={formData.date}
@@ -229,7 +205,7 @@ const TrainingWithAgent = () => {
                   />
                 </div>
                 <div className="form-group">
-                  <label>{i18n.language === 'fa' ? 'زمان' : 'Time'}</label>
+                  <label>Time</label>
                   <input
                     type="time"
                     value={formData.time}
@@ -239,7 +215,7 @@ const TrainingWithAgent = () => {
                 </div>
               </div>
               <div className="form-group">
-                <label>{i18n.language === 'fa' ? 'مدت زمان (دقیقه)' : 'Duration (minutes)'}</label>
+                <label>Duration (minutes)</label>
                 <input
                   type="number"
                   value={formData.duration}
@@ -250,7 +226,7 @@ const TrainingWithAgent = () => {
                 />
               </div>
               <div className="form-group">
-                <label>{i18n.language === 'fa' ? 'یادداشت' : 'Notes'}</label>
+                <label>Notes</label>
                 <textarea
                   value={formData.notes}
                   onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
@@ -259,9 +235,7 @@ const TrainingWithAgent = () => {
               </div>
               <div className="form-actions">
                 <button type="submit" className="submit-btn">
-                  {editingMeeting 
-                    ? (i18n.language === 'fa' ? 'به‌روزرسانی' : 'Update')
-                    : (i18n.language === 'fa' ? 'ایجاد' : 'Create')}
+                  {editingMeeting ? 'Update' : 'Create'}
                 </button>
                 <button 
                   type="button" 
@@ -272,7 +246,7 @@ const TrainingWithAgent = () => {
                     setFormData({ date: '', time: '', duration: 60, notes: '' });
                   }}
                 >
-                  {i18n.language === 'fa' ? 'لغو' : 'Cancel'}
+                  Cancel
                 </button>
               </div>
             </form>
@@ -283,10 +257,10 @@ const TrainingWithAgent = () => {
 
       <div className="meetings-list">
         {loading ? (
-          <div className="loading">{i18n.language === 'fa' ? 'در حال بارگذاری...' : 'Loading...'}</div>
+          <div className="loading">Loading...</div>
         ) : meetings.length === 0 ? (
           <div className="no-meetings">
-            {i18n.language === 'fa' ? 'هیچ جلسه‌ای وجود ندارد.' : 'No meetings scheduled.'}
+            No meetings scheduled.
           </div>
         ) : (
           meetings.map((meeting) => (
@@ -302,7 +276,7 @@ const TrainingWithAgent = () => {
               </div>
               {meeting.duration && (
                 <div className="meeting-duration">
-                  {i18n.language === 'fa' ? 'مدت زمان' : 'Duration'}: {meeting.duration} {i18n.language === 'fa' ? 'دقیقه' : 'minutes'}
+                  Duration: {meeting.duration} minutes
                 </div>
               )}
               {meeting.notes && (
@@ -315,13 +289,13 @@ const TrainingWithAgent = () => {
                       className="accept-btn"
                       onClick={() => handleAccept(meeting.id)}
                     >
-                      {i18n.language === 'fa' ? 'پذیرش' : 'Accept'}
+                      Accept
                     </button>
                     <button 
                       className="deny-btn"
                       onClick={() => handleDeny(meeting.id)}
                     >
-                      {i18n.language === 'fa' ? 'رد' : 'Deny'}
+                      Deny
                     </button>
                   </>
                 )}
@@ -329,13 +303,13 @@ const TrainingWithAgent = () => {
                   className="edit-btn"
                   onClick={() => handleEdit(meeting)}
                 >
-                  {i18n.language === 'fa' ? 'ویرایش' : 'Edit'}
+                  Edit
                 </button>
                 <button 
                   className="delete-btn"
                   onClick={() => handleDelete(meeting.id)}
                 >
-                  {i18n.language === 'fa' ? 'حذف' : 'Delete'}
+                  Delete
                 </button>
               </div>
             </div>

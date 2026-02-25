@@ -9,7 +9,7 @@ import './PurchasePage.css';
 const DISCOUNT_CODE = 'FREE100';
 
 const PurchasePage = () => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const API_BASE = getApiBase();
   const { user } = useAuth();
   const location = useLocation();
@@ -67,7 +67,7 @@ const PurchasePage = () => {
         packages,
         ems_form: emsForm,
         discount_code: discountCode.trim(),
-        language: i18n.language || 'fa',
+        language: 'en',
       }, config);
       setResult({ ok: true, data: res.data });
       if (res.data?.status === 'paid') {
@@ -102,7 +102,7 @@ const PurchasePage = () => {
   }
 
   return (
-    <div className="purchase-page" dir={i18n.language === 'fa' ? 'rtl' : 'ltr'}>
+    <div className="purchase-page" dir="ltr">
       {isSubmitting && (
         <div className="purchase-loading-overlay" aria-live="polite">
           <div className="purchase-loading-spinner" />
@@ -120,12 +120,12 @@ const PurchasePage = () => {
         <div className="purchase-section">
           <h3>{t('purchaseSummary')}</h3>
           <div className="purchase-summary-row">
-            <span>{program.nameKey ? t(program.nameKey) : (i18n.language === 'fa' ? program.name_fa : program.name_en) || program.name || (i18n.language === 'fa' ? 'برنامه تمرینی' : 'Training program')}</span>
+            <span>{program.nameKey ? t(program.nameKey) : (program.name_en || program.name_fa) || program.name || 'Training program'}</span>
             <span>${program.price || 0}</span>
           </div>
           {packages.map((pkg) => (
             <div key={pkg.id} className="purchase-summary-row">
-              <span>{pkg.nameKey ? t(pkg.nameKey) : (i18n.language === 'fa' ? pkg.name_fa : pkg.name_en) || pkg.name}</span>
+              <span>{pkg.nameKey ? t(pkg.nameKey) : (pkg.name_en || pkg.name_fa) || pkg.name}</span>
               <span>+${pkg.price}</span>
             </div>
           ))}

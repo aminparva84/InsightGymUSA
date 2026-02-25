@@ -5,14 +5,14 @@
   min-width: 0;
   margin: 0;
   padding: 0 0 1rem 0;
-  background-color: var(--color-white);
+  background-color: var(--bg-card);
   min-height: calc(100vh - 200px);
 }
 
 .programs-header {
   margin-bottom: 2rem;
   padding-bottom: 1rem;
-  border-bottom: 2px solid var(--color-primary-200);
+  border-bottom: 2px solid var(--border);
 }
 
 .programs-header h2 {
@@ -27,7 +27,7 @@
 
 .programs-subtitle {
   margin: 0.5rem 0 0 0;
-  color: var(--color-primary-600);
+  color: var(--text-secondary);
   font-size: 0.95rem;
 }
 
@@ -38,7 +38,7 @@
 .action-notes-program-title h3 {
   margin: 0;
   font-size: 1.25rem;
-  color: var(--color-primary-800);
+  color: var(--text-primary);
 }
 
 .action-notes-actions {
@@ -53,15 +53,15 @@
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
-  border: 1px solid var(--color-primary-300);
-  background: var(--color-primary-50);
-  color: var(--color-primary-800);
+  border: 1px solid var(--border-strong);
+  background: var(--bg-elevated);
+  color: var(--text-primary);
 }
 
 .btn-save-notes:hover:not(:disabled),
 .btn-notify-members:hover:not(:disabled) {
-  background: var(--color-primary-100);
-  border-color: var(--color-accent-500);
+  background: var(--bg-elevated);
+  border-color: var(--accent);
 }
 
 .btn-save-notes:disabled,
@@ -72,8 +72,8 @@
 
 .btn-notify-members {
   background: var(--gradient-accent);
-  color: var(--color-white);
-  border-color: var(--color-accent-500);
+  color: var(--text-primary);
+  border-color: var(--accent);
 }
 
 .btn-notify-members:hover:not(:disabled) {
@@ -87,7 +87,7 @@
 }
 
 .session-card-notes {
-  border: 1px solid var(--color-primary-200);
+  border: 1px solid var(--border);
   border-radius: 8px;
   overflow: hidden;
 }
@@ -97,7 +97,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 0.75rem 1rem;
-  background: var(--color-primary-50);
+  background: var(--bg-elevated);
   cursor: pointer;
   user-select: none;
 }
@@ -105,23 +105,23 @@
 .session-header-notes h5 {
   margin: 0;
   font-size: 1rem;
-  color: var(--color-primary-800);
+  color: var(--text-primary);
 }
 
 .session-toggle-icon {
   font-size: 0.85rem;
-  color: var(--color-primary-600);
+  color: var(--text-secondary);
 }
 
 .session-exercises-notes {
   padding: 1rem;
-  background: var(--color-white);
-  border-top: 1px solid var(--color-primary-200);
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
 }
 
 .exercise-note-row {
   padding: 1rem 0;
-  border-bottom: 1px solid var(--color-primary-100);
+  border-bottom: 1px solid var(--bg-elevated);
 }
 
 .exercise-note-row:last-child {
@@ -130,7 +130,7 @@
 
 .exercise-note-label {
   margin-bottom: 0.5rem;
-  color: var(--color-primary-700);
+  color: var(--text-secondary);
 }
 
 .exercise-note-label strong {
@@ -151,12 +151,12 @@
 
 .exercise-note-fields label span {
   font-size: 0.85rem;
-  color: var(--color-primary-600);
+  color: var(--text-secondary);
 }
 
 .exercise-note-fields textarea {
   padding: 0.5rem;
-  border: 1px solid var(--color-primary-200);
+  border: 1px solid var(--border);
   border-radius: 6px;
   font-family: inherit;
   resize: vertical;
@@ -170,7 +170,7 @@
 
 .voice-note-field span {
   font-size: 0.85rem;
-  color: var(--color-primary-600);
+  color: var(--text-secondary);
 }
 
 .voice-note-field input[type="file"] {
@@ -188,7 +188,7 @@
 
 .uploading-label {
   font-size: 0.9rem;
-  color: var(--color-primary-600);
+  color: var(--text-secondary);
 }
 
 .programs-content {
@@ -198,10 +198,10 @@
 }
 
 .members-sidebar {
-  background: var(--color-primary-50);
+  background: var(--bg-elevated);
   border-radius: 8px;
   padding: 1.5rem;
-  border: 1px solid var(--color-primary-200);
+  border: 1px solid var(--border);
   height: fit-content;
   max-height: calc(100vh - 300px);
   overflow-y: auto;
@@ -211,7 +211,7 @@
   margin: 0 0 1rem 0;
   font-size: 1.2rem;
   font-weight: 600;
-  color: var(--color-primary-800);
+  color: var(--text-primary);
 }
 
 .members-list {
@@ -222,31 +222,31 @@
 
 .member-item {
   padding: 0.75rem 1rem;
-  background: var(--color-white);
-  border: 1px solid var(--color-primary-200);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.3s ease;
-  color: var(--color-primary-800);
+  color: var(--text-primary);
   font-weight: 500;
 }
 
 .member-item:hover {
-  background: var(--color-primary-100);
-  border-color: var(--color-secondary-500);
+  background: var(--bg-elevated);
+  border-color: var(--accent);
 }
 
 .member-item.active {
   background: var(--gradient-accent);
-  color: var(--color-white);
-  border-color: var(--color-accent-500);
+  color: var(--text-primary);
+  border-color: var(--accent);
 }
 
 .programs-main {
-  background: var(--color-white);
+  background: var(--bg-card);
   border-radius: 8px;
   padding: 2rem;
-  border: 1px solid var(--color-primary-200);
+  border: 1px solid var(--border);
   min-height: 400px;
 }
 
@@ -261,7 +261,7 @@
 
 .select-member-prompt p,
 .no-programs p {
-  color: var(--color-primary-600);
+  color: var(--text-secondary);
   font-size: 1.1rem;
   margin: 0;
 }
@@ -273,27 +273,27 @@
 }
 
 .program-card {
-  background: var(--color-primary-50);
-  border: 1px solid var(--color-primary-200);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
   border-radius: 8px;
   padding: 1.5rem;
 }
 
 .program-card h3 {
   margin: 0 0 0.5rem 0;
-  color: var(--color-primary-800);
+  color: var(--text-primary);
   font-size: 1.2rem;
 }
 
 .program-card p {
   margin: 0;
-  color: var(--color-primary-600);
+  color: var(--text-secondary);
 }
 
 .loading {
   text-align: center;
   padding: 2rem;
-  color: var(--color-primary-800);
+  color: var(--text-primary);
 }
 
 @media (max-width: 1024px) {

@@ -5,21 +5,21 @@
   min-width: 0;
   margin: 0;
   padding: 0 0 1rem 0;
-  background-color: #ffffff;
+  background-color: var(--bg-card);
 }
 
 .tips-tab h2 {
-  color: #000000;
+  color: var(--text-primary);
   margin-bottom: 2rem;
-  background-color: #ffffff;
+  background-color: var(--bg-card);
 }
 
 .no-data {
   text-align: center;
   padding: 3rem;
-  color: #000000;
+  color: var(--text-primary);
   font-size: 1.1rem;
-  background-color: #ffffff;
+  background-color: var(--bg-card);
 }
 
 .tips-list {
@@ -29,8 +29,8 @@
 }
 
 .tip-card {
-  background-color: #ffffff;
-  border: 1px solid #e0e0e0;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
   border-radius: 8px;
   padding: 1.5rem;
   transition: transform 0.3s, box-shadow 0.3s;
@@ -44,7 +44,7 @@
 .tip-card:hover {
   transform: translateY(-3px);
   box-shadow: 0 5px 20px rgba(246, 243, 194, 0.2);
-  border-color: #F6F3C2;
+  border-color: var(--warning-muted);
 }
 
 .tip-header {
@@ -56,37 +56,37 @@
 }
 
 .tip-header h3 {
-  color: #000000;
+  color: var(--text-primary);
   margin: 0;
   flex: 1;
 }
 
 .tip-category {
-  background-color: #f8f9fa;
+  background-color: var(--bg-elevated);
   padding: 0.25rem 0.75rem;
   border-radius: 4px;
   font-size: 0.85rem;
-  color: #000000;
+  color: var(--text-primary);
   white-space: nowrap;
 }
 
 .tip-content {
-  color: #000000;
+  color: var(--text-primary);
   line-height: 1.8;
   margin-bottom: 1rem;
 }
 
 .tip-date {
   font-size: 0.85rem;
-  color: #000000;
+  color: var(--text-primary);
   text-align: left;
 }
 
 .loading {
   text-align: center;
   padding: 3rem;
-  color: #000000;
-  background-color: #ffffff;
+  color: var(--text-primary);
+  background-color: var(--bg-card);
 }
 
 @media (max-width: 768px) {

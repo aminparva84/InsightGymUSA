@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { getApiBase } from '../../services/apiBase';
 import './MembersProgramsTab.css';
@@ -7,7 +6,6 @@ import './MembersProgramsTab.css';
 const API_BASE = getApiBase();
 
 const MembersProgramsTab = () => {
-  const { i18n } = useTranslation();
   const [programs, setPrograms] = useState([]);
   const [selectedProgram, setSelectedProgram] = useState(null);
   const [programDetail, setProgramDetail] = useState(null);
@@ -37,7 +35,7 @@ const MembersProgramsTab = () => {
     try {
       setLoading(true);
       const res = await axios.get(
-        `${API_BASE}/api/admin/programs?language=${i18n.language || 'fa'}`,
+        `${API_BASE}/api/admin/programs?language=en`,
         getAxiosConfig()
       );
       const list = Array.isArray(res.data) ? res.data : [];
@@ -51,13 +49,13 @@ const MembersProgramsTab = () => {
     } finally {
       setLoading(false);
     }
-  }, [getAxiosConfig, i18n.language]);
+  }, [getAxiosConfig]);
 
   const loadActionNotes = useCallback(async (programId) => {
     if (!programId) return;
     try {
       const res = await axios.get(
-        `${API_BASE}/api/admin/programs/${programId}/action-notes?language=${i18n.language || 'fa'}`,
+        `${API_BASE}/api/admin/programs/${programId}/action-notes?language=en`,
         getAxiosConfig()
       );
       const list = Array.isArray(res.data) ? res.data : [];
@@ -76,7 +74,7 @@ const MembersProgramsTab = () => {
       console.error('Error loading action notes:', err);
       setActionNotes([]);
     }
-  }, [getAxiosConfig, i18n.language]);
+  }, [getAxiosConfig]);
 
   useEffect(() => {
     if (selectedProgram) {
@@ -144,13 +142,13 @@ const MembersProgramsTab = () => {
       setNotesDirty({});
       await loadActionNotes(selectedProgram.id);
       if (notifyMembers) {
-        alert(i18n.language === 'fa' ? 'یادداشت‌ها ذخیره و به اعضا اعلان شد.' : 'Notes saved and members notified.');
+        alert('Notes saved and members notified.');
       } else {
-        alert(i18n.language === 'fa' ? 'یادداشت‌ها ذخیره شد.' : 'Notes saved.');
+        alert('Notes saved.');
       }
     } catch (err) {
       console.error('Error saving notes:', err);
-      alert(i18n.language === 'fa' ? 'خطا در ذخیره' : 'Error saving');
+      alert('Error saving');
     } finally {
       setSaving(false);
     }
@@ -173,7 +171,7 @@ const MembersProgramsTab = () => {
       if (voice_url) setNote(sessionIdx, exIdx, 'voice_url', voice_url);
     } catch (err) {
       console.error('Voice upload failed:', err);
-      alert(i18n.language === 'fa' ? 'آپلود صدا ناموفق بود' : 'Voice upload failed');
+      alert('Voice upload failed');
     } finally {
       setVoiceUploading(null);
     }
@@ -184,19 +182,17 @@ const MembersProgramsTab = () => {
   return (
     <div className="members-programs-tab" dir="ltr">
       <div className="programs-header">
-        <h2>{i18n.language === 'fa' ? 'برنامه اعضا و یادداشت‌های مربی' : 'Members Programs & Trainer Notes'}</h2>
+        <h2>Members Programs & Trainer Notes</h2>
         <p className="programs-subtitle">
-          {i18n.language === 'fa'
-            ? 'برنامه را انتخاب کنید و برای هر تمرین یادداشت یا صدای مربی اضافه کنید. با «اعلان به اعضا» یادداشت‌های جدید به اعضا ارسال می‌شود.'
-            : 'Select a program and add trainer notes or voice notes per exercise. Use "Notify members" to send new notes to members.'}
+          Select a program and add trainer notes or voice notes per exercise. Use &quot;Notify members&quot; to send new notes to members.
         </p>
       </div>
 
       <div className="programs-content">
         <div className="members-sidebar">
-          <h3>{i18n.language === 'fa' ? 'لیست برنامه‌ها' : 'Programs'}</h3>
+          <h3>Programs</h3>
           {loading ? (
-            <div className="loading">{i18n.language === 'fa' ? 'در حال بارگذاری...' : 'Loading...'}</div>
+            <div className="loading">Loading...</div>
           ) : (
             <div className="members-list">
               {programs.map((prog) => (
@@ -205,7 +201,7 @@ const MembersProgramsTab = () => {
                   className={`member-item ${selectedProgram?.id === prog.id ? 'active' : ''}`}
                   onClick={() => setSelectedProgram(prog)}
                 >
-                  {prog.name || prog.name_fa || prog.name_en || `Program ${prog.id}`}
+                  {prog.name_en || prog.name || prog.name_fa || `Program ${prog.id}`}
                 </div>
               ))}
             </div>
@@ -215,16 +211,16 @@ const MembersProgramsTab = () => {
         <div className="programs-main">
           {!selectedProgram ? (
             <div className="select-member-prompt">
-              <p>{i18n.language === 'fa' ? 'یک برنامه را انتخاب کنید' : 'Select a program'}</p>
+              <p>Select a program</p>
             </div>
           ) : !programDetail?.sessions?.length ? (
             <div className="no-programs">
-              <p>{i18n.language === 'fa' ? 'این برنامه جلسه یا تمرینی ندارد.' : 'This program has no sessions or exercises.'}</p>
+              <p>This program has no sessions or exercises.</p>
             </div>
           ) : (
             <>
               <div className="action-notes-program-title">
-                <h3>{programDetail.name || programDetail.name_fa || programDetail.name_en}</h3>
+                <h3>{programDetail.name_en || programDetail.name || programDetail.name_fa}</h3>
               </div>
               <div className="action-notes-actions">
                 <button
@@ -233,7 +229,7 @@ const MembersProgramsTab = () => {
                   onClick={() => saveNotes(false)}
                   disabled={saving || !hasDirty}
                 >
-                  {saving ? '…' : i18n.language === 'fa' ? 'ذخیره یادداشت‌ها' : 'Save notes'}
+                  {saving ? '…' : 'Save notes'}
                 </button>
                 <button
                   type="button"
@@ -241,7 +237,7 @@ const MembersProgramsTab = () => {
                   onClick={() => saveNotes(true)}
                   disabled={saving || !hasDirty}
                 >
-                  {saving ? '…' : i18n.language === 'fa' ? 'ذخیره و اعلان به اعضا' : 'Save and notify members'}
+                  {saving ? '…' : 'Save and notify members'}
                 </button>
               </div>
               <div className="sessions-list-notes">
@@ -254,7 +250,7 @@ const MembersProgramsTab = () => {
                         onClick={() => toggleSession(sessionIdx)}
                       >
                         <h5>
-                          {session.name || session.name_fa || session.name_en || `Session ${sessionIdx + 1}`}
+                          {session.name_en || session.name || session.name_fa || `Session ${sessionIdx + 1}`}
                         </h5>
                         <span className="session-toggle-icon">{isExpanded ? '▼' : '▶'}</span>
                       </div>
@@ -267,32 +263,32 @@ const MembersProgramsTab = () => {
                               <div key={exIdx} className="exercise-note-row">
                                 <div className="exercise-note-label">
                                   <strong>
-                                    {exercise.name || exercise.name_fa || exercise.name_en || `Exercise ${exIdx + 1}`}
+                                    {exercise.name_en || exercise.name || exercise.name_fa || `Exercise ${exIdx + 1}`}
                                   </strong>
                                   {exercise.sets && <span> — {exercise.sets} sets</span>}
                                   {exercise.reps != null && <span> × {exercise.reps} reps</span>}
                                 </div>
                                 <div className="exercise-note-fields">
                                   <label>
-                                    <span>{i18n.language === 'fa' ? 'یادداشت (فا)' : 'Note (FA)'}</span>
-                                    <textarea
-                                      value={note.note_fa}
-                                      onChange={(e) => setNote(sessionIdx, exIdx, 'note_fa', e.target.value)}
-                                      rows={2}
-                                      placeholder={i18n.language === 'fa' ? 'یادداشت فارسی' : 'Persian note'}
-                                    />
-                                  </label>
-                                  <label>
-                                    <span>{i18n.language === 'fa' ? 'یادداشت (EN)' : 'Note (EN)'}</span>
+                                    <span>Note</span>
                                     <textarea
                                       value={note.note_en}
                                       onChange={(e) => setNote(sessionIdx, exIdx, 'note_en', e.target.value)}
                                       rows={2}
-                                      placeholder={i18n.language === 'fa' ? 'یادداشت انگلیسی' : 'English note'}
+                                      placeholder="Coach note for this exercise"
+                                    />
+                                  </label>
+                                  <label>
+                                    <span>Alternate Note</span>
+                                    <textarea
+                                      value={note.note_fa}
+                                      onChange={(e) => setNote(sessionIdx, exIdx, 'note_fa', e.target.value)}
+                                      rows={2}
+                                      placeholder="Optional"
                                     />
                                   </label>
                                   <div className="voice-note-field">
-                                    <span>{i18n.language === 'fa' ? 'صدای مربی' : 'Voice note'}</span>
+                                    <span>Voice note</span>
                                     <input
                                       type="file"
                                       accept=".webm,.mp3,.ogg,.wav,.m4a,audio/*"

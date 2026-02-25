@@ -14,7 +14,7 @@
    npm start
    ```
 
-3. Go to `http://localhost:3000`
+3. Go to `http://localhost:3001`
 4. Click "ثبت نام" (Register)
 5. Create account with:
    - Username: `demo`
@@ -28,7 +28,7 @@ If backend is running, you can use this Python script:
 ```python
 import requests
 
-response = requests.post('http://localhost:5000/api/register', json={
+response = requests.post('http://localhost:5001/api/register', json={
     'username': 'demo',
     'email': 'demo@raha-fitness.com',
     'password': 'demo123',
@@ -40,7 +40,7 @@ print(response.json())
 
 Or use curl:
 ```bash
-curl -X POST http://localhost:5000/api/register \
+curl -X POST http://localhost:5001/api/register \
   -H "Content-Type: application/json" \
   -d '{"username":"demo","email":"demo@raha-fitness.com","password":"demo123","language":"fa"}'
 ```
@@ -57,7 +57,7 @@ Check the backend terminal for error messages. Common issues:
 
 If there are database issues:
 
-- **PostgreSQL:** Ensure `DATABASE_URL` in `.env` is correct and the database exists (e.g. `createdb raha_fitness`). Then run:
+- **PostgreSQL:** Ensure `DATABASE_URL` in `.env` is correct and the database exists (e.g. `createdb insight_gym_usa`). Then run:
   ```bash
   cd backend
   python init_database.py   # creates tables
