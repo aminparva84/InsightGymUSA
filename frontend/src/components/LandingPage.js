@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useAuthModal } from '../context/AuthModalContext';
 import AppHeader from './AppHeader';
-import AuthModal from './AuthModal';
+import TypingTextWithGlow from './TypingTextWithGlow';
 import TrainingProgramsModal from './TrainingProgramsModal';
-import LandingChatWidget from './LandingChatWidget';
 import axios from 'axios';
 import { getApiBase } from '../services/apiBase';
+import './TypingTextWithGlow.css';
 import './LandingPage.css';
 
 function parseJson(str) {
@@ -48,7 +49,7 @@ const LandingPage = () => {
   const API_BASE = getApiBase();
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [showAuthModal, setShowAuthModal] = useState(false);
+  const { openAuth } = useAuthModal();
   const [showTrainingProgramsModal, setShowTrainingProgramsModal] = useState(false);
   const [hasTrainingProgram, setHasTrainingProgram] = useState(false);
   const [checkingProgram, setCheckingProgram] = useState(false);
@@ -88,7 +89,7 @@ const LandingPage = () => {
 
   const handleAuth = () => {
     if (user) navigate('/dashboard');
-    else setShowAuthModal(true);
+    else openAuth();
   };
 
   return (
@@ -97,11 +98,21 @@ const LandingPage = () => {
 
       <main className="lp-main">
         <section className="lp-hero">
-          <div className="lp-hero-bg" />
+          <div className="lp-hero-bg">
+            <span className="lp-hero-orb lp-hero-orb-1" aria-hidden="true" />
+            <span className="lp-hero-orb lp-hero-orb-2" aria-hidden="true" />
+            <span className="lp-hero-orb lp-hero-orb-3" aria-hidden="true" />
+          </div>
           <div className="lp-hero-content">
             <span className="lp-hero-badge">AI-Powered Fitness</span>
             <h2 className="lp-hero-title">
-              Transform Your Body.<br />Elevate Your Life.
+              <TypingTextWithGlow
+                text={'Transform Your Body.\nElevate Your Life.'}
+                className="lp-hero-title-wrap"
+                glowClassName="lp-hero-title-glow"
+                textClassName="lp-hero-title-text"
+                as="span"
+              />
             </h2>
             <p className="lp-hero-subtitle">
               Expert coaches meet smart technology. Get personalized workout plans, track progress, and achieve your goals.
@@ -196,14 +207,14 @@ const LandingPage = () => {
               {checkingProgram ? 'Checking...' : hasTrainingProgram ? 'View Training Program' : 'Get Membership'}
             </button>
           ) : (
-            <button className="lp-cta-btn lp-cta-btn-prominent" onClick={() => setShowAuthModal(true)}>
+            <button className="lp-cta-btn lp-cta-btn-prominent" onClick={openAuth}>
               Start Free Trial — 7 Days Free
             </button>
           )}
         </section>
       </main>
 
-      <footer className="lp-footer">
+      <footer className="lp-footer" id="contact">
         <div className="lp-footer-inner">
           <div className="lp-footer-grid">
             <div>
@@ -220,9 +231,6 @@ const LandingPage = () => {
         </div>
       </footer>
 
-      <LandingChatWidget onOpenAuth={() => setShowAuthModal(true)} />
-
-      <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
       <TrainingProgramsModal isOpen={showTrainingProgramsModal} onClose={() => setShowTrainingProgramsModal(false)} />
     </div>
   );

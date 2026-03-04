@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import axios from 'axios';
 import { getApiBase } from '../services/apiBase';
 import { useAuth } from '../context/AuthContext';
-import DashboardIcon from './DashboardIcon';
+import TypingTextWithGlow from './TypingTextWithGlow';
+import './TypingTextWithGlow.css';
 import './LandingChatWidget.css';
 
 const API_BASE = getApiBase();
@@ -149,9 +150,14 @@ const LandingChatWidget = ({ onOpenAuth }) => {
             onClick={handleCollapsedClick}
             aria-label="Chat with AI"
           >
-            <span className="lp-chat-ai-circle">
-              <DashboardIcon name="smart_toy" />
-            </span>
+            <TypingTextWithGlow
+              text="AI gym..."
+              typing
+              className="lp-chat-typing-wrap"
+              glowClassName="lp-chat-trigger-glow"
+              textClassName="lp-chat-typing-label"
+              glowInsideText={false}
+            />
           </button>
         )}
 

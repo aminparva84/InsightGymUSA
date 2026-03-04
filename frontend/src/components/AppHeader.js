@@ -6,11 +6,14 @@ import axios from 'axios';
 import { getApiBase } from '../services/apiBase';
 import './AppHeader.css';
 
-const AppHeader = ({ onOpenAuth, showNotifications, userRole }) => {
+const AppHeader = ({ showNotifications = true, userRole: propUserRole } = {}) => {
   const { user, logout } = useAuth();
+  const userRole = user?.role ?? propUserRole ?? null;
+  const showBell = showNotifications && (userRole === 'member' || userRole === 'admin' || userRole === 'coach');
   const navigate = useNavigate();
   const API_BASE = getApiBase();
   const [isScrolled, setIsScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
@@ -44,12 +47,12 @@ const AppHeader = ({ onOpenAuth, showNotifications, userRole }) => {
   }, []);
 
   useEffect(() => {
-    if (user && userRole && showNotifications) loadNotifications();
-  }, [user, userRole, showNotifications, loadNotifications]);
+    if (user && showBell) loadNotifications();
+  }, [user, showBell, loadNotifications]);
 
   useEffect(() => {
-    if (notificationsOpen && user && showNotifications) loadNotifications();
-  }, [notificationsOpen, user, showNotifications, loadNotifications]);
+    if (notificationsOpen && user && showBell) loadNotifications();
+  }, [notificationsOpen, user, showBell, loadNotifications]);
 
   const unreadCount = notifications.filter((n) => !n.read_at).length;
 
@@ -98,42 +101,76 @@ const AppHeader = ({ onOpenAuth, showNotifications, userRole }) => {
   }, [notificationsOpen]);
 
   const handleAuth = () => {
-    if (user) navigate('/dashboard');
+    setMobileMenuOpen(false);
+    if (user) navTo('/dashboard');
     else setShowAuthModal(true);
   };
 
   const handleLogout = () => {
     logout();
     navigate('/');
+    setMobileMenuOpen(false);
   };
 
+  const navTo = (path) => {
+    navigate(path);
+    setMobileMenuOpen(false);
+  };
+
+  const goToContact = () => {
+    setMobileMenuOpen(false);
+    const contactEl = document.getElementById('contact');
+    if (contactEl) {
+      contactEl.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      navigate('/');
+      setTimeout(() => {
+        document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+      }, 150);
+    }
+  };
+
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === 'Escape') setMobileMenuOpen(false);
+    };
+    window.addEventListener('keydown', handleEscape);
+    return () => window.removeEventListener('keydown', handleEscape);
+  }, []);
+
+  /* Push layout: add body class when menu opens */
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.classList.add('app-menu-open');
+    } else {
+      document.body.classList.remove('app-menu-open');
+    }
+    return () => document.body.classList.remove('app-menu-open');
+  }, [mobileMenuOpen]);
+
   return (
-    <>
-      <header className={`app-header ${isScrolled ? 'scrolled' : ''}`}>
+    <div className="app-header-root">
+      {mobileMenuOpen && (
+        <div
+          className="app-header-menu-overlay"
+          onClick={() => setMobileMenuOpen(false)}
+          onKeyDown={(e) => e.key === 'Enter' && setMobileMenuOpen(false)}
+          role="button"
+          tabIndex={0}
+          aria-label="Close menu"
+        />
+      )}
+      <header className={`app-header ${isScrolled ? 'scrolled' : ''} ${mobileMenuOpen ? 'menu-open' : ''}`}>
         <div className="app-header-inner">
-          <h1 className="app-header-logo" onClick={() => navigate('/')}>
+          <h1 className="app-header-logo" onClick={() => navTo('/')}>
             Insight GYM USA
           </h1>
-          <nav className="app-header-nav">
-            <button className="app-header-nav-btn" onClick={() => navigate('/schedule')}>
-              Schedule
-            </button>
-            <button className="app-header-nav-btn" onClick={() => navigate('/trainers')}>
-              Our Team
-            </button>
-            <button className="app-header-nav-btn" onClick={() => navigate('/pricing')}>
-              Pricing
-            </button>
-            {user && (
-              <button className="app-header-nav-btn" onClick={() => navigate('/dashboard')}>
-                Dashboard
-              </button>
-            )}
-            {showNotifications && (userRole === 'member' || userRole === 'admin' || userRole === 'coach') && (
+          <div className="app-header-right">
+            {showBell && (
               <div className="app-header-notifications-wrap">
                 <button
                   type="button"
-                  className="app-header-notifications-btn"
+                  className={`app-header-notifications-btn ${notificationsOpen ? 'is-open' : ''}`}
                   onClick={(e) => { e.stopPropagation(); setNotificationsOpen((o) => !o); }}
                   title="Notifications"
                   aria-label="Notifications"
@@ -197,24 +234,59 @@ const AppHeader = ({ onOpenAuth, showNotifications, userRole }) => {
                 )}
               </div>
             )}
-            {user && <span className="app-header-username">{user.username}</span>}
+            {user && (
+              <button
+                type="button"
+                className="app-header-username"
+                onClick={() => navTo('/dashboard')}
+              >
+                {user.username}
+              </button>
+            )}
             {user ? (
               <button className="app-header-nav-btn app-header-nav-btn-primary" onClick={handleLogout}>
                 Logout
               </button>
             ) : (
               <button className="app-header-nav-btn app-header-nav-btn-primary" onClick={handleAuth}>
-                Get Started
+                Login
               </button>
             )}
-          </nav>
+            <button
+              type="button"
+              className="app-header-hamburger"
+              onClick={() => setMobileMenuOpen((o) => !o)}
+              aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={mobileMenuOpen}
+            >
+              <span className="app-header-hamburger-line" />
+              <span className="app-header-hamburger-line" />
+              <span className="app-header-hamburger-line" />
+            </button>
+          </div>
         </div>
       </header>
+
+      {/* Hamburger menu - Schedule, Our Team, Pricing, Contact Us */}
+      <nav className={`app-header-menu ${mobileMenuOpen ? 'open' : ''}`} aria-label="Main navigation">
+        <button className="app-header-menu-btn" onClick={() => navTo('/schedule')}>
+          Schedule
+        </button>
+        <button className="app-header-menu-btn" onClick={() => navTo('/trainers')}>
+          Our Team
+        </button>
+        <button className="app-header-menu-btn" onClick={() => navTo('/pricing')}>
+          Pricing
+        </button>
+        <button className="app-header-menu-btn" onClick={goToContact}>
+          Contact Us
+        </button>
+      </nav>
 
       {showAuthModal && (
         <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
       )}
-    </>
+    </div>
   );
 };
 

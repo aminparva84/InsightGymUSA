@@ -3,6 +3,8 @@
 .lp {
   min-height: 100vh;
   background: var(--bg-dark);
+  overflow-x: hidden;
+  width: 100%;
 }
 
 /* Hero */
@@ -13,23 +15,97 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 6rem 2rem 4rem;
+  padding: max(6rem, calc(env(safe-area-inset-top) + 4rem)) max(2rem, env(safe-area-inset-right)) 4rem max(2rem, env(safe-area-inset-left));
   overflow: hidden;
 }
 
+/* Hero background - layered gradient mesh with geometric accent */
 .lp-hero-bg {
   position: absolute;
   inset: 0;
-  background: 
-    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(249, 115, 22, 0.15) 0%, transparent 50%),
-    linear-gradient(180deg, var(--bg-dark) 0%, var(--bg-card) 100%);
+  overflow: hidden;
   pointer-events: none;
+}
+
+/* Base gradient and mesh */
+.lp-hero-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    /* Geometric dot grid - subtle fitness aesthetic */
+    radial-gradient(circle at 1px 1px, rgba(249, 115, 22, 0.08) 1px, transparent 0),
+    radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.03) 1px, transparent 0);
+  background-size: 32px 32px;
+  background-position: 0 0, 16px 16px;
+  mask-image: radial-gradient(ellipse 100% 80% at 50% 20%, black 20%, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse 100% 80% at 50% 20%, black 20%, transparent 70%);
+  opacity: 0.9;
+}
+
+.lp-hero-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    /* Soft glowing orbs */
+    radial-gradient(ellipse 60% 40% at 20% 30%, rgba(249, 115, 22, 0.2) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 35% at 80% 60%, rgba(249, 115, 22, 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse 70% 50% at 50% 0%, rgba(249, 115, 22, 0.25) 0%, transparent 55%),
+    /* Main gradient fade */
+    linear-gradient(165deg, rgba(10, 14, 26, 0.4) 0%, transparent 40%),
+    linear-gradient(180deg, var(--bg-dark) 0%, var(--bg-card) 100%);
+  background-blend-mode: normal, normal, normal, normal, normal;
+}
+
+/* Floating ambient orbs */
+.lp-hero-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.4;
+  animation: lp-orb-float 15s ease-in-out infinite;
+}
+
+.lp-hero-orb-1 {
+  width: min(400px, 80vw);
+  height: min(400px, 80vw);
+  background: radial-gradient(circle, rgba(249, 115, 22, 0.35) 0%, transparent 70%);
+  top: 10%;
+  left: -10%;
+  animation-delay: 0s;
+}
+
+.lp-hero-orb-2 {
+  width: min(300px, 60vw);
+  height: min(300px, 60vw);
+  background: radial-gradient(circle, rgba(249, 115, 22, 0.25) 0%, transparent 70%);
+  top: 50%;
+  right: -5%;
+  animation-delay: -5s;
+}
+
+.lp-hero-orb-3 {
+  width: min(250px, 50vw);
+  height: min(250px, 50vw);
+  background: radial-gradient(circle, rgba(249, 115, 22, 0.2) 0%, transparent 70%);
+  bottom: 10%;
+  left: 30%;
+  animation-delay: -10s;
+}
+
+@keyframes lp-orb-float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(3%, -3%) scale(1.05); }
+  66% { transform: translate(-2%, 2%) scale(0.98); }
 }
 
 .lp-hero-content {
   position: relative;
   text-align: center;
   max-width: 640px;
+  width: 100%;
+  padding: 0 1rem;
 }
 
 .lp-hero-badge {
@@ -52,6 +128,25 @@
   letter-spacing: -0.03em;
   color: var(--text-primary);
   margin-bottom: 1.25rem;
+}
+
+.lp-hero-title .lp-hero-title-wrap {
+  display: block;
+  width: 100%;
+  position: relative;
+  text-align: center;
+  min-height: 1.2em;
+  --typing-glow-base: var(--text-primary);
+}
+
+.lp-hero-title .lp-hero-title-text {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  margin: 0 auto;
+  text-align: center;
 }
 
 .lp-hero-subtitle {
@@ -239,6 +334,13 @@
 .lp-location-map {
   grid-column: 1 / -1;
   margin-top: 1rem;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.lp-location-map iframe {
+  max-width: 100%;
 }
 
 .lp-cta-btn-prominent {
@@ -317,19 +419,6 @@
 
 /* Responsive - Tablet */
 @media (max-width: 900px) {
-  .lp-header {
-    padding: 0.75rem 1rem;
-  }
-
-  .lp-nav {
-    gap: 0.5rem;
-  }
-
-  .lp-nav-btn {
-    padding: 0.4rem 0.75rem;
-    font-size: 0.85rem;
-  }
-
   .lp-location-content {
     gap: 1.5rem;
   }
@@ -343,31 +432,6 @@
 
 /* Responsive - Mobile */
 @media (max-width: 640px) {
-  .lp-header {
-    padding: 0.75rem 1rem;
-  }
-
-  .lp-header-inner {
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    padding: 0;
-  }
-
-  .lp-logo {
-    font-size: 1.25rem;
-  }
-
-  .lp-nav {
-    flex-wrap: wrap;
-    gap: 0.4rem;
-    justify-content: flex-end;
-  }
-
-  .lp-nav-btn {
-    padding: 0.35rem 0.6rem;
-    font-size: 0.8rem;
-  }
-
   .lp-hero {
     padding: 5rem 1rem 3rem;
     min-height: 75vh;
@@ -432,14 +496,30 @@
   }
 }
 
-/* Extra small - ensure nav fits */
+/* Extra small screens */
 @media (max-width: 400px) {
-  .lp-header-inner {
-    flex-direction: column;
-    align-items: stretch;
+  .lp-hero {
+    padding: 5rem 0.75rem 2.5rem;
+    min-height: 70vh;
   }
 
-  .lp-nav {
-    justify-content: center;
+  .lp-hero-title {
+    font-size: clamp(1.5rem, 5vw, 2rem);
+  }
+
+  .lp-hero-subtitle {
+    font-size: 0.9375rem;
+  }
+
+  .lp-features,
+  .lp-testimonials,
+  .lp-faq,
+  .lp-location,
+  .lp-cta {
+    padding: 2.5rem 0.75rem;
+  }
+
+  .lp-footer {
+    padding: 1.5rem 0.75rem 1rem;
   }
 }

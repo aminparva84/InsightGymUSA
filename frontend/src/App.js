@@ -7,7 +7,10 @@ import PurchasePage from './components/PurchasePage';
 import ClassSchedulePage from './components/ClassSchedulePage';
 import TrainersPage from './components/TrainersPage';
 import PricingPage from './components/PricingPage';
+import LandingChatWidget from './components/LandingChatWidget';
+import PageTransitionLoader from './components/PageTransitionLoader';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { AuthModalProvider, useAuthModal } from './context/AuthModalContext';
 import './App.css';
 import './themes.css';
 
@@ -44,12 +47,21 @@ function App() {
     <AuthProvider>
       <ThemeSync>
         <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-          <ScrollToTop />
-          <AppRoutes />
+          <AuthModalProvider>
+            <ScrollToTop />
+            <PageTransitionLoader />
+            <AppRoutes />
+            <AppGlobalChat />
+          </AuthModalProvider>
         </Router>
       </ThemeSync>
     </AuthProvider>
   );
+}
+
+function AppGlobalChat() {
+  const { openAuth } = useAuthModal();
+  return <LandingChatWidget onOpenAuth={openAuth} />;
 }
 
 function AppRoutes() {

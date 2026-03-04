@@ -20,7 +20,6 @@ import StepsTab from './tabs/StepsTab';
 import OnlineLab from './tabs/OnlineLab';
 import PsychologyTest from './tabs/PsychologyTest';
 import MembersAndAssistantsManagementTab from './tabs/MembersAndAssistantsManagementTab';
-import DashboardChatWidget from './DashboardChatWidget';
 import TrainingWithAgent from './TrainingWithAgent';
 import DashboardIcon from './DashboardIcon';
 import AskProgressCheck from './AskProgressCheck';
@@ -152,7 +151,7 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard">
-      <AppHeader showNotifications userRole={userRole} />
+      <AppHeader />
 
       <div className="dashboard-content">
         {userRole === 'member' && trialStatus && (
@@ -219,8 +218,6 @@ const Dashboard = () => {
             {activeTab === 'psychology-test' && <PsychologyTest />}
           </div>
         </div>
-
-        <DashboardChatWidget />
 
         {progressCheckOpen && (
           <div className="progress-check-modal-overlay" onClick={() => setProgressCheckOpen(false)} role="dialog" aria-modal="true">

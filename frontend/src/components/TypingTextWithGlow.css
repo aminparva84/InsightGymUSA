@@ -1,0 +1,44 @@
+/* Shared: Typing text + mouse-tracking glow - base layout */
+.typing-with-glow {
+  position: relative;
+  display: inline-block;
+  overflow: visible;
+}
+
+.typing-glow-inside-text {
+  overflow: visible;
+}
+
+.typing-text {
+  position: relative;
+  z-index: 1;
+  white-space: pre-wrap;
+}
+
+.typing-cursor {
+  animation: typing-cursor-blink 0.8s step-end infinite;
+  margin-left: 1px;
+}
+
+@keyframes typing-cursor-blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+/* Glow inside text: gradient only visible within character shapes on hover */
+/* No 50% fallback - avoids phantom second circle; vars set on mouseenter */
+.typing-with-glow.typing-glow-inside-text[data-hover] .typing-text {
+  background:
+    radial-gradient(
+      circle var(--typing-glow-radius, 1.2em) at var(--mouse-x, -9999px) var(--mouse-y, -9999px),
+      rgba(249, 115, 22, 0.95) 0%,
+      rgba(249, 115, 22, 0.5) 40%,
+      transparent 70%
+    ),
+    var(--typing-glow-base, var(--text-primary, #f5f5f5));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+

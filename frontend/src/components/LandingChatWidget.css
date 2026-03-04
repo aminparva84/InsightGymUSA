@@ -21,15 +21,17 @@
               max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Collapsed: AI icon in circle */
+/* Collapsed: "AI gym..." pill - fixed size for consistent oval */
 .lp-chat-collapsed {
-  width: 64px;
-  height: 64px;
-  max-height: 64px;
-  border-radius: 50%;
+  width: 150px;
+  height: 52px;
+  border-radius: 26px;
+  padding: 0;
+  overflow: hidden;
 }
 
 .lp-chat-collapsed-trigger {
+  position: relative;
   width: 100%;
   height: 100%;
   display: flex;
@@ -38,29 +40,47 @@
   background: transparent;
   border: none;
   cursor: pointer;
-  padding: 0;
-  transition: background 0.2s, transform 0.2s;
+  padding: 0 1.25rem;
+  overflow: hidden;
 }
 
-.lp-chat-collapsed-trigger:hover {
-  background: var(--bg-elevated);
-  transform: scale(1.05);
-}
-
-.lp-chat-ai-circle {
+.lp-chat-collapsed-trigger .lp-chat-typing-wrap {
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: var(--accent-muted);
-  color: var(--accent);
+  --typing-glow-base: var(--accent);
 }
 
-.lp-chat-ai-circle svg {
-  width: 28px;
-  height: 28px;
+.lp-chat-trigger-glow {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  margin-left: -50px;
+  margin-top: -50px;
+  background: radial-gradient(
+    circle,
+    rgba(249, 115, 22, 0.5) 0%,
+    rgba(249, 115, 22, 0.2) 45%,
+    transparent 70%
+  );
+  filter: blur(16px);
+  pointer-events: none;
+  left: 0;
+  top: 0;
+  transition: opacity 0.2s ease;
+}
+
+.lp-chat-typing-label {
+  position: relative;
+  z-index: 1;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 0.02em;
+  transition: opacity 0.15s ease;
+  white-space: nowrap;
 }
 
 @keyframes lp-chat-blink {
@@ -368,18 +388,16 @@
   }
 
   .lp-chat-collapsed {
-    width: 56px;
-    height: 56px;
+    width: 135px;
+    height: 48px;
   }
 
-  .lp-chat-ai-circle {
-    width: 38px;
-    height: 38px;
+  .lp-chat-collapsed-trigger {
+    padding: 0 1rem;
   }
 
-  .lp-chat-ai-circle svg {
-    width: 24px;
-    height: 24px;
+  .lp-chat-typing-label {
+    font-size: 0.95rem;
   }
 
   .lp-chat-expanded {

@@ -31,10 +31,11 @@
 
 .pp-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1.5rem;
-  align-items: stretch;
+  align-items: center;
 }
+
 
 .pp-card {
   position: relative;
@@ -44,26 +45,69 @@
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: 2rem;
-  transition: all var(--transition);
-  min-height: 320px;
+  transition: transform 0.35s cubic-bezier(0.34, 1.22, 0.64, 1), height 0.35s cubic-bezier(0.34, 1.22, 0.64, 1), min-height 0.35s cubic-bezier(0.34, 1.22, 0.64, 1), padding 0.35s ease, background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+  min-height: 360px;
+  height: 360px;
+  overflow: hidden;
+  cursor: pointer;
+  transform-origin: center center;
 }
 
-.pp-card.popular {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.3);
+.pp-card:hover {
+  border-color: var(--border-strong);
+}
+
+.pp-card.selected {
+  background: #F97316;
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2), 0 12px 40px rgba(0, 0, 0, 0.4);
+  padding: 3rem 2.5rem;
+  min-height: 400px;
+  height: 400px;
+  z-index: 1;
+  transform: scale(1.05);
+}
+
+.pp-card-glow {
+  position: absolute;
+  width: 220px;
+  height: 220px;
+  margin-left: -110px;
+  margin-top: -110px;
+  background: radial-gradient(
+    circle,
+    rgba(249, 115, 22, 0.45) 0%,
+    rgba(249, 115, 22, 0.15) 45%,
+    transparent 70%
+  );
+  filter: blur(20px);
+  pointer-events: none;
+  left: 0;
+  top: 0;
+  transition: opacity 0.2s ease;
+}
+
+.pp-card-glow-selected {
+  background: radial-gradient(
+    circle,
+    rgba(55, 65, 81, 0.6) 0%,
+    rgba(55, 65, 81, 0.25) 45%,
+    transparent 70%
+  );
 }
 
 .pp-badge {
   position: absolute;
-  top: -10px;
+  top: 0.75rem;
   left: 50%;
   transform: translateX(-50%);
-  background: var(--accent);
-  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.95);
+  color: #F97316;
   font-size: 0.75rem;
   font-weight: 600;
-  padding: 0.25rem 0.75rem;
+  padding: 0.35rem 0.85rem;
   border-radius: 999px;
+  z-index: 1;
 }
 
 .pp-card-name {
@@ -71,6 +115,14 @@
   font-weight: 600;
   color: var(--text-primary);
   margin: 0 0 1rem 0;
+  position: relative;
+  z-index: 1;
+}
+
+.pp-card-price,
+.pp-features {
+  position: relative;
+  z-index: 1;
 }
 
 .pp-card-price {
@@ -106,22 +158,42 @@
   border-bottom: none;
 }
 
-.pp-cta {
-  margin-top: auto;
-  width: 100%;
-  padding: 0.875rem 1.5rem;
-  font-size: 1rem;
+.pp-cta-wrap {
+  margin-top: 2.5rem;
+  text-align: center;
+}
+
+.pp-cta-single {
+  padding: 1rem 2.5rem;
+  font-size: 1.125rem;
   font-weight: 600;
   color: var(--text-primary);
-  background: var(--accent);
+  background: #F97316;
   border: none;
   border-radius: var(--radius-md);
   cursor: pointer;
   transition: all var(--transition);
+  box-shadow: 0 4px 20px rgba(249, 115, 22, 0.35);
 }
 
-.pp-cta:hover {
-  background: var(--accent-hover);
+.pp-cta-single:hover {
+  background: #ea580c;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 28px rgba(249, 115, 22, 0.4);
+}
+
+.pp-card.selected .pp-card-name,
+.pp-card.selected .pp-amount,
+.pp-card.selected .pp-features li {
+  color: rgba(255, 255, 255, 0.98);
+}
+
+.pp-card.selected .pp-period {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.pp-card.selected .pp-features li {
+  border-bottom-color: rgba(255, 255, 255, 0.25);
 }
 
 /* Responsive */

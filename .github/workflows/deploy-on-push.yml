@@ -1,0 +1,76 @@
+# Deploy Insight GYM USA to AWS App Runner on push to main
+# Triggers: push to main branch
+# Requires GitHub secrets: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_APP_RUNNER_ECR_ACCESS_ROLE_ARN
+
+name: Deploy on Push to Main
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: deploy-insight-gym-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  AWS_REGION: us-west-2
+  ECR_REPOSITORY: insight-gym-usa
+  SERVICE_NAME: insight-gym-usa
+
+jobs:
+  build-and-deploy:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate AWS secrets
+        run: |
+          if [ -z "${{ secrets.AWS_ACCESS_KEY_ID }}" ] || [ -z "${{ secrets.AWS_SECRET_ACCESS_KEY }}" ]; then
+            echo "::error::Missing GitHub secrets. Add AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY in Settings → Secrets and variables → Actions."
+            exit 1
+          fi
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Create ECR repository if not exists
+        run: |
+          aws ecr describe-repositories --repository-names ${{ env.ECR_REPOSITORY }} --region ${{ env.AWS_REGION }} 2>/dev/null || \
+          aws ecr create-repository --repository-name ${{ env.ECR_REPOSITORY }} --image-scanning-configuration scanOnPush=true --region ${{ env.AWS_REGION }}
+
+      - name: Build and push Docker image
+        env:
+          ECR_REGISTRY: ${{ steps.ecr.outputs.registry }}
+        run: |
+          docker build -f Dockerfile.apprunner \
+            -t $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:${{ github.sha }} \
+            -t $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:latest \
+            .
+          docker push $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
+          docker push $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:latest
+
+      - name: Redeploy App Runner service
+        env:
+          IMAGE_URI: ${{ steps.ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:latest
+        run: |
+          SERVICE_ARN=$(aws apprunner list-services --region ${{ env.AWS_REGION }} \
+            --query "ServiceSummaryList[?ServiceName=='${{ env.SERVICE_NAME }}'].ServiceArn" \
+            --output text 2>/dev/null || true)
+          if [ -z "$SERVICE_ARN" ] || [ "$SERVICE_ARN" == "None" ]; then
+            echo "::error::App Runner service '${{ env.SERVICE_NAME }}' not found. Create it first (see DEPLOY_APP_RUNNER.md)."
+            exit 1
+          fi
+          echo "Starting deployment for $SERVICE_ARN"
+          aws apprunner start-deployment --service-arn "$SERVICE_ARN" --region ${{ env.AWS_REGION }}
+          echo "Deployment started. Service will be live once deployment completes (~2-3 min)."
+          echo "Service URL: https://$(aws apprunner describe-service --service-arn "$SERVICE_ARN" --region ${{ env.AWS_REGION }} --query 'Service.ServiceUrl' --output text)"

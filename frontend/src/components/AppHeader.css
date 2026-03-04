@@ -1,21 +1,46 @@
-/* Shared App Header - same across all pages */
+/* Menu dimensions - used for push layout */
+:root {
+  --app-menu-width: min(240px, 75vw);
+}
+
+/* Wrapper for header + menu */
+.app-header-root {
+  --app-header-height: calc(max(1rem, env(safe-area-inset-top)) + 44px + 1rem);
+}
+
+/* Push layout: body shifts left when menu opens */
+body.app-menu-open {
+  margin-right: var(--app-menu-width);
+  overflow-x: hidden;
+  transition: margin-right 0.4s cubic-bezier(0.34, 1.22, 0.64, 1);
+}
+
+/* Shared App Header - Glass morphism effect */
 .app-header {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 1000;
-  padding: 1rem 2rem;
-  background: rgba(10, 14, 26, 0.95);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border);
-  box-shadow: var(--shadow);
-  transition: background var(--transition), box-shadow var(--transition);
+  padding: max(1rem, env(safe-area-inset-top)) max(2rem, env(safe-area-inset-right)) 1rem max(2rem, env(safe-area-inset-left));
+  /* Glass effect */
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  transition: background var(--transition), box-shadow var(--transition), backdrop-filter var(--transition);
 }
 
 .app-header.scrolled {
-  background: rgba(10, 14, 26, 0.96);
-  box-shadow: var(--shadow);
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  box-shadow:
+    0 4px 32px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 .app-header-inner {
@@ -24,6 +49,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
+}
+
+.app-header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .app-header-logo {
@@ -38,12 +70,6 @@
 
 .app-header-logo:hover {
   color: var(--accent);
-}
-
-.app-header-nav {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
 }
 
 .app-header-nav-btn {
@@ -77,6 +103,14 @@
   font-size: 0.875rem;
   font-weight: 500;
   padding: 0 0.5rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: color var(--transition);
+}
+
+.app-header-username:hover {
+  color: var(--accent);
 }
 
 /* Notifications */
@@ -105,6 +139,22 @@
 
 .app-header-notification-icon {
   display: block;
+  transition: transform 0.2s ease;
+}
+
+.app-header-notifications-btn.is-open .app-header-notification-icon {
+  animation: app-bell-ring 0.4s ease;
+}
+
+@keyframes app-bell-ring {
+  0% { transform: rotate(0); }
+  12% { transform: rotate(15deg); }
+  25% { transform: rotate(-12deg); }
+  37% { transform: rotate(8deg); }
+  50% { transform: rotate(-5deg); }
+  62% { transform: rotate(2deg); }
+  75% { transform: rotate(-1deg); }
+  100% { transform: rotate(0); }
 }
 
 .app-header-notification-badge {
@@ -138,6 +188,19 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  transform-origin: top right;
+  animation: app-notifications-open 0.35s cubic-bezier(0.34, 1.22, 0.64, 1) forwards;
+}
+
+@keyframes app-notifications-open {
+  from {
+    opacity: 0;
+    transform: scale(0.88);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .app-header-notifications-dropdown-header {
@@ -169,6 +232,16 @@
 .app-header-notifications-list {
   overflow-y: auto;
   max-height: 320px;
+  animation: app-notifications-list-in 0.3s ease 0.08s both;
+}
+
+@keyframes app-notifications-list-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .app-header-notifications-loading,
@@ -278,27 +351,161 @@
   color: var(--text-muted);
 }
 
+/* Hamburger - always visible */
+.app-header-hamburger {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text-primary);
+  transition: color var(--transition);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.app-header-hamburger:hover {
+  color: var(--accent);
+}
+
+.app-header-hamburger-line {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: currentColor;
+  border-radius: 1px;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.app-header.menu-open .app-header-hamburger-line:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.app-header.menu-open .app-header-hamburger-line:nth-child(2) {
+  opacity: 0;
+}
+
+.app-header.menu-open .app-header-hamburger-line:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* Hamburger menu - push layout, workout-style animation */
+.app-header-menu {
+  position: fixed;
+  top: var(--app-header-height);
+  right: 0;
+  bottom: 0;
+  width: var(--app-menu-width);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  padding: 1rem;
+  background: rgba(17, 24, 39, 0.97);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: -8px 0 32px rgba(0, 0, 0, 0.4);
+  transform: translateX(100%);
+  transition: transform 0.4s cubic-bezier(0.34, 1.22, 0.64, 1), visibility 0.4s;
+  visibility: hidden;
+  z-index: 999;
+}
+
+.app-header-menu.open {
+  transform: translateX(0);
+  visibility: visible;
+}
+
+.app-header-menu-btn {
+  padding: 1rem 1.25rem;
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: left;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: transform 0.25s cubic-bezier(0.34, 1.22, 0.64, 1), color var(--transition), background var(--transition);
+  transform: translateX(8px);
+  opacity: 0;
+}
+
+.app-header-menu.open .app-header-menu-btn {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.app-header-menu.open .app-header-menu-btn:nth-child(1) { transition-delay: 0.05s; }
+.app-header-menu.open .app-header-menu-btn:nth-child(2) { transition-delay: 0.08s; }
+.app-header-menu.open .app-header-menu-btn:nth-child(3) { transition-delay: 0.11s; }
+.app-header-menu.open .app-header-menu-btn:nth-child(4) { transition-delay: 0.14s; }
+.app-header-menu.open .app-header-menu-btn:nth-child(5) { transition-delay: 0.17s; }
+.app-header-menu.open .app-header-menu-btn:nth-child(6) { transition-delay: 0.2s; }
+
+.app-header-menu-btn:hover {
+  color: var(--text-primary);
+  background: var(--bg-elevated);
+  transform: translateX(4px) scale(1.02);
+}
+
+.app-header-menu.open .app-header-menu-btn:hover {
+  transform: translateX(4px) scale(1.02);
+}
+
+/* Menu overlay - covers pushed content only, click to close */
+.app-header-menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: calc(100% - var(--app-menu-width));
+  background: rgba(0, 0, 0, 0.25);
+  z-index: 998;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.4s cubic-bezier(0.34, 1.22, 0.64, 1);
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .app-header {
-    padding: 0.75rem 1rem;
+    padding: max(0.75rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) 0.75rem max(1rem, env(safe-area-inset-left));
   }
 
   .app-header-logo {
     font-size: 1.2rem;
   }
 
-  .app-header-username {
-    display: none;
-  }
-
-  .app-header-nav {
-    flex-wrap: wrap;
-    gap: 0.5rem;
+  .app-header-right {
+    gap: 0.35rem;
   }
 
   .app-header-nav-btn {
     padding: 0.4rem 0.75rem;
     font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .app-header {
+    padding: max(0.625rem, env(safe-area-inset-top)) max(0.75rem, env(safe-area-inset-right)) 0.625rem max(0.75rem, env(safe-area-inset-left));
+  }
+
+  .app-header-logo {
+    font-size: 1.1rem;
+  }
+
+  .app-header-username {
+    font-size: 0.8rem;
+    max-width: 80px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }

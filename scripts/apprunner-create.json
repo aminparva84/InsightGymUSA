@@ -1,0 +1,32 @@
+{
+  "ServiceName": "insight-gym-usa",
+  "SourceConfiguration": {
+    "ImageRepository": {
+      "ImageIdentifier": "255315172922.dkr.ecr.us-east-1.amazonaws.com/insight-gym-usa:latest",
+      "ImageRepositoryType": "ECR",
+      "ImageConfiguration": {
+        "Port": "8080",
+        "RuntimeEnvironmentVariables": {
+          "PORT": "8080",
+          "JWT_SECRET_KEY": "insight-gym-prod-secret-2026"
+        }
+      }
+    },
+    "AuthenticationConfiguration": {
+      "AccessRoleArn": "arn:aws:iam::255315172922:role/AppRunnerECRAccessRole"
+    },
+    "AutoDeploymentsEnabled": false
+  },
+  "InstanceConfiguration": {
+    "Cpu": "1024",
+    "Memory": "2048"
+  },
+  "HealthCheckConfiguration": {
+    "Protocol": "HTTP",
+    "Path": "/health",
+    "Interval": 10,
+    "Timeout": 5,
+    "HealthyThreshold": 1,
+    "UnhealthyThreshold": 5
+  }
+}
